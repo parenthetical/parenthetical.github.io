@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Adriaan Leijnse</title>
+    <link>https://aidy.dev/</link>
+    <description>Recent content on Adriaan Leijnse</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 25 Mar 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://aidy.dev/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Higher-order patterns in replicated data types</title>
+      <link>https://aidy.dev/papers/patterns-in-replicated-data-types/</link>
+      <pubDate>Mon, 25 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://aidy.dev/papers/patterns-in-replicated-data-types/</guid>
+      <description>In this paper we argue that the essence of CRDTs is not about being &amp;ldquo;operation-based&amp;rdquo; or &amp;ldquo;state-based&amp;rdquo;. Instead, CRDTs have a more abstract meaning: they are ways to derive a value from a set of known operations. These derivations follow a few simple patterns which can be reused to succinctly define the individual behaviors of a large catalog of CRDTs. This means that when writing complex CRDTs it might be worth creating a little programming language which supports those patterns as first class primitives and implements them efficiently.</description>
+    </item>
+    
+    <item>
+      <title>Research journal</title>
+      <link>https://aidy.dev/journal/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://aidy.dev/journal/</guid>
+      <description>2023-03-19 I just remembered another useful FRP feature which currently doesn&amp;rsquo;t exist. It would solve the &amp;ldquo;I wrote my program as a function of Event a, but I want it to accept input looking something like Event [a], where [a] is an ordered sequence of occurrences that have to happen &amp;ldquo;within the current moment&amp;rdquo;. Doing this safely, especially if you want to pass multiple of these Event [a] values to a program, seems tricky.</description>
+    </item>
+    
+  </channel>
+</rss>

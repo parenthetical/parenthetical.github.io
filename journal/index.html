@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.106.0">
+		<title>Research journal - Adriaan Leijnse</title>
+
+		<meta name="description" content="2023-03-19 I just remembered another useful FRP feature which currently doesn&rsquo;t exist. It would solve the &ldquo;I wrote my program as a function of Event a, but I want it to accept input looking something like Event [a], where [a] is an ordered sequence of occurrences that have to happen &ldquo;within the current moment&rdquo;. Doing this safely, especially if you want to pass multiple of these Event [a] values to a program, seems tricky.">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+<body>
+
+
+
+
+
+<main class="container">
+
+<article>
+	<header><hgroup id="brand">
+	<h1>Research journal</h1>
+        <h2></h2>
+	<h5>
+	  
+          
+		<span class="no-print">
+			<span>
+	</h5>
+	
+</hgroup>
+<hr class="sep" />
+</header>
+	<h2 id="2023-03-19">2023-03-19</h2>
+<p>I just remembered another useful FRP feature which currently doesn&rsquo;t exist.
+It would solve the &ldquo;I wrote my program as a function of <code>Event a</code>, but I want it to accept input looking something like <code>Event [a]</code>, where <code>[a]</code> is an ordered sequence of occurrences that have to happen &ldquo;within the current moment&rdquo;.
+Doing this safely, especially if you want to pass multiple of these <code>Event [a]</code> values to a program, seems tricky.
+You want to keep your &ldquo;moments within the current moment&rdquo; apart from other &ldquo;moments within the current moment&rdquo; because there would not necessarily be a relationship between them.</p>
+<p>Maybe one way to achieve it would be something like the following, for which you need a source of first-class sub-time values.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">withMoments</span> <span class="ow">::</span> <span class="kt">Integer</span> <span class="c1">-- How many sub-moments to generate</span>
+</span></span><span class="line"><span class="cl">            <span class="ow">-&gt;</span> <span class="n">forall</span> <span class="n">t</span><span class="o">.</span> <span class="p">[</span><span class="kt">Time</span> <span class="n">t</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                         <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">t&#39;</span> <span class="p">(</span><span class="kt">Map</span> <span class="p">(</span><span class="kt">Time</span> <span class="n">t</span><span class="p">)</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                         <span class="ow">-&gt;</span> <span class="p">(</span><span class="kt">Event</span> <span class="n">t</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Behavior</span> <span class="n">t</span> <span class="n">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                         <span class="ow">-&gt;</span> <span class="kt">Behavior</span> <span class="n">t&#39;</span> <span class="n">b</span>
+</span></span></code></pre></div><p>(I didn&rsquo;t think about this signature properly.)</p>
+<h3 id="code-metadata-version-coupling">Code metadata&ndash;version coupling</h3>
+<p>Another &ldquo;what programming should be like&rdquo; thought:
+I find it weird that <strong>TODOs/issues/&hellip;</strong> are not <strong>coupled to code</strong>.
+Some people consider TODO/FIXME notes in the code itself a smell, but they are metadata about the code and I&rsquo;d like to see them while working on the code.</p>
+<p>As far as I understand people are worried about:</p>
+<ul>
+<li>Untrackability of TODO in code.</li>
+<li>A kind of fake &ldquo;technical debt accumulation&rdquo; because it&rsquo;s too easy to add TODOs.</li>
+</ul>
+<p>On the other hand I think I&rsquo;ve seen technical debt accumulation precisely because TODOs were not added.
+The same little niggles were present all over the code base but no one kept track of them and it kept making things worse.</p>
+<h2 id="2023-03-18">2023-03-18</h2>
+<p>Rather than immediately attempt my own implementation of FRP, I&rsquo;ve been working on understanding Reflex&rsquo; Spider implementation.
+I started out with the original code—randomly deleting anything that didn&rsquo;t seem essential like <code>Incremental</code> and <code>Dynamic</code> (because they can be expressed in terms of <code>Event</code> and <code>Behavior</code>), but it seems that <code>Dynamic</code> might be a basic building block of the implementation? Maybe the way behaviors work is actually via something Dynamic-like?</p>
+<p>Anyway, I&rsquo;ve re-copied the whole Reflex implementation and I&rsquo;m now simplifying with the help of Git.
+First I&rsquo;m deleting all debugging stuff behind the <code>DEBUG*</code> flags, next I&rsquo;ll see about deleting some things like <code>fan</code> which are just optimizations.</p>
+<p>I think understanding what &ldquo;height&rdquo; is and what the goals of all the &ldquo;deferral queues&rdquo; are is a major step in understanding.</p>
+<h2 id="2023-03-13">2023-03-13</h2>
+<p>I started working on an implementation of Reflex-like FRP in Haskell.
+I&rsquo;ve long wondered how it all works and not understanding the internals has held me back from understanding what goes wrong when my mad experiments fail.
+I&rsquo;m taking this as an opportunity to learn about <a href="https://input-output-hk.github.io/haskell.nix/index.html">haskell.nix</a> as well.</p>
+<p>Things I&rsquo;d like to explore with this implementation:</p>
+<ul>
+<li>A <code>Now</code> monad which has
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl">    <span class="n">occurs</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="n">t</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">)</span>
+</span></span></code></pre></div></li>
+<li>Experiment with first-class timelines.
+(Needs keeping the flexibility of Reflex&rsquo; parameterized types.)</li>
+<li>Maybe focus on commutative-first operations? I&rsquo;ve long thought that sequential-first over commutative-first is a mistake in library design, and Haskell suffers from it. (Another way to see this is &ldquo;sets over lists&rdquo;.)</li>
+</ul>
+<h2 id="2023-03-12">2023-03-12</h2>
+<p>I started reading Ink and Switch&rsquo;s article on their <a href="https://www.inkandswitch.com/upwelling/">Upwelling project</a>.
+I&rsquo;m really enjoying it so far and I&rsquo;m excited to see other people are sharing my thoughts on how collaboration tools should work.</p>
+<h2 id="2023-03-10">2023-03-10</h2>
+<p>More thoughts and questions:</p>
+<h3 id="smalltalk-y-environments-and-distributed-programming">SmallTalk-y environments and distributed programming</h3>
+<p>Why does it feel like SmallTalk environments don&rsquo;t do so well for distributed programming? (Pure ignorance here, maybe they do.) Does any &ldquo;more than text&rdquo; environment do well?</p>
+<h3 id="concrete-examples-vs-abstractions">Concrete examples vs abstractions</h3>
+<p>I listened to the FoC podcast episode on Magic Ink. In it the thought comes up that design tools should work via concrete examples instead of starting with abstractions, like &ldquo;normal&rdquo; programming does. This may sound like it&rsquo;s in opposition to the category-abstract-as-much-as-we-can vibes we have in the FP community, but I believe it&rsquo;s actually extremely compatible, even necessary. The thing that&rsquo;s missing is a database of concrete examples and a user friendly interface.</p>
+<p>A programming environment should say &ldquo;you have two numbers, here are the combinators that work on them&rdquo;.
+It should then save the chosen combinator both as a concrete one and as a more abstract monoidal operation.
+If the code changes and you e.g. switch from numbers to matrices it should pick a new sensible operation or ask if multiple exist.</p>
+<h3 id="undo-via-timeline-of-actions-manipulation">Undo via timeline-of-actions manipulation</h3>
+<p>My master&rsquo;s thesis was about making timelines/events in FRP first class values which can be modified, and using that to implement things like undo.
+I think this is a concept which should be explored more, and which would render an FRP-based programming environment super useful, because you could ask &ldquo;what-if&rdquo; questions and have a much better interactive development/debugging experience.</p>
+<h3 id="causality-of-actions-why-can-this-happen">Causality of actions, &ldquo;why can this happen?&rdquo;</h3>
+<p>When thinking of implementing undo functionality with the above timeline-of-actions concept one of the first problems which comes to mind is deleting an action which makes future actions meaningless.
+E.g. if in a drawing program you remove the action which created a circle, then later actions resizing that circle no longer make sense.
+Can we invent a programming language in which it is easy to ask &ldquo;which parts of the future exist only because of this thing which happened in the past?&rdquo;.</p>
+<h3 id="ui-designs-programs-should-be-testable">UI designs/programs should be testable</h3>
+<p>Could you record interactions with a UI and replay them in various contexts (resized windows etc.) so that they still work?
+This needs predictable identifiers for the UI components.
+What does a programming language which natively supports these predictable IDs look like?</p>
+<p>In common OO programming object identity is not predictable, because the system is not pure and not replayable.</p>
+<h2 id="2023-02-25">2023-02-25</h2>
+<p>I think it would be good to have a list of projects I&rsquo;m (considering) working listed on my web site.
+Things I can think of right now:</p>
+<ul>
+<li>Play around with making Obelisk composable (components with frontend, backend, and database)</li>
+<li>Finish my &ldquo;distributed FRP&rdquo; paper? I got a demotivated and burnt out on this tbh.</li>
+<li>Blog post about denotative distributed programming.</li>
+<li>Trying to find an amazing implementation of Paxos in a toy distributed FRP implementation.</li>
+</ul>
+<h2 id="2023-02-24">2023-02-24</h2>
+<p>Thoughts I wrote down during my Fisherman&rsquo;s Trail walk:</p>
+<h3 id="debuggers-should-work-on-different-semantic-levels">Debuggers should work on different semantic levels</h3>
+<p>For example, an FRP debugger should tell you &ldquo;what is true at time <em>t</em>&rdquo; (values of behaviors, any event occurrences).
+If say you wrote an infinite recursion in the non-FRP code, you should be able to drop down to a friendly execution model for that code.</p>
+<h3 id="why-couldn-t-smalltalk-be-a-purely-functional-programming-environment-why-not-an-frp-inspired-smalltalk">Why couldn&rsquo;t Smalltalk be a purely functional programming environment? Why not an FRP-inspired Smalltalk?</h3>
+<p>You&rsquo;d need:</p>
+<ul>
+<li>A model of how the program definition changes over time.</li>
+<li>A precise, composable, and easy to understand of where the state of
+objects comes from. Smalltalk OO gives identitiy to everything with
+state, but maybe that&rsquo;s overkill and we can make identity explicit
+in a natural way.</li>
+</ul>
+<h3 id="when-developing-guis-you-should-be-able-to-ask-questions-and-edit-live">When developing GUIs you should be able to ask questions and edit live</h3>
+<ul>
+<li>How is this element defined?</li>
+<li>Where does it come from?</li>
+<li>Why does it exist/am I seeing it?</li>
+</ul>
+<p>I mean, you should be able to enter a special mode while developing which allows you to click on a button and be taken to its editable definition.
+Editing that definition should either change that button (like the DOM editor in your browser) or all buttons (but that might render the current state impossible to reach?).
+Other things which would be cool is to know the causality of the button&rsquo;s existence. E.g. which other buttons were pressed in the past to get to where we are?</p>
+<h3 id="why-can-t-state-and-code-evolve-together-textual-programming-is-such-a-dead-end-dot">Why can&rsquo;t state and code evolve together? Textual programming is such a dead end.</h3>
+<p><span class="org-target" id="org-target--state-code-evolve-together-log"></span>
+I was recently helping a friend with a Python project and we had to use a variable to store some text that we&rsquo;d modify later in the program.
+She was surprised to learn that this wouldn&rsquo;t change the text in the source code as well.
+I had to tell her that this was a reasonable assumption but that the field of programming was not yet ready for her futuristic ideas :&rsquo;).</p>
+<p>This really begs the question &ldquo;why can&rsquo;t state and code evolve together?&rdquo;
+The two are intimately linked.
+One version of the state might only make sense for one particular version of the code.
+The only reason I can think of why carrying state between versions of a program tends to work is because we explicitly name bits of state, e.g. with database tables.
+These are usually globally unique identifiers which kills composition.</p>
+<p>To make code-state-coevolution feasible you&rsquo;d have to be able to do operations like &ldquo;start over with fresh state&rdquo;.</p>
+<p>This coevolution problem seems extremely hard to solve with a plain text editor.
+You really want to have program-and-state history as a branchable, rewritable, &hellip; history.
+Just like we do now with Git.
+I can&rsquo;t see that happening unless the editor really understands what&rsquo;s happening, and when you have that you might as well add a lot more UI to &ldquo;code&rdquo;.</p>
+<p>How would you write a document editor in which the document is defined as an exportable program but is no different from code?
+In which you can define in-line editing interfaces for the document elements?
+This is just Smalltalk-like stuff IIRC.
+&ldquo;Bring Smalltalk back?&rdquo;</p>
+<h2 id="2023-02-22">2023-02-22</h2>
+<p>I&rsquo;d really like to find out how a library like Reflex works. I also just found out that browsers support weak references and finalizers in JavaScript now, so I think that means Reflex Spider-style implementations can now be done in JS.</p>
+<p>IIRC something that&rsquo;s expensive in Reflex is to know whether <code>Event (Event a)</code> has a simultaneous occurrence.
+Another expensive thing is joining Dynamic (because of the previous simultaneous nested event occurrence thing?).
+Why are they so in the current Reflex implementation?</p>
+<p>Random thought: it would be cool if an implementation supported</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">occurs</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">)</span>
+</span></span></code></pre></div><p>A function like this might make writing code involving multiple events and behaviors much more ergonomic.
+Now you only have <code>sample</code> for behaviors, but not the equivalent for dynamics.</p>
+
+</article>
+<nav class="no-print post-nav">
+
+
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
+
+				<p>
+					
+				</p>
+				
+				
+				
+				
+				
+				
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+
