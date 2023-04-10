@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.106.0">
+		<title>2023-03-19 - Adriaan Leijnse</title>
+
+		<meta name="description" content="I just remembered another useful FRP feature which currently doesn&rsquo;t exist. It would solve the &ldquo;I wrote my program as a function of Event a, but I want it to accept input looking something like Event [a], where [a] is an ordered sequence of occurrences that have to happen &ldquo;within the current moment&rdquo;. Doing this safely, especially if you want to pass multiple of these Event [a] values to a program, seems tricky.">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <div class="u-header">
+        <h1 class="site-name">Adriaan Leijnse</h1>
+	<nav class="bar">
+  <ul>
+    <li>
+      <a href="/"
+         >
+	Home
+      </a>
+    </li>
+    <li>
+      <a href="/foc-ideas/"
+         
+         >
+        Future of Coding
+      </a>
+    </li><li>
+      <a href="/journal/"
+         
+         class="active"
+         
+         >
+        Journal
+      </a>
+    </li><li>
+      <a href="/papers/"
+         
+         >
+        Papers
+      </a>
+    </li></ul>
+</nav>
+
+      </div>
+    </header>
+    <main class="container">
+
+<article>
+  <header>
+    <hgroup id="brand">
+      <h1>
+        Journal entry for 
+	
+        
+	<time datetime="2023-03-19 00:00:00 &#43;0000 UTC">March 19, 2023</time>
+        
+	<span class="no-print">
+	  <span>
+      </h1>
+    </hgroup>
+    <hr class="sep" />
+  </header>
+  <p>I just remembered another useful FRP feature which currently doesn&rsquo;t exist.
+It would solve the &ldquo;I wrote my program as a function of <code>Event a</code>, but I want it to accept input looking something like <code>Event [a]</code>, where <code>[a]</code> is an ordered sequence of occurrences that have to happen &ldquo;within the current moment&rdquo;.
+Doing this safely, especially if you want to pass multiple of these <code>Event [a]</code> values to a program, seems tricky.
+You want to keep your &ldquo;moments within the current moment&rdquo; apart from other &ldquo;moments within the current moment&rdquo; because there would not necessarily be a relationship between them.</p>
+<p>Maybe one way to achieve it would be something like the following, for which you need a source of first-class sub-time values.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">withMoments</span> <span class="ow">::</span> <span class="kt">Integer</span> <span class="c1">-- How many sub-moments to generate</span>
+</span></span><span class="line"><span class="cl">            <span class="ow">-&gt;</span> <span class="n">forall</span> <span class="n">t</span><span class="o">.</span> <span class="p">[</span><span class="kt">Time</span> <span class="n">t</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                         <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">t&#39;</span> <span class="p">(</span><span class="kt">Map</span> <span class="p">(</span><span class="kt">Time</span> <span class="n">t</span><span class="p">)</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                         <span class="ow">-&gt;</span> <span class="p">(</span><span class="kt">Event</span> <span class="n">t</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Behavior</span> <span class="n">t</span> <span class="n">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                         <span class="ow">-&gt;</span> <span class="kt">Behavior</span> <span class="n">t&#39;</span> <span class="n">b</span>
+</span></span></code></pre></div><p>(I didn&rsquo;t think about this signature properly.)</p>
+<h2 id="code-metadata-version-coupling">Code metadata&ndash;version coupling</h2>
+<p>Another &ldquo;what programming should be like&rdquo; thought:
+I find it weird that <strong>TODOs/issues/&hellip;</strong> are not <strong>coupled to code</strong>.
+Some people consider TODO/FIXME notes in the code itself a smell, but they are metadata about the code and I&rsquo;d like to see them while working on the code.</p>
+<p>As far as I understand people are worried about:</p>
+<ul>
+<li>Untrackability of TODO in code.</li>
+<li>A kind of fake &ldquo;technical debt accumulation&rdquo; because it&rsquo;s too easy to add TODOs.</li>
+</ul>
+<p>On the other hand I think I&rsquo;ve seen technical debt accumulation precisely because TODOs were not added.
+The same little niggles were present all over the code base but no one kept track of them and it kept making things worse.</p>
+
+</article>
+<nav class="no-print post-nav">
+  
+  <a class="prev-post" href="https://aidy.dev/journal/2023-03-13/">
+    <img class="icon-text" src="/img/prev.svg"/>2023-03-13</a>
+  
+  
+  <a class="next-post" href="https://aidy.dev/journal/2023-04-04/">2023-04-04<img class="icon-text" src="/img/next.svg"/>
+  </a>
+  
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
+
+				<p>
+					
+				</p>
+				
+				
+				
+				
+				
+				
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+

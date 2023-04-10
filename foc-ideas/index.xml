@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Ideas for the future of coding on Adriaan Leijnse</title>
+    <link>https://aidy.dev/foc-ideas/</link>
+    <description>Recent content in Ideas for the future of coding on Adriaan Leijnse</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 10 Apr 2023 15:56:00 +0100</lastBuildDate><atom:link href="https://aidy.dev/foc-ideas/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Re-unifying program state and definition</title>
+      <link>https://aidy.dev/foc-ideas/state-and-program-definition/</link>
+      <pubDate>Mon, 10 Apr 2023 15:56:00 +0100</pubDate>
+      
+      <guid>https://aidy.dev/foc-ideas/state-and-program-definition/</guid>
+      <description>Why can&amp;rsquo;t program state and source evolve together? This used to be the case in Smalltalk images and other systems, but it&amp;rsquo;s completely gone from mainstream development.
+From research journal entry /journal/2023-02-24/:
+I was recently helping a friend with a Python project and we had to use a variable to store some text that we’d modify later in the program. She was surprised to learn that this wouldn’t change the text in the source code as well.</description>
+    </item>
+    
+  </channel>
+</rss>

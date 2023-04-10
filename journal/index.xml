@@ -1,23 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Adriaan Leijnse</title>
-    <link>https://aidy.dev/</link>
-    <description>Recent content on Adriaan Leijnse</description>
+    <title>Journal on Adriaan Leijnse</title>
+    <link>https://aidy.dev/journal/</link>
+    <description>Recent content in Journal on Adriaan Leijnse</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 10 Apr 2023 15:56:00 +0100</lastBuildDate><atom:link href="https://aidy.dev/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Re-unifying program state and definition</title>
-      <link>https://aidy.dev/foc-ideas/state-and-program-definition/</link>
-      <pubDate>Mon, 10 Apr 2023 15:56:00 +0100</pubDate>
-      
-      <guid>https://aidy.dev/foc-ideas/state-and-program-definition/</guid>
-      <description>Why can&amp;rsquo;t program state and source evolve together? This used to be the case in Smalltalk images and other systems, but it&amp;rsquo;s completely gone from mainstream development.
-From research journal entry /journal/2023-02-24/:
-I was recently helping a friend with a Python project and we had to use a variable to store some text that we’d modify later in the program. She was surprised to learn that this wouldn’t change the text in the source code as well.</description>
-    </item>
-    
+    <lastBuildDate>Mon, 10 Apr 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://aidy.dev/journal/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>2023-04-10</title>
       <link>https://aidy.dev/journal/2023-04-10/</link>
@@ -130,15 +119,6 @@ Why couldn&amp;rsquo;t Smalltalk be a purely functional programming environment?
       <guid>https://aidy.dev/journal/2023-02-22/</guid>
       <description>I&amp;rsquo;d really like to find out how a library like Reflex works. I also just found out that browsers support weak references and finalizers in JavaScript now, so I think that means Reflex Spider-style implementations can now be done in JS.
 IIRC something that&amp;rsquo;s expensive in Reflex is to know whether Event (Event a) has a simultaneous occurrence. Another expensive thing is joining Dynamic (because of the previous simultaneous nested event occurrence thing?</description>
-    </item>
-    
-    <item>
-      <title>Higher-order patterns in replicated data types</title>
-      <link>https://aidy.dev/papers/patterns-in-replicated-data-types/</link>
-      <pubDate>Mon, 25 Mar 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://aidy.dev/papers/patterns-in-replicated-data-types/</guid>
-      <description>In this paper we argue that the essence of CRDTs is not about being &amp;ldquo;operation-based&amp;rdquo; or &amp;ldquo;state-based&amp;rdquo;. Instead, CRDTs have a more abstract meaning: they are ways to derive a value from a set of known operations. These derivations follow a few simple patterns which can be reused to succinctly define the individual behaviors of a large catalog of CRDTs. This means that when writing complex CRDTs it might be worth creating a little programming language which supports those patterns as first class primitives and implements them efficiently.</description>
     </item>
     
   </channel>

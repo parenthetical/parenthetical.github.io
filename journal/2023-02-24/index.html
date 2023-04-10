@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.106.0">
+		<title>2023-02-24 - Adriaan Leijnse</title>
+
+		<meta name="description" content="Thoughts I wrote down during my Fisherman&rsquo;s Trail walk:
+Debuggers should work on different semantic levels For example, an FRP debugger should tell you &ldquo;what is true at time t&rdquo; (values of behaviors, any event occurrences). If say you wrote an infinite recursion in the non-FRP code, you should be able to drop down to a friendly execution model for that code.
+Why couldn&rsquo;t Smalltalk be a purely functional programming environment?">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <div class="u-header">
+        <h1 class="site-name">Adriaan Leijnse</h1>
+	<nav class="bar">
+  <ul>
+    <li>
+      <a href="/"
+         >
+	Home
+      </a>
+    </li>
+    <li>
+      <a href="/foc-ideas/"
+         
+         >
+        Future of Coding
+      </a>
+    </li><li>
+      <a href="/journal/"
+         
+         class="active"
+         
+         >
+        Journal
+      </a>
+    </li><li>
+      <a href="/papers/"
+         
+         >
+        Papers
+      </a>
+    </li></ul>
+</nav>
+
+      </div>
+    </header>
+    <main class="container">
+
+<article>
+  <header>
+    <hgroup id="brand">
+      <h1>
+        Journal entry for 
+	
+        
+	<time datetime="2023-02-24 00:00:00 &#43;0000 UTC">February 24, 2023</time>
+        
+	<span class="no-print">
+	  <span>
+      </h1>
+    </hgroup>
+    <hr class="sep" />
+  </header>
+  <p>Thoughts I wrote down during my Fisherman&rsquo;s Trail walk:</p>
+<h2 id="debuggers-should-work-on-different-semantic-levels">Debuggers should work on different semantic levels</h2>
+<p><span class="org-target" id="org-target--debuggers-different-semantic-levels-log"></span>
+For example, an FRP debugger should tell you &ldquo;what is true at time <em>t</em>&rdquo; (values of behaviors, any event occurrences).
+If say you wrote an infinite recursion in the non-FRP code, you should be able to drop down to a friendly execution model for that code.</p>
+<h2 id="why-couldn-t-smalltalk-be-a-purely-functional-programming-environment-why-not-an-frp-inspired-smalltalk">Why couldn&rsquo;t Smalltalk be a purely functional programming environment? Why not an FRP-inspired Smalltalk?</h2>
+<p>You&rsquo;d need:</p>
+<ul>
+<li>A model of how the program definition changes over time.</li>
+<li>A precise, composable, and easy to understand of where the state of
+objects comes from. Smalltalk OO gives identitiy to everything with
+state, but maybe that&rsquo;s overkill and we can make identity explicit
+in a natural way.</li>
+</ul>
+<h2 id="when-developing-guis-you-should-be-able-to-ask-questions-and-edit-live">When developing GUIs you should be able to ask questions and edit live</h2>
+<ul>
+<li>How is this element defined?</li>
+<li>Where does it come from?</li>
+<li>Why does it exist/am I seeing it?</li>
+</ul>
+<p>I mean, you should be able to enter a special mode while developing which allows you to click on a button and be taken to its editable definition.
+Editing that definition should either change that button (like the DOM editor in your browser) or all buttons (but that might render the current state impossible to reach?).
+Other things which would be cool is to know the causality of the button&rsquo;s existence. E.g. which other buttons were pressed in the past to get to where we are?</p>
+<h2 id="why-can-t-state-and-code-evolve-together--is-textual-programming-a-dead-end">Why can&rsquo;t state and code evolve together? (Is textual programming a dead end?)</h2>
+<p><span class="org-target" id="org-target--state-code-evolve-together-log"></span>
+I was recently helping a friend with a Python project and we had to use a variable to store some text that we&rsquo;d modify later in the program.
+She was surprised to learn that this wouldn&rsquo;t change the text in the source code as well.
+I had to tell her that this was a reasonable assumption but that the field of programming was not yet ready for her futuristic ideas :&rsquo;).</p>
+<p>This really begs the question &ldquo;why can&rsquo;t state and code evolve together?&rdquo;
+The two are intimately linked.
+One version of the state might only make sense for one particular version of the code.
+The only reason I can think of why carrying state between versions of a program tends to work is because we explicitly name bits of state, e.g. with database tables.
+These are usually globally unique identifiers which kills composition.</p>
+<p>To make code-state-coevolution feasible you&rsquo;d have to be able to do operations like &ldquo;start over with fresh state&rdquo;.</p>
+<p>This coevolution problem seems extremely hard to solve with a plain text editor.
+You really want to have program-and-state history as a branchable, rewritable, &hellip; history.
+Just like we do now with Git.
+I can&rsquo;t see that happening unless the editor really understands what&rsquo;s happening, and when you have that you might as well add a lot more UI to &ldquo;code&rdquo;.</p>
+<p>How would you write a document editor in which the document is defined as an exportable program but is no different from code?
+In which you can define in-line editing interfaces for the document elements?
+This is just Smalltalk-like stuff IIRC.
+&ldquo;Bring Smalltalk back?&rdquo;</p>
+
+</article>
+<nav class="no-print post-nav">
+  
+  <a class="prev-post" href="https://aidy.dev/journal/2023-02-22/">
+    <img class="icon-text" src="/img/prev.svg"/>2023-02-22</a>
+  
+  
+  <a class="next-post" href="https://aidy.dev/journal/2023-02-25/">2023-02-25<img class="icon-text" src="/img/next.svg"/>
+  </a>
+  
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
+
+				<p>
+					
+				</p>
+				
+				
+				
+				
+				
+				
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+

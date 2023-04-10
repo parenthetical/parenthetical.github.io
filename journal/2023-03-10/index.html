@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.106.0">
+		<title>2023-03-10 - Adriaan Leijnse</title>
+
+		<meta name="description" content="More thoughts and questions:
+SmallTalk-y environments and distributed programming Why does it feel like SmallTalk environments don&rsquo;t do so well for distributed programming? (Pure ignorance here, maybe they do.) Does any &ldquo;more than text&rdquo; environment do well?
+Concrete examples vs abstractions I listened to the FoC podcast episode on Magic Ink. In it the thought comes up that design tools should work via concrete examples instead of starting with abstractions, like &ldquo;normal&rdquo; programming does.">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <div class="u-header">
+        <h1 class="site-name">Adriaan Leijnse</h1>
+	<nav class="bar">
+  <ul>
+    <li>
+      <a href="/"
+         >
+	Home
+      </a>
+    </li>
+    <li>
+      <a href="/foc-ideas/"
+         
+         >
+        Future of Coding
+      </a>
+    </li><li>
+      <a href="/journal/"
+         
+         class="active"
+         
+         >
+        Journal
+      </a>
+    </li><li>
+      <a href="/papers/"
+         
+         >
+        Papers
+      </a>
+    </li></ul>
+</nav>
+
+      </div>
+    </header>
+    <main class="container">
+
+<article>
+  <header>
+    <hgroup id="brand">
+      <h1>
+        Journal entry for 
+	
+        
+	<time datetime="2023-03-10 00:00:00 &#43;0000 UTC">March 10, 2023</time>
+        
+	<span class="no-print">
+	  <span>
+      </h1>
+    </hgroup>
+    <hr class="sep" />
+  </header>
+  <p>More thoughts and questions:</p>
+<h2 id="smalltalk-y-environments-and-distributed-programming">SmallTalk-y environments and distributed programming</h2>
+<p>Why does it feel like SmallTalk environments don&rsquo;t do so well for distributed programming? (Pure ignorance here, maybe they do.) Does any &ldquo;more than text&rdquo; environment do well?</p>
+<h2 id="concrete-examples-vs-abstractions">Concrete examples vs abstractions</h2>
+<p>I listened to the FoC podcast episode on Magic Ink. In it the thought comes up that design tools should work via concrete examples instead of starting with abstractions, like &ldquo;normal&rdquo; programming does. This may sound like it&rsquo;s in opposition to the category-abstract-as-much-as-we-can vibes we have in the FP community, but I believe it&rsquo;s actually extremely compatible, even necessary. The thing that&rsquo;s missing is a database of concrete examples and a user friendly interface.</p>
+<p>A programming environment should say &ldquo;you have two numbers, here are the combinators that work on them&rdquo;.
+It should then save the chosen combinator both as a concrete one and as a more abstract monoidal operation.
+If the code changes and you e.g. switch from numbers to matrices it should pick a new sensible operation or ask if multiple exist.</p>
+<h2 id="undo-via-timeline-of-actions-manipulation">Undo via timeline-of-actions manipulation</h2>
+<p>My master&rsquo;s thesis was about making timelines/events in FRP first class values which can be modified, and using that to implement things like undo.
+I think this is a concept which should be explored more, and which would render an FRP-based programming environment super useful, because you could ask &ldquo;what-if&rdquo; questions and have a much better interactive development/debugging experience.</p>
+<h2 id="causality-of-actions-why-can-this-happen">Causality of actions, &ldquo;why can this happen?&rdquo;</h2>
+<p>When thinking of implementing undo functionality with the above timeline-of-actions concept one of the first problems which comes to mind is deleting an action which makes future actions meaningless.
+E.g. if in a drawing program you remove the action which created a circle, then later actions resizing that circle no longer make sense.
+Can we invent a programming language in which it is easy to ask &ldquo;which parts of the future exist only because of this thing which happened in the past?&rdquo;.</p>
+<h2 id="ui-designs-programs-should-be-testable">UI designs/programs should be testable</h2>
+<p>Could you record interactions with a UI and replay them in various contexts (resized windows etc.) so that they still work?
+This needs predictable identifiers for the UI components.
+What does a programming language which natively supports these predictable IDs look like?</p>
+<p>In common OO programming object identity is not predictable, because the system is not pure and not replayable.</p>
+
+</article>
+<nav class="no-print post-nav">
+  
+  <a class="prev-post" href="https://aidy.dev/journal/2023-02-25/">
+    <img class="icon-text" src="/img/prev.svg"/>2023-02-25</a>
+  
+  
+  <a class="next-post" href="https://aidy.dev/journal/2023-03-12/">2023-03-12<img class="icon-text" src="/img/next.svg"/>
+  </a>
+  
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
+
+				<p>
+					
+				</p>
+				
+				
+				
+				
+				
+				
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+

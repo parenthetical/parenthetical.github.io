@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.106.0">
+		<title>Re-unifying program state and definition - Adriaan Leijnse</title>
+
+		<meta name="description" content="Why can&rsquo;t program state and source evolve together? This used to be the case in Smalltalk images and other systems, but it&rsquo;s completely gone from mainstream development.
+From research journal entry /journal/2023-02-24/:
+I was recently helping a friend with a Python project and we had to use a variable to store some text that we’d modify later in the program. She was surprised to learn that this wouldn’t change the text in the source code as well.">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <div class="u-header">
+        <h1 class="site-name">Adriaan Leijnse</h1>
+	<nav class="bar">
+  <ul>
+    <li>
+      <a href="/"
+         >
+	Home
+      </a>
+    </li>
+    <li>
+      <a href="/foc-ideas/"
+         
+         class="active"
+         
+         >
+        Future of Coding
+      </a>
+    </li><li>
+      <a href="/journal/"
+         
+         >
+        Journal
+      </a>
+    </li><li>
+      <a href="/papers/"
+         
+         >
+        Papers
+      </a>
+    </li></ul>
+</nav>
+
+      </div>
+    </header>
+    <main class="container">
+
+<article>
+	<header><hgroup id="brand">
+	<h1>Re-unifying program state and definition</h1>
+        
+        <h2>Can we get what&#39;s good from Smalltalk images back?</h2>
+        
+	<h5>
+	  
+          
+	    <time datetime="2023-04-10 15:56:00 &#43;0100 WEST">Apr 10, 2023</time>
+          
+		<span class="no-print">
+			<span>
+	</h5>
+	
+</hgroup>
+<hr class="sep" />
+</header>
+	<p>Why can&rsquo;t program state and source evolve together?
+This used to be the case in Smalltalk images and other systems, but it&rsquo;s completely gone from mainstream development.</p>
+<p>From research journal entry <a href="/journal/2023-02-24/">/journal/2023-02-24/</a>:</p>
+<blockquote>
+<p>I was recently helping a friend with a Python project and we had to use a variable to store some text that we’d modify later in the program. She was surprised to learn that this wouldn’t change the text in the source code as well. I had to tell her that this was a reasonable assumption but that the field of programming is not yet ready for her futuristic ideas.</p>
+</blockquote>
+<h2 id="current-idea-for-exploring-solution">Current idea for exploring solution?</h2>
+<p>Experiment with a programming system which:</p>
+<ul>
+<li>Has no concept of &ldquo;state&rdquo;, only one of evolving program definition.</li>
+<li>Has first class support for branching and joining.</li>
+</ul>
+<h2 id="why-do-we-have-the-definition-state-split">Why do we have the definition/state split?</h2>
+<p>Current programming practice is to define the program as plain text files, and have parts of running program state in memory or in a database.
+To make progress we have to understand what is so practical and attractive about this situation:</p>
+<dl>
+<dt>Programs have to start with a clean state.</dt>
+<dd>Or otherwise: you want multiple running instances for any program&mdash;splitting state and definition makes this very easy.</dd>
+</dl>
+<h2 id="any-state-can-also-be-put-in-the-program-definition">Any state can also be put in the program definition</h2>
+<p>This means that program state changing over time could also be seen as metaprogramming.
+(This doesn&rsquo;t feel like an original idea?)</p>
+<h2 id="ideally-any-program-state-can-be-forked-joined">Ideally any program state can be forked/joined</h2>
+<p>This includes both definition and state.
+This enables:</p>
+<ul>
+<li>Distributed, collaborative development.</li>
+<li>Speculative development which modifies the form (cf. schema) of the state, where later you want this form to be the &ldquo;release&rdquo; of the program.</li>
+</ul>
+<h2 id="editor-programming-system-support">Editor/programming system support</h2>
+<p>To pull off the un-separation of state and definition, the way you modify the program has to understand concepts like: starting a program, resetting the state, joining branches of state.</p>
+<h2 id="current-work">Current work</h2>
+<ul>
+<li>Smalltalk-style environments</li>
+<li>Any image-based programming environment? Common Lisp?</li>
+<li>Forkable/branchable databases, e.g.: <a href="https://github.com/dolthub/dolt">Dolt</a>, &hellip;</li>
+<li>Procedural style. Can do going back and forwards into history, every point in history is tied to the program definition at the time, images/logs are easily shareable. What I think it can&rsquo;t do is merge edit histories. Was made possible because the environment was designed from the ground up to support it. I think they extended an old Visual Studio version as the editor.</li>
+</ul>
+
+</article>
+<nav class="no-print post-nav">
+
+
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
+
+				<p>
+					
+				</p>
+				
+				
+				
+				
+				
+				
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+
