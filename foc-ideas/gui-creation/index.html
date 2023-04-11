@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.106.0">
+		<title>Thoughts on comfortable GUI development - Adriaan Leijnse</title>
+
+		<meta name="description" content="Debugging From research journal entry 2023-02-24.
+When creating GUIs you might want to know:
+How is this element defined? Where does it come from? Why does it exist/am I seeing it? From the entry as well:
+[…] you should be able to enter a special mode while developing which allows you to click on a button and be taken to its editable definition. Editing that definition should either change that button (like the DOM editor in your browser) or all buttons (but that might render the current state impossible to reach?">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <div class="u-header">
+        <h1 class="site-name">Adriaan Leijnse</h1>
+	<nav class="bar">
+  <ul>
+    <li>
+      <a href="/"
+         >
+	Home
+      </a>
+    </li>
+    <li>
+      <a href="/foc-ideas/"
+         
+         class="active"
+         
+         >
+        Future of Coding
+      </a>
+    </li><li>
+      <a href="/journal/"
+         
+         >
+        Journal
+      </a>
+    </li><li>
+      <a href="/papers/"
+         
+         >
+        Papers
+      </a>
+    </li></ul>
+</nav>
+
+      </div>
+    </header>
+    <main class="container">
+
+<article>
+	<header><hgroup id="brand">
+	<h1>Thoughts on comfortable GUI development</h1>
+        
+        <h2>A.k.a. make Visual Basic happen again</h2>
+        
+	<h5>
+	  
+          
+	    <time datetime="2023-04-11 12:35:00 &#43;0100 WEST">Apr 11, 2023</time>
+          
+		<span class="no-print">
+			<span>
+	</h5>
+	
+</hgroup>
+<hr class="sep" />
+</header>
+	<h2 id="debugging">Debugging</h2>
+<p>From research journal entry <a href="/journal/2023-02-24/">2023-02-24</a>.</p>
+<p>When creating GUIs you might want to know:</p>
+<ul>
+<li>How is this element defined?</li>
+<li>Where does it come from?</li>
+<li>Why does it exist/am I seeing it?</li>
+</ul>
+<p>From the entry as well:</p>
+<blockquote>
+<p>[…] you should be able to enter a special mode while developing which allows you to click on a button and be taken to its editable definition. Editing that definition should either change that button (like the DOM editor in your browser) or all buttons (but that might render the current state impossible to reach?). Other things which would be cool is to know the causality of the button’s existence. E.g. which other buttons were pressed in the past to get to where we are?</p>
+</blockquote>
+<p>It would be nice to achieve these features without hard coding them into the programming system.
+This requires meta-programming features.
+They also should have no performance impact if they&rsquo;re not actually used, for example in a released program which doesn&rsquo;t have to be inspectable.</p>
+<h2 id="defining-editing-graphically">Defining/editing graphically</h2>
+<p>Defining graphical user interfaces in code is not fun in my experience.
+The spooky action at a distance aspect of it kills experimentation and productivity.
+Therefore a programming system should have some way of defining programs that are part of version history in a programmatic way, so that a GUI editor can be implemented natively.</p>
+
+</article>
+<nav class="no-print post-nav">
+
+	<a class="prev-post" href="https://aidy.dev/foc-ideas/state-and-program-definition/">
+		<img class="icon-text" src="/img/prev.svg"/>Re-unifying program state and definition</a>
+
+
+	<a class="next-post" href="https://aidy.dev/foc-ideas/dsl-debuggers/">A DSL should have its own debugger<img class="icon-text" src="/img/next.svg"/>
+	</a>
+
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
+
+				<p>
+					
+				</p>
+				
+				
+				
+				
+				
+				
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+

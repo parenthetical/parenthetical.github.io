@@ -6,24 +6,22 @@
     <description>Recent content in Journal on Adriaan Leijnse</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 10 Apr 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://aidy.dev/journal/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 11 Apr 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://aidy.dev/journal/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2023-04-11</title>
+      <link>https://aidy.dev/journal/2023-04-11/</link>
+      <pubDate>Tue, 11 Apr 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://aidy.dev/journal/2023-04-11/</guid>
+      <description>The power of a denotation for causality? I&amp;rsquo;m having some brain sparks related to causality. I was thinking about how when defining GUIs you want to be able to go from the GUI element to the code that made it exist, or the history that makes that you&amp;rsquo;re seeing on the screen. If you have a good model for causality, i.e. &amp;ldquo;what lead to this happening/that existing&amp;rdquo;, you might be able to include &amp;ldquo;because this code was written, these buttons were clicked, etc.</description>
+    </item>
+    
     <item>
       <title>2023-04-10</title>
       <link>https://aidy.dev/journal/2023-04-10/</link>
       <pubDate>Mon, 10 Apr 2023 00:00:00 +0000</pubDate>
       
       <guid>https://aidy.dev/journal/2023-04-10/</guid>
-      <description>I asked on the Future of Coding Slack whether anyone had ideas relating to the program state vs definition idea and some interesting links came up.
-The entangled strands of time in software development Nick Smith linked his Twitter thread, which shared many of the same thoughts I&amp;rsquo;m having, links to a paper: &amp;ldquo;The entangled strands of time in software development&amp;rdquo;, Matthias Hauswirth and Mohammad Reza Azadmanesh 2017.
-This paper looks at what programmers need from their environment.</description>
-    </item>
-    
-    <item>
-      <title>2023-04-09</title>
-      <link>https://aidy.dev/journal/2023-04-09/</link>
-      <pubDate>Sun, 09 Apr 2023 00:00:00 +0000</pubDate>
-      
-      <guid>https://aidy.dev/journal/2023-04-09/</guid>
       <description>I asked on the Future of Coding Slack whether anyone had ideas relating to the program state vs definition idea and some interesting links came up.
 The entangled strands of time in software development Nick Smith linked his Twitter thread, which shared many of the same thoughts I&amp;rsquo;m having, links to a paper: &amp;ldquo;The entangled strands of time in software development&amp;rdquo;, Matthias Hauswirth and Mohammad Reza Azadmanesh 2017.
 This paper looks at what programmers need from their environment.</description>

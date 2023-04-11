@@ -72,6 +72,24 @@
     <header>
       <h1>
         
+	<a href="/journal/2023-04-11/">
+          <span><time datetime="2023-04-11 00:00:00 &#43;0000 UTC">April 11, 2023</time></span>
+	</a>
+      </h1>
+    </header>
+    <h2 id="the-power-of-a-denotation-for-causality">The power of a denotation for causality?</h2>
+<p>I&rsquo;m having some brain sparks related to causality.
+I was thinking about how when defining GUIs you want to be able to go from the GUI element to the code that made it exist, or the history that makes that you&rsquo;re seeing on the screen.
+If you have a good model for causality, i.e. &ldquo;what lead to this happening/that existing&rdquo;, you might be able to include &ldquo;because this code was written, these buttons were clicked, etc.&rdquo; in there.</p>
+<h2 id="new-foc-ideas-entries">New FOC Ideas entries</h2>
+<p>I added entries for <a href="/foc-ideas/gui-creation/">Thoughts on comfortable GUI development</a> and <a href="/foc-ideas/dsl-debuggers/">A DSL should have its own debugger</a>.</p>
+
+  </article>
+  
+  <article>
+    <header>
+      <h1>
+        
 	<a href="/journal/2023-04-10/">
           <span><time datetime="2023-04-10 00:00:00 &#43;0000 UTC">April 10, 2023</time></span>
 	</a>
@@ -110,39 +128,6 @@ This means that &ldquo;looking at something&rdquo; should be in the history?</p>
 <p>I love all the concerns put forward in this paper.
 It seems hard to implement without deeply integrating with the actual programming language being used.
 For example, to rebase history well, you have to know whether the history you&rsquo;re copying makes sense in the current context.</p>
-
-  </article>
-  
-  <article>
-    <header>
-      <h1>
-        
-	<a href="/journal/2023-04-09/">
-          <span><time datetime="2023-04-09 00:00:00 &#43;0000 UTC">April 9, 2023</time></span>
-	</a>
-      </h1>
-    </header>
-    <p>I asked on the Future of Coding Slack whether anyone had ideas relating to the program state vs definition idea and some interesting links came up.</p>
-<h2 id="the-entangled-strands-of-time-in-software-development">The entangled strands of time in software development</h2>
-<p><a href="https://twitter.com/NickSmit_/status/1563114360360222720">Nick Smith</a> linked his Twitter thread, which shared many of the same thoughts I&rsquo;m having, links to a paper: <a href="https://doi.org/10.1145/3167107">&ldquo;The entangled strands of time in software development&rdquo;, Matthias Hauswirth and Mohammad Reza Azadmanesh 2017</a>.</p>
-<p>This paper looks at what programmers need from their environment.</p>
-<h3 id="time-travel-and-altering-the-past">Time travel &amp; altering the past</h3>
-<p>On undo/redo resulting in a tree of history:</p>
-<blockquote>
-<p>[&hellip;] keeping a mental model of the tree, and
-one’s place in that tree when undoing and redoing, is too
-taxing. After all, life is a sequence, not a tree. But then, life
-doesn’t even have an undo.</p>
-</blockquote>
-<p>This quote makes it clear that making this tree user friendly is high priority if you want to build a system in which exploration is cost-free. Achieving this will make collaboration cost-free as well. Git has a hard time with this because of it&rsquo;s lowest common denominator text support.</p>
-<p>Reading this makes me remember my interest in non-linear undo work.
-I&rsquo;ve seen some older papers on this but I don&rsquo;t know how much it&rsquo;s supported in actual applications these days.
-I wonder what a modern denotative approach looks like.</p>
-<h3 id="source-and-documentation-navigation">Source &amp; documentation navigation</h3>
-<p>This reminds me of how even with a functional programming you want identity and relations to be able to address things like looking up which functions refer to which etc.</p>
-<h3 id="program-execution-testing-debugging">Program execution/testing/debugging</h3>
-<p>I&rsquo;ve written about this <a href="/journal/2023-02-24/">here</a>.</p>
-<h3 id="d41d8c"></h3>
 
   </article>
   

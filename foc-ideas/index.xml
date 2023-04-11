@@ -6,11 +6,35 @@
     <description>Recent content in Ideas for the future of coding on Adriaan Leijnse</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 10 Apr 2023 15:56:00 +0100</lastBuildDate><atom:link href="https://aidy.dev/foc-ideas/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 11 Apr 2023 19:06:00 +0100</lastBuildDate><atom:link href="https://aidy.dev/foc-ideas/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A DSL should have its own debugger</title>
+      <link>https://aidy.dev/foc-ideas/dsl-debuggers/</link>
+      <pubDate>Tue, 11 Apr 2023 19:06:00 +0100</pubDate>
+      
+      <guid>https://aidy.dev/foc-ideas/dsl-debuggers/</guid>
+      <description>From research journal entry 2023-02-24:
+For example, an FRP debugger should tell you “what is true at time t” (values of behaviors, any event occurrences). If say you wrote an infinite recursion in the non-FRP code, you should be able to drop down to a friendly execution model for that code.
+I&amp;rsquo;m currently not sure what exactly is needed to make this happen.
+If you make an embedded DSL I suppose you can also implement a little debugger for it, but the real trick would be for your debugger to be aware of the debugger for the language below you.</description>
+    </item>
+    
+    <item>
+      <title>Thoughts on comfortable GUI development</title>
+      <link>https://aidy.dev/foc-ideas/gui-creation/</link>
+      <pubDate>Tue, 11 Apr 2023 12:35:00 +0100</pubDate>
+      
+      <guid>https://aidy.dev/foc-ideas/gui-creation/</guid>
+      <description>Debugging From research journal entry 2023-02-24.
+When creating GUIs you might want to know:
+How is this element defined? Where does it come from? Why does it exist/am I seeing it? From the entry as well:
+[…] you should be able to enter a special mode while developing which allows you to click on a button and be taken to its editable definition. Editing that definition should either change that button (like the DOM editor in your browser) or all buttons (but that might render the current state impossible to reach?</description>
+    </item>
+    
     <item>
       <title>Re-unifying program state and definition</title>
       <link>https://aidy.dev/foc-ideas/state-and-program-definition/</link>
-      <pubDate>Mon, 10 Apr 2023 15:56:00 +0100</pubDate>
+      <pubDate>Sun, 02 Apr 2023 00:00:00 +0000</pubDate>
       
       <guid>https://aidy.dev/foc-ideas/state-and-program-definition/</guid>
       <description>Why can&amp;rsquo;t program state and source evolve together? This used to be the case in Smalltalk images and other systems, but it&amp;rsquo;s completely gone from mainstream development.

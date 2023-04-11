@@ -6,16 +6,38 @@
     <description>Recent content on Adriaan Leijnse</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 10 Apr 2023 15:56:00 +0100</lastBuildDate><atom:link href="https://aidy.dev/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 11 Apr 2023 19:06:00 +0100</lastBuildDate><atom:link href="https://aidy.dev/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Re-unifying program state and definition</title>
-      <link>https://aidy.dev/foc-ideas/state-and-program-definition/</link>
-      <pubDate>Mon, 10 Apr 2023 15:56:00 +0100</pubDate>
+      <title>A DSL should have its own debugger</title>
+      <link>https://aidy.dev/foc-ideas/dsl-debuggers/</link>
+      <pubDate>Tue, 11 Apr 2023 19:06:00 +0100</pubDate>
       
-      <guid>https://aidy.dev/foc-ideas/state-and-program-definition/</guid>
-      <description>Why can&amp;rsquo;t program state and source evolve together? This used to be the case in Smalltalk images and other systems, but it&amp;rsquo;s completely gone from mainstream development.
-From research journal entry /journal/2023-02-24/:
-I was recently helping a friend with a Python project and we had to use a variable to store some text that we’d modify later in the program. She was surprised to learn that this wouldn’t change the text in the source code as well.</description>
+      <guid>https://aidy.dev/foc-ideas/dsl-debuggers/</guid>
+      <description>From research journal entry 2023-02-24:
+For example, an FRP debugger should tell you “what is true at time t” (values of behaviors, any event occurrences). If say you wrote an infinite recursion in the non-FRP code, you should be able to drop down to a friendly execution model for that code.
+I&amp;rsquo;m currently not sure what exactly is needed to make this happen.
+If you make an embedded DSL I suppose you can also implement a little debugger for it, but the real trick would be for your debugger to be aware of the debugger for the language below you.</description>
+    </item>
+    
+    <item>
+      <title>Thoughts on comfortable GUI development</title>
+      <link>https://aidy.dev/foc-ideas/gui-creation/</link>
+      <pubDate>Tue, 11 Apr 2023 12:35:00 +0100</pubDate>
+      
+      <guid>https://aidy.dev/foc-ideas/gui-creation/</guid>
+      <description>Debugging From research journal entry 2023-02-24.
+When creating GUIs you might want to know:
+How is this element defined? Where does it come from? Why does it exist/am I seeing it? From the entry as well:
+[…] you should be able to enter a special mode while developing which allows you to click on a button and be taken to its editable definition. Editing that definition should either change that button (like the DOM editor in your browser) or all buttons (but that might render the current state impossible to reach?</description>
+    </item>
+    
+    <item>
+      <title>2023-04-11</title>
+      <link>https://aidy.dev/journal/2023-04-11/</link>
+      <pubDate>Tue, 11 Apr 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://aidy.dev/journal/2023-04-11/</guid>
+      <description>The power of a denotation for causality? I&amp;rsquo;m having some brain sparks related to causality. I was thinking about how when defining GUIs you want to be able to go from the GUI element to the code that made it exist, or the history that makes that you&amp;rsquo;re seeing on the screen. If you have a good model for causality, i.e. &amp;ldquo;what lead to this happening/that existing&amp;rdquo;, you might be able to include &amp;ldquo;because this code was written, these buttons were clicked, etc.</description>
     </item>
     
     <item>
@@ -24,17 +46,6 @@ I was recently helping a friend with a Python project and we had to use a variab
       <pubDate>Mon, 10 Apr 2023 00:00:00 +0000</pubDate>
       
       <guid>https://aidy.dev/journal/2023-04-10/</guid>
-      <description>I asked on the Future of Coding Slack whether anyone had ideas relating to the program state vs definition idea and some interesting links came up.
-The entangled strands of time in software development Nick Smith linked his Twitter thread, which shared many of the same thoughts I&amp;rsquo;m having, links to a paper: &amp;ldquo;The entangled strands of time in software development&amp;rdquo;, Matthias Hauswirth and Mohammad Reza Azadmanesh 2017.
-This paper looks at what programmers need from their environment.</description>
-    </item>
-    
-    <item>
-      <title>2023-04-09</title>
-      <link>https://aidy.dev/journal/2023-04-09/</link>
-      <pubDate>Sun, 09 Apr 2023 00:00:00 +0000</pubDate>
-      
-      <guid>https://aidy.dev/journal/2023-04-09/</guid>
       <description>I asked on the Future of Coding Slack whether anyone had ideas relating to the program state vs definition idea and some interesting links came up.
 The entangled strands of time in software development Nick Smith linked his Twitter thread, which shared many of the same thoughts I&amp;rsquo;m having, links to a paper: &amp;ldquo;The entangled strands of time in software development&amp;rdquo;, Matthias Hauswirth and Mohammad Reza Azadmanesh 2017.
 This paper looks at what programmers need from their environment.</description>
@@ -59,6 +70,17 @@ Anyway, I&amp;rsquo;ve re-copied the whole Reflex implementation and I&amp;rsquo
       <description>I added the first topic to my &amp;ldquo;ideas for the future of coding&amp;rdquo; section on the site (current title: Un-separating program state and definition).
 Logging this thought I&amp;rsquo;ve been having for a long time (if I&amp;rsquo;m not repeating an earlier entry):
 An action and its intent should be first class things I think that programming with a history of first class, meaningful, user/programmer actions, sounds very valuable. Actions are things like: clicking a button to do something, editing the definition of a program,&amp;hellip; You need to capture the intent of the action and the causality, not just the lower level effects of the action.</description>
+    </item>
+    
+    <item>
+      <title>Re-unifying program state and definition</title>
+      <link>https://aidy.dev/foc-ideas/state-and-program-definition/</link>
+      <pubDate>Sun, 02 Apr 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://aidy.dev/foc-ideas/state-and-program-definition/</guid>
+      <description>Why can&amp;rsquo;t program state and source evolve together? This used to be the case in Smalltalk images and other systems, but it&amp;rsquo;s completely gone from mainstream development.
+From research journal entry /journal/2023-02-24/:
+I was recently helping a friend with a Python project and we had to use a variable to store some text that we’d modify later in the program. She was surprised to learn that this wouldn’t change the text in the source code as well.</description>
     </item>
     
     <item>

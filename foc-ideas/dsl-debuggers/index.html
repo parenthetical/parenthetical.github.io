@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.106.0">
+		<title>A DSL should have its own debugger - Adriaan Leijnse</title>
+
+		<meta name="description" content="From research journal entry 2023-02-24:
+For example, an FRP debugger should tell you “what is true at time t” (values of behaviors, any event occurrences). If say you wrote an infinite recursion in the non-FRP code, you should be able to drop down to a friendly execution model for that code.
+I&rsquo;m currently not sure what exactly is needed to make this happen.
+If you make an embedded DSL I suppose you can also implement a little debugger for it, but the real trick would be for your debugger to be aware of the debugger for the language below you.">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <div class="u-header">
+        <h1 class="site-name">Adriaan Leijnse</h1>
+	<nav class="bar">
+  <ul>
+    <li>
+      <a href="/"
+         >
+	Home
+      </a>
+    </li>
+    <li>
+      <a href="/foc-ideas/"
+         
+         class="active"
+         
+         >
+        Future of Coding
+      </a>
+    </li><li>
+      <a href="/journal/"
+         
+         >
+        Journal
+      </a>
+    </li><li>
+      <a href="/papers/"
+         
+         >
+        Papers
+      </a>
+    </li></ul>
+</nav>
+
+      </div>
+    </header>
+    <main class="container">
+
+<article>
+	<header><hgroup id="brand">
+	<h1>A DSL should have its own debugger</h1>
+        
+        <h2>Give me a tower of debuggers!</h2>
+        
+	<h5>
+	  
+          
+	    <time datetime="2023-04-11 19:06:00 &#43;0100 WEST">Apr 11, 2023</time>
+          
+		<span class="no-print">
+			<span>
+	</h5>
+	
+</hgroup>
+<hr class="sep" />
+</header>
+	<p>From research journal entry <a href="/journal/2023-02-24/">2023-02-24</a>:</p>
+<blockquote>
+<p>For example, an FRP debugger should tell you “what is true at time t” (values of behaviors, any event occurrences). If say you wrote an infinite recursion in the non-FRP code, you should be able to drop down to a friendly execution model for that code.</p>
+</blockquote>
+<p>I&rsquo;m currently not sure what exactly is needed to make this happen.</p>
+<p>If you make an embedded DSL I suppose you can also implement a little debugger for it, but the real trick would be for your debugger to be aware of the debugger for the language below you.
+This is even more important if programs in the DSL can use abritrary code.</p>
+
+</article>
+<nav class="no-print post-nav">
+
+	<a class="prev-post" href="https://aidy.dev/foc-ideas/gui-creation/">
+		<img class="icon-text" src="/img/prev.svg"/>Thoughts on comfortable GUI development</a>
+
+
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
+
+				<p>
+					
+				</p>
+				
+				
+				
+				
+				
+				
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+
