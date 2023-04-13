@@ -117,7 +117,7 @@ This can be modeled as a pair of Identifier and Behavior.</p>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="nf">new</span> <span class="ow">::</span> <span class="kt">Behavior</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">Object</span> <span class="n">a</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="kr">instance</span> <span class="kt">Eq</span> <span class="kt">Object</span> <span class="kr">where</span>
+</span></span><span class="line"><span class="cl"><span class="kr">instance</span> <span class="kt">Eq</span> <span class="p">(</span><span class="kt">Object</span> <span class="n">s</span><span class="p">)</span> <span class="kr">where</span>
 </span></span><span class="line"><span class="cl">  <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="kr">_</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="kr">_</span><span class="p">)</span> <span class="ow">=</span> <span class="n">a</span> <span class="o">==</span> <span class="n">b</span>
 </span></span></code></pre></div><p>Objects can be compared for equality by comparing their identity.
 There is no aliasing problem because the definition of their state cannot be modified.</p>
