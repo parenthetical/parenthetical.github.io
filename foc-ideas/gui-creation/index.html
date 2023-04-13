@@ -115,6 +115,15 @@ They also should have no performance impact if they&rsquo;re not actually used, 
 <p>Defining graphical user interfaces in code is not fun in my experience.
 The spooky action at a distance aspect of it kills experimentation and productivity.
 Therefore a programming system should have some way of defining programs that are part of version history in a programmatic way, so that a GUI editor can be implemented natively.</p>
+<h2 id="guis-should-be-testable-without-relying-on-rendering">GUIs should be testable without relying on rendering</h2>
+<p>From journal entry <a href="/journal/2023-03-10/">UI designs/programs should be testable</a>.</p>
+<blockquote>
+<p>Could you record interactions with a UI and replay them in various contexts (resized windows etc.) so that they still work? This needs predictable identifiers for the UI components. What does a programming language which natively supports these predictable IDs look like?</p>
+<p>In common OO programming object identity is not predictable, because the system is not pure and not replayable.</p>
+</blockquote>
+<p>I think using a good denotation for causality will naturally lead to one for identity.
+Then you could use these identities to record interactions, independently of how GUI elements are actually rendered.
+The downside is that you can&rsquo;t really test whether something is correctly layouted/visible, but I imagine many tests aren&rsquo;t actually about that and more about general workflow.</p>
 
 </article>
 <nav class="no-print post-nav">
@@ -141,15 +150,6 @@ Therefore a programming system should have some way of defining programs that ar
 <a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
 <a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
 
-				<p>
-					
-				</p>
-				
-				
-				
-				
-				
-				
 			</div>
 		</footer>
 		

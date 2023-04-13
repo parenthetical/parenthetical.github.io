@@ -428,15 +428,15 @@ h1, h2, h3, h4, h5, h6 {
   font-family: 'Raleway', sans-serif;
 }
 h1 {
-  font-size: 2.8rem;
+  font-size: 2.2rem;
   line-height: 1.25;
   letter-spacing: -.1rem;
-  margin-top: 4rem;
+  margin-top: 3rem;
   margin-bottom: 1rem;
   font-family: roman;
 }
 h2 {
-  font-size: 2rem;
+  font-size: 1.9rem;
   line-height: 1.25;
   margin-top: 1.6em;
   margin-bottom: -0.2rem;
@@ -450,7 +450,7 @@ article>h4 {
 }
 
 h3 {
-  font-size: 1.8rem;
+  font-size: 1.7rem;
   line-height: 1.3;
   margin-top: 1.8em;
   margin-bottom: -0.5rem;
@@ -463,12 +463,14 @@ h4 {
   line-height: 1.35;
 }
 h5 {
-  font-size: 1.8rem;
+  font-weight: bold;
+  font-size: 1rem;
   line-height: 1.5;
 }
 h6 {
-  font-size: 1.6rem;
+  font-size: 1rem;
   line-height: 1.6;
+  font-style: italic;
 }
 
 
@@ -661,15 +663,17 @@ blockquote cite a {
 }
 
 .post-nav {
-  margin-bottom: 2rem;
+    margin: 4rem 0;
+    display: flex;
+    justify-content: space-between;
 }
 .next-post {
-  display: block;
-  text-align: right;
+    display: block;
+    margin-right: -1rem;
 }
 .prev-post {
-  display: block;
-  text-align: left;
+    display: block;
+    margin-left: -1rem;
 }
 
 .pagination {

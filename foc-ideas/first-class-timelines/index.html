@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.106.0">
+		<title>FRP with first-class timelines - Adriaan Leijnse</title>
+
+		<meta name="description" content="From journal entry Undo via timeline-of-actions manipulation:
+My master&rsquo;s thesis was about making timelines/events in FRP first class values which can be modified, and using that to implement things like undo. I think this is a concept which should be explored more, and which would render an FRP-based programming environment super useful, because you could ask &ldquo;what-if&rdquo; questions and have a much better interactive development/debugging experience.
+Having an FRP implementation in which timelines (Events) are manipulable allows:">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <nav id="navbar"
+           style="
+                  margin-bottom: 3rem;
+                  padding-top: 1rem;
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: flex-end;
+                  column-gap: 1.7rem;
+                  "             >
+        <a href="/"
+           >
+          <h1 style="
+                     margin: 0.2rem 0;
+                     padding: 0;
+                     font-size: 1.6rem;
+                     font-family: roman;
+                     color: #777;
+                     ">
+            Adriaan Leijnse
+          </h1>
+        </a>
+        <ul>
+          <li>
+            <a href="/foc-ideas/"
+               
+               class="active"
+               
+               >
+              Future of Coding
+            </a>
+          </li><li>
+            <a href="/journal/"
+               
+               >
+              Journal
+            </a>
+          </li><li>
+            <a href="/papers/"
+               
+               >
+              Papers
+            </a>
+          </li></ul>
+      </nav>
+    </header>
+    <main class="container">
+
+<article>
+	<header><hgroup id="brand">
+	<h1>FRP with first-class timelines</h1>
+        
+        <h2>Playing with time could never go wrong.</h2>
+        
+	<h5>
+	  
+          
+		<span class="no-print">
+			<span>
+	</h5>
+	
+</hgroup>
+<hr class="sep" />
+</header>
+	<p>From journal entry <a href="/journal/2023-03-10/">Undo via timeline-of-actions manipulation</a>:</p>
+<blockquote>
+<p>My master&rsquo;s thesis was about making timelines/events in FRP first class values which can be modified, and using that to implement things like undo.
+I think this is a concept which should be explored more, and which would render an FRP-based programming environment super useful, because you could ask &ldquo;what-if&rdquo; questions and have a much better interactive development/debugging experience.</p>
+</blockquote>
+<p>Having an FRP implementation in which timelines (Events) are manipulable allows:</p>
+<ul>
+<li>Recording user interaction as actions, rather than states, and allowing the user to replay or manipulate them.</li>
+<li>Implementing Undo/Redo by treating the timeline as a stack you push and pop from.</li>
+<li>Implementing Non-Linear Undo by deleting arbitrary events. Doing this well requires knowing which future actions depend on which actions in the past however. E.g. You don&rsquo;t want to leave actions that move a circle that was never drawn.</li>
+<li>Implementing advanced and subtle user interactions such as &ldquo;tapping takes into account the users reaction time&rdquo;, i.e. if the screen suddenly changes the tap applies to what was there a hundred milliseconds before.</li>
+</ul>
+<h2 id="implementation">Implementation</h2>
+<p>Arbitrary timeline editing requires an incremental implementation of FRP if you don&rsquo;t want to replay all of history.
+This means that an implementation should focus on using associative, and preferably commutative, folds.</p>
+
+</article>
+<nav class="no-print post-nav">
+
+
+	<a class="next-post" href="https://aidy.dev/foc-ideas/state-and-program-definition/">Re-unifying program state and definition<img class="icon-text" src="/img/next.svg"/>
+	</a>
+
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
+
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+
