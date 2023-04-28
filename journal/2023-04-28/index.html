@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.106.0">
+		<title>2023-04-28 - Adriaan Leijnse</title>
+
+		<meta name="description" content="Back from hiatus for a few days.
+I just watched Gilad Bracha&rsquo;s presentation on Ampleforth, a live-coding/literate programming/notebook/GUI environment. I loved how you could go from GUI element to definition, compose definitions and document any way you like, and how editing definitions is instantly reflected in the environment. What I think is missing is that in the markup elements are referred to by strings, so you have to think about naming objects if you want to refer to them.">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <nav id="navbar"
+           style="
+                  margin-bottom: 3rem;
+                  padding-top: 1rem;
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: flex-end;
+                  column-gap: 1.7rem;
+                  "             >
+        <a href="/"
+           >
+          <h1 style="
+                     margin: 0.2rem 0;
+                     padding: 0;
+                     font-size: 1.6rem;
+                     font-family: roman;
+                     color: #777;
+                     ">
+            Adriaan Leijnse
+          </h1>
+        </a>
+        <ul>
+          <li>
+            <a href="/foc-ideas/"
+               
+               >
+              Future of Coding
+            </a>
+          </li><li>
+            <a href="/journal/"
+               
+               class="active"
+               
+               >
+              Journal
+            </a>
+          </li><li>
+            <a href="/papers/"
+               
+               >
+              Papers
+            </a>
+          </li></ul>
+      </nav>
+    </header>
+    <main class="container">
+
+<article>
+  <header>
+    <hgroup id="brand">
+      <h1>
+        Journal entry for 
+	
+        
+	<time datetime="2023-04-28 00:00:00 &#43;0000 UTC">April 28, 2023</time>
+        
+	<span class="no-print">
+	  <span>
+      </h1>
+    </hgroup>
+    <hr class="sep" />
+  </header>
+  <p>Back from hiatus for a few days.</p>
+<p>I just watched Gilad Bracha&rsquo;s <a href="https://www.youtube.com/watch?v=ORCYqykgWFI">presentation on Ampleforth</a>, a live-coding/literate programming/notebook/GUI environment.
+I loved how you could go from GUI element to definition, compose definitions and document any way you like, and how editing definitions is instantly reflected in the environment.
+What I think is missing is that in the markup elements are referred to by strings, so you have to think about naming objects if you want to refer to them.
+A graphical environment is the perfect place to avoid this extra mental burden.</p>
+<p>Otherwise I&rsquo;ve been working on understanding how FRP is implemented.
+I wasn&rsquo;t able to make sense of all the things going on in <a href="https://github.com/reflex-frp/reflex/">Reflex&rsquo;</a> implementation, so instead I&rsquo;m starting from Conal Elliott&rsquo;s <a href="http://conal.net/papers/push-pull-frp/">Push-pull functional reactive programming</a> paper.
+I&rsquo;m hoping that implementing the <em>Future</em> abstraction using techniques more similar to those of Reflex (graph traversals) is going to work.
+The <code>reactive</code> library which came out of the push-pull paper never worked properly, and I&rsquo;m hoping that&rsquo;s because of the very experimental implementation techniques.</p>
+<p>In any case, it would be nice if everything can be defined in terms of Futures; I want to experiment with different advanced uses of FRP and the simpler my implementation is the better.
+If it&rsquo;s slower than Reflex that&rsquo;s not a big deal, anything is better than the semantic functions I&rsquo;ve been using up until now to experiment.</p>
+
+</article>
+<nav class="no-print post-nav">
+  
+  <a class="prev-post" href="https://aidy.dev/journal/2023-04-13/">
+    <img class="icon-text" src="/img/prev.svg"/>2023-04-13</a>
+  
+  
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
+
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+

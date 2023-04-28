@@ -6,7 +6,17 @@
     <description>Recent content in Journal on Adriaan Leijnse</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 13 Apr 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://aidy.dev/journal/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 28 Apr 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://aidy.dev/journal/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2023-04-28</title>
+      <link>https://aidy.dev/journal/2023-04-28/</link>
+      <pubDate>Fri, 28 Apr 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://aidy.dev/journal/2023-04-28/</guid>
+      <description>Back from hiatus for a few days.
+I just watched Gilad Bracha&amp;rsquo;s presentation on Ampleforth, a live-coding/literate programming/notebook/GUI environment. I loved how you could go from GUI element to definition, compose definitions and document any way you like, and how editing definitions is instantly reflected in the environment. What I think is missing is that in the markup elements are referred to by strings, so you have to think about naming objects if you want to refer to them.</description>
+    </item>
+    
     <item>
       <title>2023-04-13</title>
       <link>https://aidy.dev/journal/2023-04-13/</link>
