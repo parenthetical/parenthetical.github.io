@@ -6,7 +6,57 @@
     <description>Recent content on Adriaan Leijnse</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 28 Apr 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://aidy.dev/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 30 Jun 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://aidy.dev/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2023-06-18</title>
+      <link>https://aidy.dev/journal/2023-06-30/</link>
+      <pubDate>Fri, 30 Jun 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://aidy.dev/journal/2023-06-30/</guid>
+      <description>It&amp;rsquo;s been a long while since I wrote here! I attended the GHC Contributors Workshop and ZuriHac in the meanwhile and I&amp;rsquo;ve been working on implementing a Reflex-style FRP from scratch.
+The GHC Contributors Workshop was a great event and made me feel more comfortable to dive into the GHC code. ZuriHac as always was lovely and chilled out, and even had a Conal talk to keep the denotative programming spirits up &amp;lt;3.</description>
+    </item>
+    
+    <item>
+      <title>2023-06-18</title>
+      <link>https://aidy.dev/journal/2023-06-18/</link>
+      <pubDate>Sun, 18 Jun 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://aidy.dev/journal/2023-06-18/</guid>
+      <description>It&amp;rsquo;s been a while since I wrote here! I attended the GHC Contributors Workshop and ZurHac in the meanwhile.
+GHC Contributors workshop ZuriHac Ken Micklass Loved Conal&amp;rsquo;s talk I added a &amp;ldquo;poll counter&amp;rdquo; to my implementation so that I can check how many times events are checked for occurrence/waiting. This will make sure optimizations to the graph traversal algorithm are obvious.
+I&amp;rsquo;ve now got a simple FRP implementation without any graph traversal optimizations, all events are polled at every frame.</description>
+    </item>
+    
+    <item>
+      <title>2023-06-07</title>
+      <link>https://aidy.dev/journal/2023-06-07/</link>
+      <pubDate>Wed, 07 Jun 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://aidy.dev/journal/2023-06-07/</guid>
+      <description>I&amp;rsquo;m wondering if it&amp;rsquo;s possible to go from an FRP implementation in which accidental space leaks are possible by keeping a reference to an Event, to one in which that is not. In the former an Event is really just a list of occurrences/futures. In the latter you have a Now monad which ensures programs can only observe occurrences after &amp;ldquo;now&amp;rdquo;.
+My first thought was that you&amp;rsquo;d wrap every Event in a Behavior to make a new Event type (this behavior being equivalent to the Now data type).</description>
+    </item>
+    
+    <item>
+      <title>2023-06-05</title>
+      <link>https://aidy.dev/journal/2023-06-05/</link>
+      <pubDate>Mon, 05 Jun 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://aidy.dev/journal/2023-06-05/</guid>
+      <description>I&amp;rsquo;ve been reading Sylvain Henry, John Ericson, and Jeffrey M. Young&amp;rsquo;s &amp;ldquo;Modularizing GHC&amp;rdquo; paper which discusses the current state of the GHC code base and how it might be improved. As of now the code has become inflexible due to new work (necessarily?) choosing the path of lowest friction to add features. I imagine doing thorough refactorings when you&amp;rsquo;re on a PhD thesis time budget and a lot of others are also trying to add features isn&amp;rsquo;t easy.</description>
+    </item>
+    
+    <item>
+      <title>2023-06-01</title>
+      <link>https://aidy.dev/journal/2023-06-01/</link>
+      <pubDate>Thu, 01 Jun 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://aidy.dev/journal/2023-06-01/</guid>
+      <description>I&amp;rsquo;m back from walking the Cape Wrath Trail! Three weeks of wonderful Highlands nature, many ticks, and a few midges.
+I did some note taking about programming with objects/identity/user intention/causality while on the trail and I&amp;rsquo;ve been experimenting with FRP implementation. I&amp;rsquo;m not entirely sure where I&amp;rsquo;m going with that. I&amp;rsquo;d need good test cases to see that what I&amp;rsquo;m doing is correct, and I&amp;rsquo;d love to write interactive programs but that is annoying without a good GUI library.</description>
+    </item>
+    
     <item>
       <title>2023-04-28</title>
       <link>https://aidy.dev/journal/2023-04-28/</link>
@@ -67,6 +117,17 @@ How is this element defined? Where does it come from? Why does it exist/am I see
       
       <guid>https://aidy.dev/journal/2023-04-11/</guid>
       <description>The power of a denotation for causality? I&amp;rsquo;m having some brain sparks related to causality. I was thinking about how when defining GUIs you want to be able to go from the GUI element to the code that made it exist, or the history that makes that you&amp;rsquo;re seeing on the screen. If you have a good model for causality, i.e. &amp;ldquo;what lead to this happening/that existing&amp;rdquo;, you might be able to include &amp;ldquo;because this code was written, these buttons were clicked, etc.</description>
+    </item>
+    
+    <item>
+      <title>FRP with first-class timelines</title>
+      <link>https://aidy.dev/foc-ideas/first-class-timelines/</link>
+      <pubDate>Tue, 11 Apr 2023 00:00:00 +0100</pubDate>
+      
+      <guid>https://aidy.dev/foc-ideas/first-class-timelines/</guid>
+      <description>From journal entry Undo via timeline-of-actions manipulation:
+My master&amp;rsquo;s thesis was about making timelines/events in FRP first class values which can be modified, and using that to implement things like undo. I think this is a concept which should be explored more, and which would render an FRP-based programming environment super useful, because you could ask &amp;ldquo;what-if&amp;rdquo; questions and have a much better interactive development/debugging experience.
+Having an FRP implementation in which timelines (Events) are manipulable allows:</description>
     </item>
     
     <item>
@@ -190,17 +251,6 @@ IIRC something that&amp;rsquo;s expensive in Reflex is to know whether Event (Ev
       
       <guid>https://aidy.dev/papers/patterns-in-replicated-data-types/</guid>
       <description>In this paper we argue that the essence of CRDTs is not about being &amp;ldquo;operation-based&amp;rdquo; or &amp;ldquo;state-based&amp;rdquo;. Instead, CRDTs have a more abstract meaning: they are ways to derive a value from a set of known operations. These derivations follow a few simple patterns which can be reused to succinctly define the individual behaviors of a large catalog of CRDTs. This means that when writing complex CRDTs it might be worth creating a little programming language which supports those patterns as first class primitives and implements them efficiently.</description>
-    </item>
-    
-    <item>
-      <title>FRP with first-class timelines</title>
-      <link>https://aidy.dev/foc-ideas/first-class-timelines/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://aidy.dev/foc-ideas/first-class-timelines/</guid>
-      <description>From journal entry Undo via timeline-of-actions manipulation:
-My master&amp;rsquo;s thesis was about making timelines/events in FRP first class values which can be modified, and using that to implement things like undo. I think this is a concept which should be explored more, and which would render an FRP-based programming environment super useful, because you could ask &amp;ldquo;what-if&amp;rdquo; questions and have a much better interactive development/debugging experience.
-Having an FRP implementation in which timelines (Events) are manipulable allows:</description>
     </item>
     
   </channel>

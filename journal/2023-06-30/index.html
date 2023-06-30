@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.111.3">
+		<title>2023-06-18 - Adriaan Leijnse</title>
+
+		<meta name="description" content="It&rsquo;s been a long while since I wrote here! I attended the GHC Contributors Workshop and ZuriHac in the meanwhile and I&rsquo;ve been working on implementing a Reflex-style FRP from scratch.
+The GHC Contributors Workshop was a great event and made me feel more comfortable to dive into the GHC code. ZuriHac as always was lovely and chilled out, and even had a Conal talk to keep the denotative programming spirits up &lt;3.">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <nav id="navbar"
+           style="
+                  margin-bottom: 3rem;
+                  padding-top: 1rem;
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: flex-end;
+                  column-gap: 1.7rem;
+                  "             >
+        <a href="/"
+           >
+          <h1 style="
+                     margin: 0.2rem 0;
+                     padding: 0;
+                     font-size: 1.6rem;
+                     font-family: roman;
+                     color: #777;
+                     ">
+            Adriaan Leijnse
+          </h1>
+        </a>
+        <ul>
+          <li>
+            <a href="/foc-ideas/"
+               
+               >
+              Future of Coding
+            </a>
+          </li><li>
+            <a href="/journal/"
+               
+               class="active"
+               
+               >
+              Journal
+            </a>
+          </li><li>
+            <a href="/papers/"
+               
+               >
+              Papers
+            </a>
+          </li></ul>
+      </nav>
+    </header>
+    <main class="container">
+
+<article>
+  <header>
+    <hgroup id="brand">
+      <h1>
+        Journal entry for 
+	
+        
+	<time datetime="2023-06-30 00:00:00 &#43;0000 UTC">June 30, 2023</time>
+        
+	<span class="no-print">
+	  <span>
+      </h1>
+    </hgroup>
+    <hr class="sep" />
+  </header>
+  <p>It&rsquo;s been a long while since I wrote here!
+I attended the GHC Contributors Workshop and ZuriHac in the meanwhile and I&rsquo;ve been working on implementing a Reflex-style FRP from scratch.</p>
+<p>The GHC Contributors Workshop was a great event and made me feel more comfortable to dive into the GHC code.
+ZuriHac as always was lovely and chilled out, and even had a Conal talk to keep the denotative programming spirits up &lt;3.</p>
+<p>I met Ken Micklas during ZuriHac who, as it turned out, had been doing the same thing and was able to give me useful tips.
+He had some interesting ideas about how to improve the FRP interface, for example by avoiding</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">merge</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="p">(</span><span class="kt">These</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span>
+</span></span></code></pre></div><p>You no longer have to wait to know wether an event occurs simultaneously with another, and you can start working with events which have hidden multiple simultaneous occurrences.
+Only when folding over them would you have to decide what to do with these.
+He wrote about this idea and others in his <a href="https://tech.kmicklas.com/posts/frp-trilemma/">&ldquo;A trilemma in functional reactive programming models&rdquo;</a> post.</p>
+<h2 id="my-wip-frp-library-status">My WIP FRP library status</h2>
+<p>I now understand in general terms how to implement the graph traversal algorithm for events with a priority queue, and <code>hold</code> to create behaviors.
+My current implementation isn&rsquo;t entirely correct though I believe, even though I&rsquo;ve copied Reflex&rsquo; test suite and that passes.
+So, there is still some work to do.</p>
+<p>As a next step I should probably implement a GUI to-do list app to make sure I have enough primitives to make that work and to check if my implementation is correct.
+It&rsquo;s looking like Monomer has one as an example so maybe I&rsquo;ll go with that library.</p>
+<h2 id="a-simple-and-concise-implementation">A simple and concise implementation</h2>
+<p>I started out with a simple interface to implement many functions with fewer primitives based on <code>occurs</code> and <code>nowToEvent</code> functions:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">occurs</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">nowToEvent</span> <span class="ow">::</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">a</span>
+</span></span></code></pre></div><p>For example:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">never</span> <span class="ow">=</span> <span class="n">nowToEvent</span> <span class="p">(</span><span class="n">pure</span> <span class="kt">Nothing</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">coincidence</span> <span class="ow">=</span> <span class="n">nowToEvent</span> <span class="o">.</span> <span class="n">runMaybeT</span> <span class="o">.</span> <span class="p">(</span><span class="kt">MaybeT</span> <span class="o">.</span> <span class="n">occurs</span> <span class="o">&lt;=&lt;</span> <span class="kt">MaybeT</span> <span class="o">.</span> <span class="n">occurs</span><span class="p">)</span>
+</span></span></code></pre></div><p>This is easy to implement if you use a pull-based system (polling the list of all events to make sure behaviors are updated), but it will be interesting to see if I can make a similar interface which does the push-based graph traversal optimizations.</p>
+<p>I wrote down the implementation of some primitives using <code>occurs</code> and hope to reverse engineer an implementation for them from the efficient one I&rsquo;m writing.</p>
+
+</article>
+<nav class="no-print post-nav">
+  
+  <a class="prev-post" href="https://aidy.dev/journal/2023-06-18/">
+    <img class="icon-text" src="/img/prev.svg"/>2023-06-18</a>
+  
+  
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
+
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+

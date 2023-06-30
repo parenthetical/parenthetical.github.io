@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.111.3">
+		<title>2023-06-05 - Adriaan Leijnse</title>
+
+		<meta name="description" content="I&rsquo;ve been reading Sylvain Henry, John Ericson, and Jeffrey M. Young&rsquo;s &ldquo;Modularizing GHC&rdquo; paper which discusses the current state of the GHC code base and how it might be improved. As of now the code has become inflexible due to new work (necessarily?) choosing the path of lowest friction to add features. I imagine doing thorough refactorings when you&rsquo;re on a PhD thesis time budget and a lot of others are also trying to add features isn&rsquo;t easy.">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <nav id="navbar"
+           style="
+                  margin-bottom: 3rem;
+                  padding-top: 1rem;
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: flex-end;
+                  column-gap: 1.7rem;
+                  "             >
+        <a href="/"
+           >
+          <h1 style="
+                     margin: 0.2rem 0;
+                     padding: 0;
+                     font-size: 1.6rem;
+                     font-family: roman;
+                     color: #777;
+                     ">
+            Adriaan Leijnse
+          </h1>
+        </a>
+        <ul>
+          <li>
+            <a href="/foc-ideas/"
+               
+               >
+              Future of Coding
+            </a>
+          </li><li>
+            <a href="/journal/"
+               
+               class="active"
+               
+               >
+              Journal
+            </a>
+          </li><li>
+            <a href="/papers/"
+               
+               >
+              Papers
+            </a>
+          </li></ul>
+      </nav>
+    </header>
+    <main class="container">
+
+<article>
+  <header>
+    <hgroup id="brand">
+      <h1>
+        Journal entry for 
+	
+        
+	<time datetime="2023-06-05 00:00:00 &#43;0000 UTC">June 5, 2023</time>
+        
+	<span class="no-print">
+	  <span>
+      </h1>
+    </hgroup>
+    <hr class="sep" />
+  </header>
+  <p>I&rsquo;ve been reading Sylvain Henry, John Ericson, and Jeffrey M. Young&rsquo;s &ldquo;Modularizing GHC&rdquo; paper which discusses the current state of the GHC code base and how it might be improved.
+As of now the code has become inflexible due to new work (necessarily?) choosing the path of lowest friction to add features.
+I imagine doing thorough refactorings when you&rsquo;re on a PhD thesis time budget and a lot of others are also trying to add features isn&rsquo;t easy.</p>
+<p>The authors propose that the principles of Domain Driven Design will be helpful to define what good improvements to the current state would look like:</p>
+<blockquote>
+<ul>
+<li>Ubiquitous language: use consistent and precise terminology in code and documentation, and make it apparent at type-level.</li>
+<li>Domain isolation with layered architecture: use layering to avoid spaghetti or lasagna code.</li>
+<li>Supple design: make code &ldquo;a pleasure to work with, inviting to change&rdquo;.</li>
+</ul>
+</blockquote>
+<p>These all sound like great principles, and having this as a check-list that cannot be circumvented for any newly checked in code would be a major help.
+I&rsquo;ve tried to use the GHC API while playing around with writing HLS plugins and the documentation and names used were extremely confusing.
+It might be impossible to start something from scratch without looking at existing examples and without external help.
+Not something that ought to be the case in a code base related to functional programming.</p>
+
+</article>
+<nav class="no-print post-nav">
+  
+  <a class="prev-post" href="https://aidy.dev/journal/2023-06-01/">
+    <img class="icon-text" src="/img/prev.svg"/>2023-06-01</a>
+  
+  
+  <a class="next-post" href="https://aidy.dev/journal/2023-06-07/">2023-06-07<img class="icon-text" src="/img/next.svg"/>
+  </a>
+  
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
+
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+

@@ -3,7 +3,7 @@
   	<head>
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="generator" content="Hugo 0.106.0">
+		<meta name="generator" content="Hugo 0.111.3">
 		<title>Journal - Adriaan Leijnse</title>
 
 		<meta name="description" content="">
@@ -77,6 +77,139 @@
 
 <article class="journal">
 
+  
+  <article>
+    <header>
+      <h1>
+        
+	<a href="/journal/2023-06-30/">
+          <span><time datetime="2023-06-30 00:00:00 &#43;0000 UTC">June 30, 2023</time></span>
+	</a>
+      </h1>
+    </header>
+    <p>It&rsquo;s been a long while since I wrote here!
+I attended the GHC Contributors Workshop and ZuriHac in the meanwhile and I&rsquo;ve been working on implementing a Reflex-style FRP from scratch.</p>
+<p>The GHC Contributors Workshop was a great event and made me feel more comfortable to dive into the GHC code.
+ZuriHac as always was lovely and chilled out, and even had a Conal talk to keep the denotative programming spirits up &lt;3.</p>
+<p>I met Ken Micklas during ZuriHac who, as it turned out, had been doing the same thing and was able to give me useful tips.
+He had some interesting ideas about how to improve the FRP interface, for example by avoiding</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">merge</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="p">(</span><span class="kt">These</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span>
+</span></span></code></pre></div><p>You no longer have to wait to know wether an event occurs simultaneously with another, and you can start working with events which have hidden multiple simultaneous occurrences.
+Only when folding over them would you have to decide what to do with these.
+He wrote about this idea and others in his <a href="https://tech.kmicklas.com/posts/frp-trilemma/">&ldquo;A trilemma in functional reactive programming models&rdquo;</a> post.</p>
+<h2 id="my-wip-frp-library-status">My WIP FRP library status</h2>
+<p>I now understand in general terms how to implement the graph traversal algorithm for events with a priority queue, and <code>hold</code> to create behaviors.
+My current implementation isn&rsquo;t entirely correct though I believe, even though I&rsquo;ve copied Reflex&rsquo; test suite and that passes.
+So, there is still some work to do.</p>
+<p>As a next step I should probably implement a GUI to-do list app to make sure I have enough primitives to make that work and to check if my implementation is correct.
+It&rsquo;s looking like Monomer has one as an example so maybe I&rsquo;ll go with that library.</p>
+<h2 id="a-simple-and-concise-implementation">A simple and concise implementation</h2>
+<p>I started out with a simple interface to implement many functions with fewer primitives based on <code>occurs</code> and <code>nowToEvent</code> functions:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">occurs</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">nowToEvent</span> <span class="ow">::</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">a</span>
+</span></span></code></pre></div><p>For example:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">never</span> <span class="ow">=</span> <span class="n">nowToEvent</span> <span class="p">(</span><span class="n">pure</span> <span class="kt">Nothing</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">coincidence</span> <span class="ow">=</span> <span class="n">nowToEvent</span> <span class="o">.</span> <span class="n">runMaybeT</span> <span class="o">.</span> <span class="p">(</span><span class="kt">MaybeT</span> <span class="o">.</span> <span class="n">occurs</span> <span class="o">&lt;=&lt;</span> <span class="kt">MaybeT</span> <span class="o">.</span> <span class="n">occurs</span><span class="p">)</span>
+</span></span></code></pre></div><p>This is easy to implement if you use a pull-based system (polling the list of all events to make sure behaviors are updated), but it will be interesting to see if I can make a similar interface which does the push-based graph traversal optimizations.</p>
+<p>I wrote down the implementation of some primitives using <code>occurs</code> and hope to reverse engineer an implementation for them from the efficient one I&rsquo;m writing.</p>
+
+  </article>
+  
+  <article>
+    <header>
+      <h1>
+        
+	<a href="/journal/2023-06-18/">
+          <span><time datetime="2023-06-18 00:00:00 &#43;0000 UTC">June 18, 2023</time></span>
+	</a>
+      </h1>
+    </header>
+    <p>It&rsquo;s been a while since I wrote here!
+I attended the GHC Contributors Workshop and ZurHac in the meanwhile.</p>
+<ul>
+<li>GHC Contributors workshop</li>
+<li>ZuriHac</li>
+<li>Ken Micklass</li>
+<li>Loved Conal&rsquo;s talk</li>
+</ul>
+<p>I added a &ldquo;poll counter&rdquo; to my implementation so that I can check how many times events are checked for occurrence/waiting.
+This will make sure optimizations to the graph traversal algorithm are obvious.</p>
+<p>I&rsquo;ve now got a simple FRP implementation without any graph traversal optimizations, all events are polled at every frame.
+I&rsquo;m using Reflex&rsquo; test suite as a base for tests, that&rsquo;s been very handy.</p>
+<p>My implementation uses <code>occurs</code> and <code>nowToEvent</code> functions to implement almost any function:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">occurs</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">nowToEvent</span> <span class="ow">::</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">a</span>
+</span></span></code></pre></div><p>For example:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">never</span> <span class="ow">=</span> <span class="n">nowToEvent</span> <span class="p">(</span><span class="n">pure</span> <span class="kt">Nothing</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">coincidence</span> <span class="ow">=</span> <span class="n">nowToEvent</span> <span class="o">.</span> <span class="n">runMaybeT</span> <span class="o">.</span> <span class="p">(</span><span class="kt">MaybeT</span> <span class="o">.</span> <span class="n">occurs</span> <span class="o">&lt;=&lt;</span> <span class="kt">MaybeT</span> <span class="o">.</span> <span class="n">occurs</span><span class="p">)</span>
+</span></span></code></pre></div><p>This is easy with the pull based system I have now, but it will be interesting to see whether this interface will survive implementing efficient graph traversal the way it&rsquo;s done in Reflex.</p>
+
+  </article>
+  
+  <article>
+    <header>
+      <h1>
+        
+	<a href="/journal/2023-06-07/">
+          <span><time datetime="2023-06-07 00:00:00 &#43;0000 UTC">June 7, 2023</time></span>
+	</a>
+      </h1>
+    </header>
+    <p>I&rsquo;m wondering if it&rsquo;s possible to go from an FRP implementation in which accidental space leaks are possible by keeping a reference to an Event, to one in which that is not.
+In the former an Event is really just a list of occurrences/futures.
+In the latter you have a Now monad which ensures programs can only observe occurrences after &ldquo;now&rdquo;.</p>
+<p>My first thought was that you&rsquo;d wrap every Event in a Behavior to make a new Event type (this behavior being equivalent to the Now data type).
+This behaviour would automatically keep popping occurrences of the list-based event.</p>
+<p>Then&hellip; the runtime has to unwrap the Now mechanically? I&rsquo;m not sure any of this is making sense.</p>
+
+  </article>
+  
+  <article>
+    <header>
+      <h1>
+        
+	<a href="/journal/2023-06-05/">
+          <span><time datetime="2023-06-05 00:00:00 &#43;0000 UTC">June 5, 2023</time></span>
+	</a>
+      </h1>
+    </header>
+    <p>I&rsquo;ve been reading Sylvain Henry, John Ericson, and Jeffrey M. Young&rsquo;s &ldquo;Modularizing GHC&rdquo; paper which discusses the current state of the GHC code base and how it might be improved.
+As of now the code has become inflexible due to new work (necessarily?) choosing the path of lowest friction to add features.
+I imagine doing thorough refactorings when you&rsquo;re on a PhD thesis time budget and a lot of others are also trying to add features isn&rsquo;t easy.</p>
+<p>The authors propose that the principles of Domain Driven Design will be helpful to define what good improvements to the current state would look like:</p>
+<blockquote>
+<ul>
+<li>Ubiquitous language: use consistent and precise terminology in code and documentation, and make it apparent at type-level.</li>
+<li>Domain isolation with layered architecture: use layering to avoid spaghetti or lasagna code.</li>
+<li>Supple design: make code &ldquo;a pleasure to work with, inviting to change&rdquo;.</li>
+</ul>
+</blockquote>
+<p>These all sound like great principles, and having this as a check-list that cannot be circumvented for any newly checked in code would be a major help.
+I&rsquo;ve tried to use the GHC API while playing around with writing HLS plugins and the documentation and names used were extremely confusing.
+It might be impossible to start something from scratch without looking at existing examples and without external help.
+Not something that ought to be the case in a code base related to functional programming.</p>
+
+  </article>
+  
+  <article>
+    <header>
+      <h1>
+        
+	<a href="/journal/2023-06-01/">
+          <span><time datetime="2023-06-01 00:00:00 &#43;0000 UTC">June 1, 2023</time></span>
+	</a>
+      </h1>
+    </header>
+    <p>I&rsquo;m back from walking the Cape Wrath Trail!
+Three weeks of wonderful Highlands nature, many ticks, and a few midges.</p>
+<p>I did some note taking about programming with objects/identity/user intention/causality while on the trail and I&rsquo;ve been experimenting with FRP implementation.
+I&rsquo;m not entirely sure where I&rsquo;m going with that.
+I&rsquo;d need good test cases to see that what I&rsquo;m doing is correct, and I&rsquo;d love to write interactive programs but that is annoying without a good GUI library.
+Maybe I should stick to &ldquo;My first C programming book&rdquo; style CLI programs.</p>
+<p>Next week I&rsquo;ll be attending the <a href="https://haskell.foundation/events/2023-ghc-development-workshop.html">GHC Contributors Workshop</a> as well as <a href="https://zfoh.ch/zurihac2023/">ZuriHac</a>.
+This year ZuriHac runs many talks, I&rsquo;m looking forward to that.</p>
+
+  </article>
   
   <article>
     <header>

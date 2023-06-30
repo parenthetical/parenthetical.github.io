@@ -2,13 +2,28 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://aidy.dev/journal/2023-04-28/</loc>
-    <lastmod>2023-04-28T00:00:00+00:00</lastmod>
+    <loc>https://aidy.dev/journal/2023-06-30/</loc>
+    <lastmod>2023-06-30T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://aidy.dev/</loc>
-    <lastmod>2023-04-28T00:00:00+00:00</lastmod>
+    <lastmod>2023-06-30T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://aidy.dev/journal/</loc>
+    <lastmod>2023-06-30T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://aidy.dev/journal/2023-06-18/</loc>
+    <lastmod>2023-06-18T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://aidy.dev/journal/2023-06-07/</loc>
+    <lastmod>2023-06-07T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://aidy.dev/journal/2023-06-05/</loc>
+    <lastmod>2023-06-05T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://aidy.dev/journal/2023-06-01/</loc>
+    <lastmod>2023-06-01T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://aidy.dev/journal/2023-04-28/</loc>
     <lastmod>2023-04-28T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://aidy.dev/journal/2023-04-13/</loc>
@@ -18,16 +33,19 @@
     <lastmod>2023-04-12T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://aidy.dev/foc-ideas/dsl-debuggers/</loc>
-    <lastmod>2023-04-11T19:06:00+01:00</lastmod>
+    <lastmod>2023-04-11T00:00:00+01:00</lastmod>
   </url><url>
     <loc>https://aidy.dev/foc-ideas/</loc>
-    <lastmod>2023-04-11T19:06:00+01:00</lastmod>
+    <lastmod>2023-04-11T12:35:00+01:00</lastmod>
   </url><url>
     <loc>https://aidy.dev/foc-ideas/gui-creation/</loc>
     <lastmod>2023-04-11T12:35:00+01:00</lastmod>
   </url><url>
     <loc>https://aidy.dev/journal/2023-04-11/</loc>
     <lastmod>2023-04-11T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://aidy.dev/foc-ideas/first-class-timelines/</loc>
+    <lastmod>2023-04-11T00:00:00+01:00</lastmod>
   </url><url>
     <loc>https://aidy.dev/journal/2023-04-10/</loc>
     <lastmod>2023-04-10T00:00:00+00:00</lastmod>
@@ -67,8 +85,6 @@
   </url><url>
     <loc>https://aidy.dev/papers/</loc>
     <lastmod>2019-03-25T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://aidy.dev/foc-ideas/first-class-timelines/</loc>
   </url><url>
     <loc>https://aidy.dev/tags/</loc>
   </url>
