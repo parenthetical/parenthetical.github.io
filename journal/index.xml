@@ -27,17 +27,6 @@ The GHC Contributors Workshop was a great event and made me feel more comfortabl
     </item>
     
     <item>
-      <title>2023-06-18</title>
-      <link>https://aidy.dev/journal/2023-06-18/</link>
-      <pubDate>Sun, 18 Jun 2023 00:00:00 +0000</pubDate>
-      
-      <guid>https://aidy.dev/journal/2023-06-18/</guid>
-      <description>It&amp;rsquo;s been a while since I wrote here! I attended the GHC Contributors Workshop and ZurHac in the meanwhile.
-GHC Contributors workshop ZuriHac Ken Micklass Loved Conal&amp;rsquo;s talk I added a &amp;ldquo;poll counter&amp;rdquo; to my implementation so that I can check how many times events are checked for occurrence/waiting. This will make sure optimizations to the graph traversal algorithm are obvious.
-I&amp;rsquo;ve now got a simple FRP implementation without any graph traversal optimizations, all events are polled at every frame.</description>
-    </item>
-    
-    <item>
       <title>2023-06-07</title>
       <link>https://aidy.dev/journal/2023-06-07/</link>
       <pubDate>Wed, 07 Jun 2023 00:00:00 +0000</pubDate>
