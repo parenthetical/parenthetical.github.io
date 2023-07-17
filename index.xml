@@ -6,7 +6,16 @@
     <description>Recent content on Adriaan Leijnse</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 30 Jun 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://aidy.dev/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 17 Jul 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://aidy.dev/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2023-07-17</title>
+      <link>https://aidy.dev/journal/2023-07-17/</link>
+      <pubDate>Mon, 17 Jul 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://aidy.dev/journal/2023-07-17/</guid>
+      <description>I&amp;rsquo;ve continued working on understanding how Reflex works and trying to implement FRP using an occurs :: Event a -&amp;gt; m (Maybe a) implementation primitive. Such a primitive might help with making a reasonably efficiont implementation which doesn&amp;rsquo;t rely on many event merge primitives such as mergeIncrementalG and mergeIncrementalWithMoveG from Reflex (mergeCheapWithMove, mergeCheap, and mergeIntCheap in the implementation). It might also make coincidence and functions like push in Reflex share code.</description>
+    </item>
+    
     <item>
       <title>2023-06-18</title>
       <link>https://aidy.dev/journal/2023-06-30/</link>

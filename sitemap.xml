@@ -2,13 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://aidy.dev/journal/2023-06-30/</loc>
-    <lastmod>2023-06-30T00:00:00+00:00</lastmod>
+    <loc>https://aidy.dev/journal/2023-07-17/</loc>
+    <lastmod>2023-07-17T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://aidy.dev/</loc>
-    <lastmod>2023-06-30T00:00:00+00:00</lastmod>
+    <lastmod>2023-07-17T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://aidy.dev/journal/</loc>
+    <lastmod>2023-07-17T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://aidy.dev/journal/2023-06-30/</loc>
     <lastmod>2023-06-30T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://aidy.dev/journal/2023-06-18/</loc>
