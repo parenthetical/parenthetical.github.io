@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.111.3">
+		<title>2023-08-07 - Adriaan Leijnse</title>
+
+		<meta name="description" content="I&rsquo;m still hard at work refactoring Reflex&rsquo; Spider implementation and greatly improving my understanding of what&rsquo;s going on and seeing hints of how I can make a more grokkable version.
+I&rsquo;ve been doing this by constantly repeating the following:
+Inlining any function that&rsquo;s only used once. In my experience splitting up imperative code into named procedures without their context, especially if they don&rsquo;t capture a repeating pattern, is bad for grokking.">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <nav id="navbar"
+           style="
+                  margin-bottom: 3rem;
+                  padding-top: 1rem;
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: flex-end;
+                  column-gap: 1.7rem;
+                  "             >
+        <a href="/"
+           >
+          <h1 style="
+                     margin: 0.2rem 0;
+                     padding: 0;
+                     font-size: 1.6rem;
+                     font-family: roman;
+                     color: #777;
+                     ">
+            Adriaan Leijnse
+          </h1>
+        </a>
+        <ul>
+          <li>
+            <a href="/foc-ideas/"
+               
+               >
+              Future of Coding
+            </a>
+          </li><li>
+            <a href="/journal/"
+               
+               class="active"
+               
+               >
+              Journal
+            </a>
+          </li><li>
+            <a href="/papers/"
+               
+               >
+              Papers
+            </a>
+          </li></ul>
+      </nav>
+    </header>
+    <main class="container">
+
+<article>
+  <header>
+    <hgroup id="brand">
+      <h1>
+        Journal entry for 
+	
+        
+	<time datetime="2023-08-07 00:00:00 &#43;0000 UTC">August 7, 2023</time>
+        
+	<span class="no-print">
+	  <span>
+      </h1>
+    </hgroup>
+    <hr class="sep" />
+  </header>
+  <p>I&rsquo;m still hard at work refactoring Reflex&rsquo; Spider implementation and greatly improving my understanding of what&rsquo;s going on and seeing hints of how I can make a more grokkable version.</p>
+<p>I&rsquo;ve been doing this by constantly repeating the following:</p>
+<ul>
+<li>Inlining any function that&rsquo;s only used once. In my experience splitting up imperative code into named procedures without their context, especially if they don&rsquo;t capture a repeating pattern, is bad for grokking.</li>
+<li>Looking for repeating patterns. This is the slowest and most intuitive work, since code which does the same can be written in subtly different ways. And in imperative code it&rsquo;s hard to deduce whether the order of statements matters.</li>
+<li>Bringing functions into the context in which they&rsquo;re used. This makes patterns and dependencies more obvious.</li>
+</ul>
+<p>Sometimes doing these steps will result in more lines of code because I&rsquo;m using newlines to keep code readable.
+Big procedures and functions can sometimes make you miss the forest for the trees but I still feel it&rsquo;s worth it.
+Re-reading, setting your font size really small, refactoring to bring function definitions as close to use site as possible using lexical scope all helped to find patterns which reduce the code size using meaningful, reusable, procedures.</p>
+<p>This has been succesful so far, but at a certain point something else comes into play: thinking about the meaning of code:</p>
+<ul>
+<li>Is a certain function doing something conceptually similar to another?</li>
+<li>Could you express the shared meaning in a simple denotative semantics and using composition of semantic functions?</li>
+<li>Can you restructure the code similarly to how you wrote it compositionally?</li>
+</ul>
+<h2 id="thought-on-dependencies-and-causality">Thought on dependencies &amp; causality</h2>
+<p>I&rsquo;m using Emacs&rsquo; LSP mode to find references to identifiers.
+These are listed in an &ldquo;xref&rdquo; buffer.
+I tried to refresh the buffer the usual way, but that&rsquo;s not supported.</p>
+<p>What would it take for something like a buffer to support &ldquo;recreate me with the current state of the world&rdquo;?</p>
+
+</article>
+<nav class="no-print post-nav">
+  
+  <a class="prev-post" href="https://aidy.dev/journal/2023-07-17/">
+    <img class="icon-text" src="/img/prev.svg"/>2023-07-17</a>
+  
+  
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
+
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+
