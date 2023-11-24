@@ -6,7 +6,8 @@
 		<meta name="generator" content="Hugo 0.111.3">
 		<title> - Adriaan Leijnse</title>
 
-		<meta name="description" content="Research journal 2023-07-17 I&rsquo;ve continued working on understanding how Reflex works and trying to implement FRP using an occurs :: Event a -&gt; m (Maybe a) implementation primitive. Such a primitive might help with making a reasonably efficiont implementation which doesn&rsquo;t rely on many event merge primitives such as mergeIncrementalG and mergeIncrementalWithMoveG from Reflex (mergeCheapWithMove, mergeCheap, and mergeIntCheap in the implementation). It might also make coincidence and functions like push in Reflex share code.">
+		<meta name="description" content="Research journal 2023-11-18 Thought: I should be able to run any expression in my code, being prompted for inputs. This makes it so you don&rsquo;t have to define intermediate expressions if you want to test part of a bigger thing.
+2023-11-04 Long time no write! I&rsquo;ve been continuing to explore Reflex&rsquo; implementation. I&rsquo;ve got it quite short now and I think I understand all parts, except why the extra-laziness of the buildIncremental=/=buildDynamic functions are needed.">
 
 
 		
@@ -89,6 +90,42 @@
     <hr class="sep" />
   </header>
   <h2 id="research-journal">Research journal</h2>
+<h3 id="2023-11-18">2023-11-18</h3>
+<p>Thought: I should be able to run any expression in my code, being prompted for inputs. This makes it so you don&rsquo;t have to define intermediate expressions if you want to test part of a bigger thing.</p>
+<h3 id="2023-11-04">2023-11-04</h3>
+<p>Long time no write! I&rsquo;ve been continuing to explore Reflex&rsquo; implementation.
+I&rsquo;ve got it quite short now and I think I understand all parts, except why the extra-laziness of the <code>buildIncremental=/=buildDynamic</code> functions are needed.
+Hopefully I can figure that out by working through a failing test.</p>
+<p>My plan now is to delete the last of the optimizations I can find (which might only be the use of &ldquo;height&rdquo; to save on graph traversal), and then write about how to go from zero to Reflex Spider.</p>
+<h3 id="2023-08-21">2023-08-21</h3>
+<p>Thought while simplifying and getting to understand Reflex&rsquo; Spider implementation:</p>
+<ul>
+<li>When doing this work I focused on ignoring things which are performance optimizations, e.g. &lsquo;FastWeakBag&rsquo; over &lsquo;WeakBag&rsquo;
+This allows seeing more patterns.
+When you&rsquo;ve gotten to the essence of things you can re-introduce optimizations.</li>
+</ul>
+<h3 id="2023-08-07">2023-08-07</h3>
+<p>I&rsquo;m still hard at work refactoring Reflex&rsquo; Spider implementation and greatly improving my understanding of what&rsquo;s going on and seeing hints of how I can make a more grokkable version.</p>
+<p>I&rsquo;ve been doing this by constantly repeating the following:</p>
+<ul>
+<li>Inlining any function that&rsquo;s only used once. In my experience splitting up imperative code into named procedures without their context, especially if they don&rsquo;t capture a repeating pattern, is bad for grokking.</li>
+<li>Looking for repeating patterns. This is the slowest and most intuitive work, since code which does the same can be written in subtly different ways. And in imperative code it&rsquo;s hard to deduce whether the order of statements matters.</li>
+<li>Bringing functions into the context in which they&rsquo;re used. This makes patterns and dependencies more obvious.</li>
+</ul>
+<p>Sometimes doing these steps will result in more lines of code because I&rsquo;m using newlines to keep code readable.
+Big procedures and functions can sometimes make you miss the forest for the trees but I still feel it&rsquo;s worth it.
+Re-reading, setting your font size really small, refactoring to bring function definitions as close to use site as possible using lexical scope all helped to find patterns which reduce the code size using meaningful, reusable, procedures.</p>
+<p>This has been succesful so far, but at a certain point something else comes into play: thinking about the meaning of code:</p>
+<ul>
+<li>Is a certain function doing something conceptually similar to another?</li>
+<li>Could you express the shared meaning in a simple denotative semantics and using composition of semantic functions?</li>
+<li>Can you restructure the code similarly to how you wrote it compositionally?</li>
+</ul>
+<h4 id="thought-on-dependencies-and-causality">Thought on dependencies &amp; causality</h4>
+<p>I&rsquo;m using Emacs&rsquo; LSP mode to find references to identifiers.
+These are listed in an &ldquo;xref&rdquo; buffer.
+I tried to refresh the buffer the usual way, but that&rsquo;s not supported.</p>
+<p>What would it take for something like a buffer to support &ldquo;recreate me with the current state of the world&rdquo;?</p>
 <h3 id="2023-07-17">2023-07-17</h3>
 <p>I&rsquo;ve continued working on understanding how Reflex works and trying to implement FRP using an <code>occurs :: Event a -&gt; m (Maybe a)</code> implementation primitive.
 Such a primitive might help with making a reasonably efficiont implementation which doesn&rsquo;t rely on many event merge primitives such as <code>mergeIncrementalG</code> and <code>mergeIncrementalWithMoveG</code> from Reflex (<code>mergeCheapWithMove</code>, <code>mergeCheap</code>, and <code>mergeIntCheap</code> in the implementation).

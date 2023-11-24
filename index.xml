@@ -268,7 +268,8 @@ IIRC something that&amp;rsquo;s expensive in Reflex is to know whether Event (Ev
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://aidy.dev/journal/all/</guid>
-      <description>Research journal 2023-07-17 I&amp;rsquo;ve continued working on understanding how Reflex works and trying to implement FRP using an occurs :: Event a -&amp;gt; m (Maybe a) implementation primitive. Such a primitive might help with making a reasonably efficiont implementation which doesn&amp;rsquo;t rely on many event merge primitives such as mergeIncrementalG and mergeIncrementalWithMoveG from Reflex (mergeCheapWithMove, mergeCheap, and mergeIntCheap in the implementation). It might also make coincidence and functions like push in Reflex share code.</description>
+      <description>Research journal 2023-11-18 Thought: I should be able to run any expression in my code, being prompted for inputs. This makes it so you don&amp;rsquo;t have to define intermediate expressions if you want to test part of a bigger thing.
+2023-11-04 Long time no write! I&amp;rsquo;ve been continuing to explore Reflex&amp;rsquo; implementation. I&amp;rsquo;ve got it quite short now and I think I understand all parts, except why the extra-laziness of the buildIncremental=/=buildDynamic functions are needed.</description>
     </item>
     
   </channel>
