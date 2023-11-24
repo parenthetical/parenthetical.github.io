@@ -4,9 +4,10 @@
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="generator" content="Hugo 0.111.3">
-		<title>Papers - Adriaan Leijnse</title>
+		<title>2023-08-21 - Adriaan Leijnse</title>
 
-		<meta name="description" content="">
+		<meta name="description" content="Thought while simplifying and getting to understand Reflex&rsquo; Spider implementation:
+When doing this work I focused on ignoring things which are performance optimizations, e.g. &lsquo;FastWeakBag&rsquo; over &lsquo;WeakBag&rsquo; This allows seeing more patterns. When you&rsquo;ve gotten to the essence of things you can re-introduce optimizations. ">
 
 
 		
@@ -59,13 +60,13 @@
           </li><li>
             <a href="/journal/"
                
+               class="active"
+               
                >
               Journal
             </a>
           </li><li>
             <a href="/papers/"
-               
-               class="active"
                
                >
               Papers
@@ -76,40 +77,43 @@
     <main class="container">
 
 <article>
-	<header>
-		<hgroup id="brand">
-	<h1>Papers</h1>
+  <header>
+    <hgroup id="brand">
+      <h1>
+        Journal entry for 
 	
-</hgroup>
-<hr class="sep" />
-
-		<h2 id="patterns-in-replicated-data-types">Higher-order patterns in replicated data types</h2>
-<p>In this paper we argue that the essence of CRDTs is not about being &ldquo;operation-based&rdquo; or &ldquo;state-based&rdquo;.
-Instead, CRDTs have a more abstract meaning: they are ways to derive a value from a set of known operations.
-These derivations follow a few simple patterns which can be reused to succinctly define the individual behaviors of a large catalog of CRDTs.
-This means that when writing complex CRDTs it might be worth creating a little programming language which supports those patterns as first class primitives and implements them efficiently.</p>
-<p><em>Adriaan Leijnse, Paulo Sérgio Almeida, and Carlos Baquero. 2019. Higher-Order Patterns in Replicated Data Types. In Proceedings of the 6th Workshop on Principles and Practice of Consistency for Distributed Data (PaPoC ’19). Association for Computing Machinery, New York, NY, USA, Article 5, 1–6. <a href="https://doi.org/10.1145/3301419.3323971">https://doi.org/10.1145/3301419.3323971</a></em></p>
-<p>Links:</p>
+        
+	<time datetime="2023-08-21 00:00:00 &#43;0000 UTC">August 21, 2023</time>
+        
+	<span class="no-print">
+	  <span>
+      </h1>
+    </hgroup>
+    <hr class="sep" />
+  </header>
+  <p>Thought while simplifying and getting to understand Reflex&rsquo; Spider implementation:</p>
 <ul>
-<li><a href="https://dl.acm.org/doi/10.1145/3301419.3323971?cid=99659443424">Official version with free download</a></li>
-<li><a href="/papers/patterns-in-replicated-data-types/higher-order-patterns-rdts-preprint.pdf">Preprint</a></li>
-<li><a href="/papers/patterns-in-replicated-data-types/acm_3301419.3323971.bib">BibTex</a></li>
+<li>When doing this work I focused on ignoring things which are performance optimizations, e.g. &lsquo;FastWeakBag&rsquo; over &lsquo;WeakBag&rsquo;
+This allows seeing more patterns.
+When you&rsquo;ve gotten to the essence of things you can re-introduce optimizations.</li>
 </ul>
 
-	</header>
-	<ul class="no-bullet">
-	    
-	    <li>
-	
-	<span><time datetime="2019-03-25 00:00:00 &#43;0000 UTC">Mar 25, 2019</time></span>
-	<a href="/papers/patterns-in-replicated-data-types/">Higher-order patterns in replicated data types</a>
-</li>
-
-	    
-	</ul>
-	
-
 </article>
+<nav class="no-print post-nav">
+  
+  <a class="prev-post" href="https://aidy.dev/journal/2023-08-07/">
+    <img class="icon-text" src="/img/prev.svg"/>2023-08-07</a>
+  
+  
+  <a class="next-post" href="https://aidy.dev/journal/2023-11-04/">2023-11-04<img class="icon-text" src="/img/next.svg"/>
+  </a>
+  
+</nav>
+
+
+
+
+
 		        <hr class="bottom-sep" />
 		</main>
 		<footer class="container no-print">

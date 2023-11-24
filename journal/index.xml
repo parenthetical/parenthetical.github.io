@@ -6,7 +6,36 @@
     <description>Recent content in Journal on Adriaan Leijnse</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 07 Aug 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://aidy.dev/journal/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 18 Nov 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://aidy.dev/journal/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2023-11-18</title>
+      <link>https://aidy.dev/journal/2023-11-18/</link>
+      <pubDate>Sat, 18 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://aidy.dev/journal/2023-11-18/</guid>
+      <description>Thought: I should be able to run any expression in my code, being prompted for inputs. This makes it so you don&amp;rsquo;t have to define intermediate expressions if you want to test part of a bigger thing.</description>
+    </item>
+    
+    <item>
+      <title>2023-11-04</title>
+      <link>https://aidy.dev/journal/2023-11-04/</link>
+      <pubDate>Sat, 04 Nov 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://aidy.dev/journal/2023-11-04/</guid>
+      <description>Long time no write! I&amp;rsquo;ve been continuing to explore Reflex&amp;rsquo; implementation. I&amp;rsquo;ve got it quite short now and I think I understand all parts, except why the extra-laziness of the buildIncremental=/=buildDynamic functions are needed. Hopefully I can figure that out by working through a failing test.
+My plan now is to delete the last of the optimizations I can find (which might only be the use of &amp;ldquo;height&amp;rdquo; to save on graph traversal), and then write about how to go from zero to Reflex Spider.</description>
+    </item>
+    
+    <item>
+      <title>2023-08-21</title>
+      <link>https://aidy.dev/journal/2023-08-21/</link>
+      <pubDate>Mon, 21 Aug 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://aidy.dev/journal/2023-08-21/</guid>
+      <description>Thought while simplifying and getting to understand Reflex&amp;rsquo; Spider implementation:
+When doing this work I focused on ignoring things which are performance optimizations, e.g. &amp;lsquo;FastWeakBag&amp;rsquo; over &amp;lsquo;WeakBag&amp;rsquo; This allows seeing more patterns. When you&amp;rsquo;ve gotten to the essence of things you can re-introduce optimizations. </description>
+    </item>
+    
     <item>
       <title>2023-08-07</title>
       <link>https://aidy.dev/journal/2023-08-07/</link>
@@ -205,16 +234,6 @@ Why couldn&amp;rsquo;t Smalltalk be a purely functional programming environment?
       <guid>https://aidy.dev/journal/2023-02-22/</guid>
       <description>I&amp;rsquo;d really like to find out how a library like Reflex works. I also just found out that browsers support weak references and finalizers in JavaScript now, so I think that means Reflex Spider-style implementations can now be done in JS.
 IIRC something that&amp;rsquo;s expensive in Reflex is to know whether Event (Event a) has a simultaneous occurrence. Another expensive thing is joining Dynamic (because of the previous simultaneous nested event occurrence thing?</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://aidy.dev/journal/all/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://aidy.dev/journal/all/</guid>
-      <description>Research journal 2023-11-18 Thought: I should be able to run any expression in my code, being prompted for inputs. This makes it so you don&amp;rsquo;t have to define intermediate expressions if you want to test part of a bigger thing.
-2023-11-04 Long time no write! I&amp;rsquo;ve been continuing to explore Reflex&amp;rsquo; implementation. I&amp;rsquo;ve got it quite short now and I think I understand all parts, except why the extra-laziness of the buildIncremental=/=buildDynamic functions are needed.</description>
     </item>
     
   </channel>
