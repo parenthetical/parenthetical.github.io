@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.111.3">
+		<title>Research journal - Adriaan Leijnse</title>
+
+		<meta name="description" content="2023-11-18 Thought: I should be able to run any expression in my code, being prompted for inputs. This makes it so you don&rsquo;t have to define intermediate expressions if you want to test part of a bigger thing.
+2023-11-04 Long time no write! I&rsquo;ve been continuing to explore Reflex&rsquo; implementation. I&rsquo;ve got it quite short now and I think I understand all parts, except why the extra-laziness of the buildIncremental=/=buildDynamic functions are needed.">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <nav id="navbar"
+           style="
+                  margin-bottom: 3rem;
+                  padding-top: 1rem;
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: flex-end;
+                  column-gap: 1.7rem;
+                  "             >
+        <a href="/"
+           >
+          <h1 style="
+                     margin: 0.2rem 0;
+                     padding: 0;
+                     font-size: 1.6rem;
+                     font-family: roman;
+                     color: #777;
+                     ">
+            Adriaan Leijnse
+          </h1>
+        </a>
+        <ul>
+          <li>
+            <a href="/foc-ideas/"
+               
+               >
+              Future of Coding
+            </a>
+          </li><li>
+            <a href="/journal/"
+               
+               class="active"
+               
+               >
+              Journal
+            </a>
+          </li><li>
+            <a href="/papers/"
+               
+               >
+              Papers
+            </a>
+          </li></ul>
+      </nav>
+    </header>
+    <main class="container">
+
+<article>
+  <header>
+    <hgroup id="brand">
+      <h1>
+        Journal entry for 
+	
+        
+	<span class="no-print">
+	  <span>
+      </h1>
+    </hgroup>
+    <hr class="sep" />
+  </header>
+  <h2 id="2023-11-18">2023-11-18</h2>
+<p>Thought: I should be able to run any expression in my code, being prompted for inputs. This makes it so you don&rsquo;t have to define intermediate expressions if you want to test part of a bigger thing.</p>
+<h2 id="2023-11-04">2023-11-04</h2>
+<p>Long time no write! I&rsquo;ve been continuing to explore Reflex&rsquo; implementation.
+I&rsquo;ve got it quite short now and I think I understand all parts, except why the extra-laziness of the <code>buildIncremental=/=buildDynamic</code> functions are needed.
+Hopefully I can figure that out by working through a failing test.</p>
+<p>My plan now is to delete the last of the optimizations I can find (which might only be the use of &ldquo;height&rdquo; to save on graph traversal), and then write about how to go from zero to Reflex Spider.</p>
+<h2 id="2023-08-21">2023-08-21</h2>
+<p>Thought while simplifying and getting to understand Reflex&rsquo; Spider implementation:</p>
+<ul>
+<li>When doing this work I focused on ignoring things which are performance optimizations, e.g. &lsquo;FastWeakBag&rsquo; over &lsquo;WeakBag&rsquo;
+This allows seeing more patterns.
+When you&rsquo;ve gotten to the essence of things you can re-introduce optimizations.</li>
+</ul>
+<h2 id="2023-08-07">2023-08-07</h2>
+<p>I&rsquo;m still hard at work refactoring Reflex&rsquo; Spider implementation and greatly improving my understanding of what&rsquo;s going on and seeing hints of how I can make a more grokkable version.</p>
+<p>I&rsquo;ve been doing this by constantly repeating the following:</p>
+<ul>
+<li>Inlining any function that&rsquo;s only used once. In my experience splitting up imperative code into named procedures without their context, especially if they don&rsquo;t capture a repeating pattern, is bad for grokking.</li>
+<li>Looking for repeating patterns. This is the slowest and most intuitive work, since code which does the same can be written in subtly different ways. And in imperative code it&rsquo;s hard to deduce whether the order of statements matters.</li>
+<li>Bringing functions into the context in which they&rsquo;re used. This makes patterns and dependencies more obvious.</li>
+</ul>
+<p>Sometimes doing these steps will result in more lines of code because I&rsquo;m using newlines to keep code readable.
+Big procedures and functions can sometimes make you miss the forest for the trees but I still feel it&rsquo;s worth it.
+Re-reading, setting your font size really small, refactoring to bring function definitions as close to use site as possible using lexical scope all helped to find patterns which reduce the code size using meaningful, reusable, procedures.</p>
+<p>This has been succesful so far, but at a certain point something else comes into play: thinking about the meaning of code:</p>
+<ul>
+<li>Is a certain function doing something conceptually similar to another?</li>
+<li>Could you express the shared meaning in a simple denotative semantics and using composition of semantic functions?</li>
+<li>Can you restructure the code similarly to how you wrote it compositionally?</li>
+</ul>
+<h3 id="thought-on-dependencies-and-causality">Thought on dependencies &amp; causality</h3>
+<p>I&rsquo;m using Emacs&rsquo; LSP mode to find references to identifiers.
+These are listed in an &ldquo;xref&rdquo; buffer.
+I tried to refresh the buffer the usual way, but that&rsquo;s not supported.</p>
+<p>What would it take for something like a buffer to support &ldquo;recreate me with the current state of the world&rdquo;?</p>
+<h2 id="2023-07-17">2023-07-17</h2>
+<p>I&rsquo;ve continued working on understanding how Reflex works and trying to implement FRP using an <code>occurs :: Event a -&gt; m (Maybe a)</code> implementation primitive.
+Such a primitive might help with making a reasonably efficiont implementation which doesn&rsquo;t rely on many event merge primitives such as <code>mergeIncrementalG</code> and <code>mergeIncrementalWithMoveG</code> from Reflex (<code>mergeCheapWithMove</code>, <code>mergeCheap</code>, and <code>mergeIntCheap</code> in the implementation).
+It might also make <code>coincidence</code> and functions like <code>push</code> in Reflex share code.</p>
+<p>I&rsquo;m doing this on two fronts: one is my simple FRP implementation, for which I copied part of Reflex&rsquo; test suite, and the other is working on Reflex&rsquo; Spider implementation.
+While looking at the latter I discovered some duplicated code between <code>coincidence</code> and <code>switch</code> which I factored out.
+Now I&rsquo;m looking at the various <code>merge</code> functions and trying to see what they share.</p>
+<p>For the simple implementation I&rsquo;ve been copying code from <code>Reflex.Spider</code> but I haven&rsquo;t yet made my tests run with this implementation (before I had a different one which passed all the tests but wasn&rsquo;t lazy enough to express some definitions without looping).
+Getting the tests to run is my priority now.</p>
+<p>I&rsquo;ll also grab a local copy of Reflex and apply my refactorings there so I can run the official test suite and be more confident that I haven&rsquo;t messed up.</p>
+<p>For future reference, here&rsquo;s a pure implementation of my simple FRP library using <code>occurs</code> where I could:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="kr">instance</span> <span class="p">(</span><span class="kt">Enum</span> <span class="n">t</span><span class="p">,</span> <span class="kt">Ord</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=&gt;</span> <span class="kt">Frp</span> <span class="p">(</span><span class="kt">Pure</span> <span class="n">t</span><span class="p">)</span> <span class="kr">where</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">newtype</span> <span class="kt">Event</span> <span class="p">(</span><span class="kt">Pure</span> <span class="n">t</span><span class="p">)</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Event</span> <span class="p">{</span> <span class="n">unEvent</span> <span class="ow">::</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="kt">Maybe</span> <span class="n">a</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">newtype</span> <span class="kt">Behavior</span> <span class="p">(</span><span class="kt">Pure</span> <span class="n">t</span><span class="p">)</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Behavior</span> <span class="p">{</span> <span class="n">unBehavior</span> <span class="ow">::</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">deriving</span> <span class="p">(</span><span class="kt">Functor</span><span class="p">,</span> <span class="kt">Applicative</span><span class="p">,</span> <span class="kt">Monad</span><span class="p">)</span> <span class="n">via</span> <span class="p">(</span><span class="ow">-&gt;</span><span class="p">)</span> <span class="n">t</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">type</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">Pure</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span> <span class="p">(</span><span class="ow">-&gt;</span><span class="p">)</span> <span class="n">t</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sample</span> <span class="ow">=</span> <span class="n">unBehavior</span>
+</span></span><span class="line"><span class="cl">  <span class="n">never</span> <span class="ow">=</span> <span class="n">toEvent</span> <span class="o">$</span> <span class="n">pure</span> <span class="kt">Nothing</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sampleAtMaybe</span> <span class="n">f</span> <span class="ow">=</span> <span class="n">toEvent</span> <span class="o">.</span> <span class="n">runMaybeT</span> <span class="o">.</span> <span class="p">(</span><span class="kt">MaybeT</span> <span class="o">.</span> <span class="n">f</span> <span class="o">&lt;=&lt;</span> <span class="kt">MaybeT</span> <span class="o">.</span> <span class="n">occurs</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">coincidence</span> <span class="ow">=</span> <span class="kt">Frp</span><span class="o">.</span><span class="n">sampleAtMaybe</span> <span class="n">occurs</span>
+</span></span><span class="line"><span class="cl">  <span class="n">hold</span> <span class="n">a</span> <span class="n">e&#39;</span><span class="o">@</span><span class="p">(</span><span class="kt">Event</span> <span class="n">e</span><span class="p">)</span> <span class="n">fromT</span> <span class="ow">=</span> <span class="kt">Behavior</span> <span class="o">$</span> <span class="nf">\</span><span class="n">sampleT</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">if</span> <span class="n">sampleT</span> <span class="o">&lt;=</span> <span class="n">fromT</span>
+</span></span><span class="line"><span class="cl">      <span class="kr">then</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl">      <span class="kr">else</span> <span class="kr">case</span> <span class="n">e</span> <span class="p">(</span><span class="n">pred</span> <span class="n">sampleT</span><span class="p">)</span> <span class="kr">of</span>
+</span></span><span class="line"><span class="cl">             <span class="kt">Nothing</span> <span class="ow">-&gt;</span> <span class="n">unBehavior</span> <span class="p">(</span><span class="n">hold</span> <span class="n">a</span> <span class="n">e&#39;</span> <span class="n">fromT</span><span class="p">)</span> <span class="p">(</span><span class="n">pred</span> <span class="n">sampleT</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">             <span class="kt">Just</span> <span class="n">a&#39;</span> <span class="ow">-&gt;</span> <span class="n">a&#39;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">now</span> <span class="ow">=</span> <span class="kt">Event</span> <span class="o">.</span> <span class="p">(</span><span class="nf">\</span><span class="n">t&#39;</span> <span class="ow">-&gt;</span> <span class="n">guard</span> <span class="o">.</span> <span class="p">(</span><span class="n">t&#39;</span> <span class="o">==</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">  <span class="n">mergeE</span> <span class="n">a</span> <span class="n">b</span> <span class="ow">=</span> <span class="n">toEvent</span> <span class="o">$</span> <span class="n">align</span> <span class="o">&lt;$&gt;</span> <span class="n">occurs</span> <span class="n">a</span> <span class="o">&lt;*&gt;</span> <span class="n">occurs</span> <span class="n">b</span>
+</span></span><span class="line"><span class="cl">  <span class="n">switch</span> <span class="ow">=</span> <span class="n">toEvent</span> <span class="o">.</span> <span class="p">(</span><span class="n">occurs</span> <span class="o">&lt;=&lt;</span> <span class="kt">Frp</span><span class="o">.</span><span class="n">sample</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">occurs</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="p">(</span><span class="kt">Pure</span> <span class="n">t</span><span class="p">)</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">Pure</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">occurs</span> <span class="ow">=</span> <span class="n">unEvent</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">toEvent</span> <span class="ow">::</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">Pure</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="p">(</span><span class="kt">Pure</span> <span class="n">t</span><span class="p">)</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl"><span class="nf">toEvent</span> <span class="ow">=</span> <span class="kt">Event</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">nonEmpty</span> <span class="ow">::</span> <span class="kt">Foldable</span> <span class="n">t</span> <span class="ow">=&gt;</span> <span class="n">t</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="n">t</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">nonEmpty</span> <span class="n">xs</span> <span class="ow">=</span> <span class="kr">if</span> <span class="n">null</span> <span class="n">xs</span> <span class="kr">then</span> <span class="kt">Nothing</span> <span class="kr">else</span> <span class="kt">Just</span> <span class="n">xs</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">mergeIntMap</span> <span class="ow">::</span> <span class="p">(</span><span class="kt">Witherable</span> <span class="n">f</span><span class="p">,</span> <span class="kt">Foldable</span> <span class="n">f</span><span class="p">)</span> <span class="ow">=&gt;</span> <span class="n">f</span> <span class="p">(</span><span class="kt">Event</span> <span class="p">(</span><span class="kt">Pure</span> <span class="n">t</span><span class="p">)</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="p">(</span><span class="kt">Pure</span> <span class="n">t</span><span class="p">)</span> <span class="p">(</span><span class="n">f</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">mergeIntMap</span> <span class="ow">=</span>
+</span></span><span class="line"><span class="cl">   <span class="n">toEvent</span> <span class="o">.</span> <span class="n">fmap</span> <span class="n">nonEmpty</span> <span class="o">.</span> <span class="n">wither</span> <span class="n">occurs</span>
+</span></span></code></pre></div><h2 id="2023-06-30">2023-06-18</h2>
+<p>It&rsquo;s been a long while since I wrote here!
+I attended the GHC Contributors Workshop and ZuriHac in the meanwhile and I&rsquo;ve been working on implementing a Reflex-style FRP from scratch.</p>
+<p>The GHC Contributors Workshop was a great event and made me feel more comfortable to dive into the GHC code.
+ZuriHac as always was lovely and chilled out, and even had a Conal talk to keep the denotative programming spirits up &lt;3.</p>
+<p>I met Ken Micklas during ZuriHac who, as it turned out, had been doing the same thing and was able to give me useful tips.
+He had some interesting ideas about how to improve the FRP interface, for example by avoiding</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">merge</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="p">(</span><span class="kt">These</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span>
+</span></span></code></pre></div><p>You no longer have to wait to know wether an event occurs simultaneously with another, and you can start working with events which have hidden multiple simultaneous occurrences.
+Only when folding over them would you have to decide what to do with these.
+He wrote about this idea and others in his <a href="https://tech.kmicklas.com/posts/frp-trilemma/">&ldquo;A trilemma in functional reactive programming models&rdquo;</a> post.</p>
+<h3 id="my-wip-frp-library-status">My WIP FRP library status</h3>
+<p>I now understand in general terms how to implement the graph traversal algorithm for events with a priority queue, and <code>hold</code> to create behaviors.
+My current implementation isn&rsquo;t entirely correct though I believe, even though I&rsquo;ve copied Reflex&rsquo; test suite and that passes.
+So, there is still some work to do.</p>
+<p>As a next step I should probably implement a GUI to-do list app to make sure I have enough primitives to make that work and to check if my implementation is correct.
+It&rsquo;s looking like Monomer has one as an example so maybe I&rsquo;ll go with that library.</p>
+<h3 id="a-simple-and-concise-implementation">A simple and concise implementation</h3>
+<p>I started out with a simple interface to implement many functions with fewer primitives based on <code>occurs</code> and <code>nowToEvent</code> functions:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">occurs</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">nowToEvent</span> <span class="ow">::</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">a</span>
+</span></span></code></pre></div><p>For example:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">never</span> <span class="ow">=</span> <span class="n">nowToEvent</span> <span class="p">(</span><span class="n">pure</span> <span class="kt">Nothing</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">coincidence</span> <span class="ow">=</span> <span class="n">nowToEvent</span> <span class="o">.</span> <span class="n">runMaybeT</span> <span class="o">.</span> <span class="p">(</span><span class="kt">MaybeT</span> <span class="o">.</span> <span class="n">occurs</span> <span class="o">&lt;=&lt;</span> <span class="kt">MaybeT</span> <span class="o">.</span> <span class="n">occurs</span><span class="p">)</span>
+</span></span></code></pre></div><p>This is easy to implement if you use a pull-based system (polling the list of all events to make sure behaviors are updated), but it will be interesting to see if I can make a similar interface which does the push-based graph traversal optimizations.</p>
+<p>I wrote down the implementation of some primitives using <code>occurs</code> and hope to reverse engineer an implementation for them from the efficient one I&rsquo;m writing.</p>
+<h2 id="2023-06-07">2023-06-07</h2>
+<p>I&rsquo;m wondering if it&rsquo;s possible to go from an FRP implementation in which accidental space leaks are possible by keeping a reference to an Event, to one in which that is not.
+In the former an Event is really just a list of occurrences/futures.
+In the latter you have a Now monad which ensures programs can only observe occurrences after &ldquo;now&rdquo;.</p>
+<p>My first thought was that you&rsquo;d wrap every Event in a Behavior to make a new Event type (this behavior being equivalent to the Now data type).
+This behaviour would automatically keep popping occurrences of the list-based event.</p>
+<p>Then&hellip; the runtime has to unwrap the Now mechanically? I&rsquo;m not sure any of this is making sense.</p>
+<h2 id="2023-06-05">2023-06-05</h2>
+<p>I&rsquo;ve been reading Sylvain Henry, John Ericson, and Jeffrey M. Young&rsquo;s &ldquo;Modularizing GHC&rdquo; paper which discusses the current state of the GHC code base and how it might be improved.
+As of now the code has become inflexible due to new work (necessarily?) choosing the path of lowest friction to add features.
+I imagine doing thorough refactorings when you&rsquo;re on a PhD thesis time budget and a lot of others are also trying to add features isn&rsquo;t easy.</p>
+<p>The authors propose that the principles of Domain Driven Design will be helpful to define what good improvements to the current state would look like:</p>
+<blockquote>
+<ul>
+<li>Ubiquitous language: use consistent and precise terminology in code and documentation, and make it apparent at type-level.</li>
+<li>Domain isolation with layered architecture: use layering to avoid spaghetti or lasagna code.</li>
+<li>Supple design: make code &ldquo;a pleasure to work with, inviting to change&rdquo;.</li>
+</ul>
+</blockquote>
+<p>These all sound like great principles, and having this as a check-list that cannot be circumvented for any newly checked in code would be a major help.
+I&rsquo;ve tried to use the GHC API while playing around with writing HLS plugins and the documentation and names used were extremely confusing.
+It might be impossible to start something from scratch without looking at existing examples and without external help.
+Not something that ought to be the case in a code base related to functional programming.</p>
+<h2 id="2023-06-01">2023-06-01</h2>
+<p>I&rsquo;m back from walking the Cape Wrath Trail!
+Three weeks of wonderful Highlands nature, many ticks, and a few midges.</p>
+<p>I did some note taking about programming with objects/identity/user intention/causality while on the trail and I&rsquo;ve been experimenting with FRP implementation.
+I&rsquo;m not entirely sure where I&rsquo;m going with that.
+I&rsquo;d need good test cases to see that what I&rsquo;m doing is correct, and I&rsquo;d love to write interactive programs but that is annoying without a good GUI library.
+Maybe I should stick to &ldquo;My first C programming book&rdquo; style CLI programs.</p>
+<p>Next week I&rsquo;ll be attending the <a href="https://haskell.foundation/events/2023-ghc-development-workshop.html">GHC Contributors Workshop</a> as well as <a href="https://zfoh.ch/zurihac2023/">ZuriHac</a>.
+This year ZuriHac runs many talks, I&rsquo;m looking forward to that.</p>
+<h2 id="2023-04-28">2023-04-28</h2>
+<p>Back from hiatus for a few days.</p>
+<p>I just watched Gilad Bracha&rsquo;s <a href="https://www.youtube.com/watch?v=ORCYqykgWFI">presentation on Ampleforth</a>, a live-coding/literate programming/notebook/GUI environment.
+I loved how you could go from GUI element to definition, compose definitions and document any way you like, and how editing definitions is instantly reflected in the environment.
+What I think is missing is that in the markup elements are referred to by strings, so you have to think about naming objects if you want to refer to them.
+A graphical environment is the perfect place to avoid this extra mental burden.</p>
+<p>Otherwise I&rsquo;ve been working on understanding how FRP is implemented.
+I wasn&rsquo;t able to make sense of all the things going on in <a href="https://github.com/reflex-frp/reflex/">Reflex&rsquo;</a> implementation, so instead I&rsquo;m starting from Conal Elliott&rsquo;s <a href="http://conal.net/papers/push-pull-frp/">Push-pull functional reactive programming</a> paper.
+I&rsquo;m hoping that implementing the <em>Future</em> abstraction using techniques more similar to those of Reflex (graph traversals) is going to work.
+The <code>reactive</code> library which came out of the push-pull paper never worked properly, and I&rsquo;m hoping that&rsquo;s because of the very experimental implementation techniques.</p>
+<p>In any case, it would be nice if everything can be defined in terms of Futures; I want to experiment with different advanced uses of FRP and the simpler my implementation is the better.
+If it&rsquo;s slower than Reflex that&rsquo;s not a big deal, anything is better than the semantic functions I&rsquo;ve been using up until now to experiment.</p>
+<h2 id="2023-04-13">2023-04-13</h2>
+<p>Some thoughts on Objects in FRP.</p>
+<h3 id="denotative-identity-and-objects-denotative-object-oriented-programming">Denotative Identity and Objects, Denotative Object-Oriented Programming</h3>
+<p>I see identity (in the sense of an object having an identity) as a problem in our current functional programming practice.
+It seems that we invent it over and over again whenever we need it, manually generating identifiers and tracking whatever values are supposed to be associated with that identifier.
+Or, we go the impure route and use mutable references and revert back to impure imperative programming.</p>
+<p>I think we can do better than that with FRP-like semantics.</p>
+<h4 id="identity">Identity</h4>
+<p>I&rsquo;ve worked on generating unique identifiers in FRP before.
+Semantically these are something like a list of <code>(Time,Index)</code>, which note the causality of the identifier.
+I.e. &ldquo;what are the moments in time that lead to this particular identifier being generated?&rdquo;</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="kr">type</span> <span class="kt">Identifier</span> <span class="ow">=</span> <span class="p">[(</span><span class="kt">Time</span><span class="p">,</span><span class="kt">Natural</span><span class="p">)]</span>
+</span></span></code></pre></div><p>The <code>Natural</code> here is &ldquo;the n-th identifier generated at a particular moment with this chain of causality&rdquo;.
+I&rsquo;m not very satisfied with that, it feels like the definition of the program should somehow be included there as well?
+Semantically at least.
+When you implement identifiers the number index works fine.</p>
+<h4 id="object-definition">Object definition</h4>
+<p>I&rsquo;m considering an object as something with an identity and a state which can change over time.
+This can be modeled as a pair of Identifier and Behavior.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="kr">type</span> <span class="kt">Object</span> <span class="n">a</span> <span class="ow">=</span> <span class="p">(</span><span class="kt">Identifier</span><span class="p">,</span> <span class="kt">Behavior</span> <span class="n">a</span><span class="p">)</span>
+</span></span></code></pre></div><h4 id="interface">Interface</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="kr">instance</span> <span class="kt">Eq</span> <span class="kt">Identifier</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">getId</span> <span class="ow">::</span> <span class="kt">Now</span> <span class="kt">Identifier</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">new</span> <span class="ow">::</span> <span class="kt">Behavior</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">Object</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">instance</span> <span class="kt">Eq</span> <span class="p">(</span><span class="kt">Object</span> <span class="n">s</span><span class="p">)</span> <span class="kr">where</span>
+</span></span><span class="line"><span class="cl">  <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="kr">_</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="kr">_</span><span class="p">)</span> <span class="ow">=</span> <span class="n">a</span> <span class="o">==</span> <span class="n">b</span>
+</span></span></code></pre></div><p>Objects can be compared for equality by comparing their identity.
+There is no aliasing problem because the definition of their state cannot be modified.</p>
+<h4 id="future-work">Future work</h4>
+<ul>
+<li>Could I use these objects to solve problems related to first class timelines/causality problems? Like, if I could use this to track which objects some action uses, then I could tell that deleting an action from the timeline is going to make these x,y,z future actions non-sensical and propose solutions.</li>
+</ul>
+<h2 id="2023-04-12">2023-04-12</h2>
+<p>Added <a href="/foc-ideas/first-class-timelines/">FRP with first-class timelines</a> FOC entry.</p>
+<h2 id="2023-04-11">2023-04-11</h2>
+<h3 id="the-power-of-a-denotation-for-causality">The power of a denotation for causality?</h3>
+<p>I&rsquo;m having some brain sparks related to causality.
+I was thinking about how when defining GUIs you want to be able to go from the GUI element to the code that made it exist, or the history that makes that you&rsquo;re seeing on the screen.
+If you have a good model for causality, i.e. &ldquo;what lead to this happening/that existing&rdquo;, you might be able to include &ldquo;because this code was written, these buttons were clicked, etc.&rdquo; in there.</p>
+<h3 id="new-foc-ideas-entries">New FOC Ideas entries</h3>
+<p>I added entries for <a href="/foc-ideas/gui-creation/">Thoughts on comfortable GUI development</a> and <a href="/foc-ideas/dsl-debuggers/">A DSL should have its own debugger</a>.</p>
+<h2 id="2023-04-10">2023-04-10</h2>
+<p>I asked on the Future of Coding Slack whether anyone had ideas relating to the program state vs definition idea and some interesting links came up.</p>
+<h3 id="the-entangled-strands-of-time-in-software-development">The entangled strands of time in software development</h3>
+<p><a href="https://twitter.com/NickSmit_/status/1563114360360222720">Nick Smith</a> linked his Twitter thread, which shared many of the same thoughts I&rsquo;m having, links to a paper: <a href="https://doi.org/10.1145/3167107">&ldquo;The entangled strands of time in software development&rdquo;, Matthias Hauswirth and Mohammad Reza Azadmanesh 2017</a>.</p>
+<p>This paper looks at what programmers need from their environment.
+I took some notes below.</p>
+<h4 id="time-travel-and-altering-the-past">Time travel &amp; altering the past</h4>
+<p>On undo/redo resulting in a tree of history:</p>
+<blockquote>
+<p>[&hellip;] keeping a mental model of the tree, and
+one’s place in that tree when undoing and redoing, is too
+taxing. After all, life is a sequence, not a tree. But then, life
+doesn’t even have an undo.</p>
+</blockquote>
+<p>This quote makes it clear that making this tree user friendly is high priority if you want to build a system in which exploration is cost-free. Achieving this will make collaboration cost-free as well. Git has a hard time with this because of it&rsquo;s lowest common denominator text support.</p>
+<p>Reading this makes me remember my interest in non-linear undo work.
+I&rsquo;ve seen some older papers on this but I don&rsquo;t know how much it&rsquo;s supported in actual applications these days.
+I wonder what a modern denotative approach looks like.</p>
+<h4 id="source-and-documentation-navigation">Source &amp; documentation navigation</h4>
+<p>This reminds me of how even with a functional programming you want identity and relations to be able to address things like looking up which functions refer to which etc.</p>
+<h4 id="program-execution-testing-debugging">Program execution/testing/debugging</h4>
+<p>I&rsquo;ve written about this <a href="/journal/2023-02-24/">here</a>.</p>
+<h4 id="source-editing-and-version-control">Source editing &amp; version control</h4>
+<p>VC and edit history are currently not integrated.
+Instead they could present a unified interface with classic VC features such as commits being an extra feature on top of regular work.</p>
+<h4 id="source-editing-and-source-navigation">Source editing &amp; source navigation</h4>
+<p>Here they arguing that you could unify navigation with editing.
+Navigation usually has a separate web browser-like interface (back/forward).
+This means that &ldquo;looking at something&rdquo; should be in the history?</p>
+<p>Same for documentation.</p>
+<h4 id="my-thoughts">My thoughts</h4>
+<p>I love all the concerns put forward in this paper.
+It seems hard to implement without deeply integrating with the actual programming language being used.
+For example, to rebase history well, you have to know whether the history you&rsquo;re copying makes sense in the current context.</p>
+<h2 id="2023-04-04">2023-04-04</h2>
+<p>I added the first topic to my &ldquo;ideas for the future of coding&rdquo; section on the site (current title: Un-separating program state and definition).</p>
+<p>Logging this thought I&rsquo;ve been having for a long time (if I&rsquo;m not repeating an earlier entry):</p>
+<h3 id="an-action-and-its-intent-should-be-first-class-things">An action and its intent should be first class things</h3>
+<p>I think that programming with a history of first class, meaningful, user/programmer actions, sounds very valuable.
+Actions are things like: clicking a button to do something, editing the definition of a program,&hellip;
+You need to capture the intent of the action and the causality, not just the lower level effects of the action.
+Causality is which actions in the past lead to the current one being able to exist, e.g. drawing a square leads to the square being able to be resized later.</p>
+<p>This is related to why commit messages are so important in development: the individual edits to the code are only there because we can&rsquo;t easily capture our true intent in the code.</p>
+<p>The more of the actual intent is logged, even in a CRUD-style program, the better you can do things like changing the underlying state model and migrating the old to the new state by replaying actions.</p>
+<p>I guess this all kind of sounds obvious, like, &ldquo;can&rsquo;t you just name functions appropriately&rdquo; or something, but I think there&rsquo;s more to it.</p>
+<h2 id="2023-03-19">2023-03-19</h2>
+<p>I just remembered another useful FRP feature which currently doesn&rsquo;t exist.
+It would solve the &ldquo;I wrote my program as a function of <code>Event a</code>, but I want it to accept input looking something like <code>Event [a]</code>, where <code>[a]</code> is an ordered sequence of occurrences that have to happen &ldquo;within the current moment&rdquo;.
+Doing this safely, especially if you want to pass multiple of these <code>Event [a]</code> values to a program, seems tricky.
+You want to keep your &ldquo;moments within the current moment&rdquo; apart from other &ldquo;moments within the current moment&rdquo; because there would not necessarily be a relationship between them.</p>
+<p>Maybe one way to achieve it would be something like the following, for which you need a source of first-class sub-time values.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">withMoments</span> <span class="ow">::</span> <span class="kt">Integer</span> <span class="c1">-- How many sub-moments to generate</span>
+</span></span><span class="line"><span class="cl">            <span class="ow">-&gt;</span> <span class="n">forall</span> <span class="n">t</span><span class="o">.</span> <span class="p">[</span><span class="kt">Time</span> <span class="n">t</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                         <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">t&#39;</span> <span class="p">(</span><span class="kt">Map</span> <span class="p">(</span><span class="kt">Time</span> <span class="n">t</span><span class="p">)</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                         <span class="ow">-&gt;</span> <span class="p">(</span><span class="kt">Event</span> <span class="n">t</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Behavior</span> <span class="n">t</span> <span class="n">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                         <span class="ow">-&gt;</span> <span class="kt">Behavior</span> <span class="n">t&#39;</span> <span class="n">b</span>
+</span></span></code></pre></div><p>(I didn&rsquo;t think about this signature properly.)</p>
+<h3 id="code-metadata-version-coupling">Code metadata&ndash;version coupling</h3>
+<p>Another &ldquo;what programming should be like&rdquo; thought:
+I find it weird that <strong>TODOs/issues/&hellip;</strong> are not <strong>coupled to code</strong>.
+Some people consider TODO/FIXME notes in the code itself a smell, but they are metadata about the code and I&rsquo;d like to see them while working on the code.</p>
+<p>As far as I understand people are worried about:</p>
+<ul>
+<li>Untrackability of TODO in code.</li>
+<li>A kind of fake &ldquo;technical debt accumulation&rdquo; because it&rsquo;s too easy to add TODOs.</li>
+</ul>
+<p>On the other hand I think I&rsquo;ve seen technical debt accumulation precisely because TODOs were not added.
+The same little niggles were present all over the code base but no one kept track of them and it kept making things worse.</p>
+<h2 id="2023-03-18">2023-03-18</h2>
+<p>Rather than immediately attempt my own implementation of FRP, I&rsquo;ve been working on understanding Reflex&rsquo; Spider implementation.
+I started out with the original code—randomly deleting anything that didn&rsquo;t seem essential like <code>Incremental</code> and <code>Dynamic</code> (because they can be expressed in terms of <code>Event</code> and <code>Behavior</code>), but it seems that <code>Dynamic</code> might be a basic building block of the implementation? Maybe the way behaviors work is actually via something Dynamic-like?</p>
+<p>Anyway, I&rsquo;ve re-copied the whole Reflex implementation and I&rsquo;m now simplifying with the help of Git.
+First I&rsquo;m deleting all debugging stuff behind the <code>DEBUG*</code> flags, next I&rsquo;ll see about deleting some things like <code>fan</code> which are just optimizations.</p>
+<p>I think understanding what &ldquo;height&rdquo; is and what the goals of all the &ldquo;deferral queues&rdquo; are is a major step in understanding.</p>
+<h2 id="2023-03-13">2023-03-13</h2>
+<p>I started working on an implementation of Reflex-like FRP in Haskell.
+I&rsquo;ve long wondered how it all works and not understanding the internals has held me back from understanding what goes wrong when my mad experiments fail.
+I&rsquo;m taking this as an opportunity to learn about <a href="https://input-output-hk.github.io/haskell.nix/index.html">haskell.nix</a> as well.</p>
+<p>Things I&rsquo;d like to explore with this implementation:</p>
+<ul>
+<li>A <code>Now</code> monad which has
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl">    <span class="n">occurs</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="n">t</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">)</span>
+</span></span></code></pre></div></li>
+<li>Experiment with first-class timelines.
+(Needs keeping the flexibility of Reflex&rsquo; parameterized types.)</li>
+<li>Maybe focus on commutative-first operations? I&rsquo;ve long thought that sequential-first over commutative-first is a mistake in library design, and Haskell suffers from it. (Another way to see this is &ldquo;sets over lists&rdquo;.)</li>
+</ul>
+<h2 id="2023-03-12">2023-03-12</h2>
+<p>I started reading Ink and Switch&rsquo;s article on their <a href="https://www.inkandswitch.com/upwelling/">Upwelling project</a>.
+I&rsquo;m really enjoying it so far and I&rsquo;m excited to see other people are sharing my thoughts on how collaboration tools should work.</p>
+<h2 id="2023-03-10">2023-03-10</h2>
+<p>More thoughts and questions:</p>
+<h3 id="smalltalk-y-environments-and-distributed-programming">SmallTalk-y environments and distributed programming</h3>
+<p>Why does it feel like SmallTalk environments don&rsquo;t do so well for distributed programming? (Pure ignorance here, maybe they do.) Does any &ldquo;more than text&rdquo; environment do well?</p>
+<h3 id="concrete-examples-vs-abstractions">Concrete examples vs abstractions</h3>
+<p>I listened to the FoC podcast episode on Magic Ink. In it the thought comes up that design tools should work via concrete examples instead of starting with abstractions, like &ldquo;normal&rdquo; programming does. This may sound like it&rsquo;s in opposition to the category-abstract-as-much-as-we-can vibes we have in the FP community, but I believe it&rsquo;s actually extremely compatible, even necessary. The thing that&rsquo;s missing is a database of concrete examples and a user friendly interface.</p>
+<p>A programming environment should say &ldquo;you have two numbers, here are the combinators that work on them&rdquo;.
+It should then save the chosen combinator both as a concrete one and as a more abstract monoidal operation.
+If the code changes and you e.g. switch from numbers to matrices it should pick a new sensible operation or ask if multiple exist.</p>
+<h3 id="undo-via-timeline-of-actions-manipulation">Undo via timeline-of-actions manipulation</h3>
+<p>My master&rsquo;s thesis was about making timelines/events in FRP first class values which can be modified, and using that to implement things like undo.
+I think this is a concept which should be explored more, and which would render an FRP-based programming environment super useful, because you could ask &ldquo;what-if&rdquo; questions and have a much better interactive development/debugging experience.</p>
+<h3 id="causality-of-actions-why-can-this-happen">Causality of actions, &ldquo;why can this happen?&rdquo;</h3>
+<p>When thinking of implementing undo functionality with the above timeline-of-actions concept one of the first problems which comes to mind is deleting an action which makes future actions meaningless.
+E.g. if in a drawing program you remove the action which created a circle, then later actions resizing that circle no longer make sense.
+Can we invent a programming language in which it is easy to ask &ldquo;which parts of the future exist only because of this thing which happened in the past?&rdquo;.</p>
+<h3 id="ui-designs-programs-should-be-testable">UI designs/programs should be testable</h3>
+<p>Could you record interactions with a UI and replay them in various contexts (resized windows etc.) so that they still work?
+This needs predictable identifiers for the UI components.
+What does a programming language which natively supports these predictable IDs look like?</p>
+<p>In common OO programming object identity is not predictable, because the system is not pure and not replayable.</p>
+<h2 id="2023-02-25">2023-02-25</h2>
+<p>I think it would be good to have a list of projects I&rsquo;m (considering) working listed on my web site.
+Things I can think of right now:</p>
+<ul>
+<li>Play around with making Obelisk composable (components with frontend, backend, and database)</li>
+<li>Finish my &ldquo;distributed FRP&rdquo; paper? I got a demotivated and burnt out on this tbh.</li>
+<li>Blog post about denotative distributed programming.</li>
+<li>Trying to find an amazing implementation of Paxos in a toy distributed FRP implementation.</li>
+</ul>
+<h2 id="2023-02-24">2023-02-24</h2>
+<p>Thoughts I wrote down during my Fisherman&rsquo;s Trail walk:</p>
+<h3 id="debuggers-should-work-on-different-semantic-levels">Debuggers should work on different semantic levels</h3>
+<p><span class="org-target" id="org-target--debuggers-different-semantic-levels-log"></span>
+For example, an FRP debugger should tell you &ldquo;what is true at time <em>t</em>&rdquo; (values of behaviors, any event occurrences).
+If say you wrote an infinite recursion in the non-FRP code, you should be able to drop down to a friendly execution model for that code.</p>
+<h3 id="why-couldn-t-smalltalk-be-a-purely-functional-programming-environment-why-not-an-frp-inspired-smalltalk">Why couldn&rsquo;t Smalltalk be a purely functional programming environment? Why not an FRP-inspired Smalltalk?</h3>
+<p>You&rsquo;d need:</p>
+<ul>
+<li>A model of how the program definition changes over time.</li>
+<li>A precise, composable, and easy to understand of where the state of
+objects comes from. Smalltalk OO gives identitiy to everything with
+state, but maybe that&rsquo;s overkill and we can make identity explicit
+in a natural way.</li>
+</ul>
+<h3 id="when-developing-guis-you-should-be-able-to-ask-questions-and-edit-live">When developing GUIs you should be able to ask questions and edit live</h3>
+<ul>
+<li>How is this element defined?</li>
+<li>Where does it come from?</li>
+<li>Why does it exist/am I seeing it?</li>
+</ul>
+<p>I mean, you should be able to enter a special mode while developing which allows you to click on a button and be taken to its editable definition.
+Editing that definition should either change that button (like the DOM editor in your browser) or all buttons (but that might render the current state impossible to reach?).
+Other things which would be cool is to know the causality of the button&rsquo;s existence. E.g. which other buttons were pressed in the past to get to where we are?</p>
+<h3 id="why-can-t-state-and-code-evolve-together--is-textual-programming-a-dead-end">Why can&rsquo;t state and code evolve together? (Is textual programming a dead end?)</h3>
+<p><span class="org-target" id="org-target--state-code-evolve-together-log"></span>
+I was recently helping a friend with a Python project and we had to use a variable to store some text that we&rsquo;d modify later in the program.
+She was surprised to learn that this wouldn&rsquo;t change the text in the source code as well.
+I had to tell her that this was a reasonable assumption but that the field of programming was not yet ready for her futuristic ideas :&rsquo;).</p>
+<p>This really begs the question &ldquo;why can&rsquo;t state and code evolve together?&rdquo;
+The two are intimately linked.
+One version of the state might only make sense for one particular version of the code.
+The only reason I can think of why carrying state between versions of a program tends to work is because we explicitly name bits of state, e.g. with database tables.
+These are usually globally unique identifiers which kills composition.</p>
+<p>To make code-state-coevolution feasible you&rsquo;d have to be able to do operations like &ldquo;start over with fresh state&rdquo;.</p>
+<p>This coevolution problem seems extremely hard to solve with a plain text editor.
+You really want to have program-and-state history as a branchable, rewritable, &hellip; history.
+Just like we do now with Git.
+I can&rsquo;t see that happening unless the editor really understands what&rsquo;s happening, and when you have that you might as well add a lot more UI to &ldquo;code&rdquo;.</p>
+<p>How would you write a document editor in which the document is defined as an exportable program but is no different from code?
+In which you can define in-line editing interfaces for the document elements?
+This is just Smalltalk-like stuff IIRC.
+&ldquo;Bring Smalltalk back?&rdquo;</p>
+<h2 id="2023-02-22">2023-02-22</h2>
+<p>I&rsquo;d really like to find out how a library like Reflex works. I also just found out that browsers support weak references and finalizers in JavaScript now, so I think that means Reflex Spider-style implementations can now be done in JS.</p>
+<p>IIRC something that&rsquo;s expensive in Reflex is to know whether <code>Event (Event a)</code> has a simultaneous occurrence.
+Another expensive thing is joining Dynamic (because of the previous simultaneous nested event occurrence thing?).
+Why are they so in the current Reflex implementation?</p>
+<p>Random thought: it would be cool if an implementation supported</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">occurs</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">)</span>
+</span></span></code></pre></div><p>A function like this might make writing code involving multiple events and behaviors much more ergonomic.
+Now you only have <code>sample</code> for behaviors, but not the equivalent for dynamics.</p>
+<h2 id="journal">Journal</h2>
+
+</article>
+<nav class="no-print post-nav">
+  
+  
+  <a class="next-post" href="https://aidy.dev/journal/2023-02-22/">2023-02-22<img class="icon-text" src="/img/next.svg"/>
+  </a>
+  
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
+
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+
