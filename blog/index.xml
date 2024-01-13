@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Blog on Adriaan Leijnse</title>
+    <link>https://aidy.dev/blog/</link>
+    <description>Recent content in Blog on Adriaan Leijnse</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 04 Dec 2023 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://aidy.dev/blog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>An FRP implementation in Haskell</title>
+      <link>https://aidy.dev/blog/simple-frp-implementation-1/</link>
+      <pubDate>Mon, 04 Dec 2023 00:00:00 +0000</pubDate>
+      <guid>https://aidy.dev/blog/simple-frp-implementation-1/</guid>
+      <description>Audience: This post is for meant for people familiar with Haskell, Classic style Functional Reactive Programming, and Reflex FRP in particular.
+I&amp;rsquo;ve been dissecting Reflex&amp;rsquo; Spider implementation, so I&amp;rsquo;m sharing how to implement a similar library in a series of blog posts. In this first post I&amp;rsquo;ll focus on a simple implementation that is sufficiently lazy for typical recursive FRP definitions to work. However, it&amp;rsquo;s completely unoptimized and not garbage collected so that it can&amp;rsquo;t be used for real applications yet.</description>
+    </item>
+  </channel>
+</rss>

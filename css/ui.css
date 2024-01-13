@@ -436,7 +436,7 @@ h1 {
   font-family: roman;
 }
 h2 {
-  font-size: 1.9rem;
+  font-size: 2rem;
   line-height: 1.25;
   margin-top: 1.6em;
   margin-bottom: -0.2rem;
@@ -454,8 +454,8 @@ h3 {
   line-height: 1.3;
   margin-top: 1.8em;
   margin-bottom: -0.5rem;
-  font-weight: bold;
-  font-style: italic;
+  /* font-weight: bold; */
+  /* font-style: italic; */
 }
 h4 {
   font-size: 1.2rem;
@@ -572,16 +572,14 @@ dd { margin-left: 2rem; }
 p > code {
   /* font-size: 90%; */
   white-space: nowrap;
-  font-family: 'Fira Mono', monospace;
+  font-family: monospace;
   /* margin-left: .15rem; */
   /* margin-right: .15rem; */
 }
 pre > code {
-    font-size: 85%;
   display: block;
-  white-space: pre-wrap;
-  font-family: 'Fira Mono', monospace;
-  overflow-wrap: break-word;
+  /* white-space: pre-wrap; */
+  font-family: monospace;
 }
 .chroma {
     border-radius: 10px;
@@ -810,7 +808,7 @@ there.
 /* LineHighlight */ .chroma .hl { background-color: #ffffcc }
 /* LineNumbersTable */ .chroma .lnt { white-space: pre; user-select: none; margin-right: 0.4em; padding: 0 0.4em 0 0.4em;color: #7f7f7f }
 /* LineNumbers */ .chroma .ln { white-space: pre; user-select: none; margin-right: 0.4em; padding: 0 0.4em 0 0.4em;color: #7f7f7f }
-/* Line */ .chroma .line { display: flex; }
+/* Line */ .chroma .line { display: block; }
 /* Keyword */ .chroma .k { color: #2838b0 }
 /* KeywordConstant */ .chroma .kc { color: #444444; font-style: italic }
 /* KeywordDeclaration */ .chroma .kd { color: #2838b0; font-style: italic }

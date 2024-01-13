@@ -6,320 +6,291 @@
     <description>Recent content on Adriaan Leijnse</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 01 Dec 2023 00:00:00 +0000</lastBuildDate><atom:link href="https://aidy.dev/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 15 Dec 2023 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://aidy.dev/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2023-12-15</title>
+      <link>https://aidy.dev/journal/2023-12-15/</link>
+      <pubDate>Fri, 15 Dec 2023 00:00:00 +0000</pubDate>
+      <guid>https://aidy.dev/journal/2023-12-15/</guid>
+      <description>I gave up on trying for an even shorter basic FRP implementation. It feels like there should be some abstraction that I&amp;rsquo;m missing but it&amp;rsquo;s fine to continue with what I have now!
+I&amp;rsquo;m currently playing around with Threepenny GUI because I&amp;rsquo;d like to know an accessible GUI library that I can use for experiments. In parallel I&amp;rsquo;ll finish commenting my FRP code.</description>
+    </item>
+    <item>
+      <title>2023-12-11</title>
+      <link>https://aidy.dev/journal/2023-12-11/</link>
+      <pubDate>Mon, 11 Dec 2023 00:00:00 +0000</pubDate>
+      <guid>https://aidy.dev/journal/2023-12-11/</guid>
+      <description>After adding more of Reflex&amp;rsquo; tests all three of yesterday&amp;rsquo;s branches still pass. Time to look at my implementation using the original subscribe definition and see if I can make it look more succinct like the other types.</description>
+    </item>
+    <item>
+      <title>2023-12-10</title>
+      <link>https://aidy.dev/journal/2023-12-10/</link>
+      <pubDate>Sun, 10 Dec 2023 00:00:00 +0000</pubDate>
+      <guid>https://aidy.dev/journal/2023-12-10/</guid>
+      <description>I now have an implementation in three ways and I&amp;rsquo;m not sure which is best. All this was because fixIO is not lazy enough to do:
+fixIO $ \unsubscribe -&amp;gt; do subscribe e $ \propagate -&amp;gt; do ... unsubscribe When originally implementing subscribe as:
+subscribe :: Event a -&amp;gt; (Maybe a -&amp;gt; IO ()) -&amp;gt; (Unsubscribe, Maybe (Maybe a)) This fixIO problem didn&amp;rsquo;t exist because processing the initial value happened after the subscribe had run.</description>
+    </item>
+    <item>
+      <title>2023-12-08</title>
+      <link>https://aidy.dev/journal/2023-12-08/</link>
+      <pubDate>Fri, 08 Dec 2023 00:00:00 +0000</pubDate>
+      <guid>https://aidy.dev/journal/2023-12-08/</guid>
+      <description>I figured I&amp;rsquo;d try event subscription without returning the current known occurrence and just relying on the propagate callback for everything. This made the code a lot shorter but now my original way to handle the immediate unsubscribe of the inner event in coincidence no longer works without a FixIO cycle. Adding an unsubscribe queue works to make that lazy but I&amp;rsquo;d rather avoid it so I&amp;rsquo;m spending some time figuring out if that&amp;rsquo;s possible.</description>
+    </item>
+    <item>
+      <title>2023-12-06</title>
+      <link>https://aidy.dev/journal/2023-12-06/</link>
+      <pubDate>Wed, 06 Dec 2023 00:00:00 +0000</pubDate>
+      <guid>https://aidy.dev/journal/2023-12-06/</guid>
+      <description>I&amp;rsquo;ve published a repo implementing FRP from scratch and I&amp;rsquo;m in the process of writing an accompanying blog post. This implementation doesn&amp;rsquo;t do any graph traversal optimisations but it is as expressive and lazier than Reflex. I&amp;rsquo;m now hoping to add GC, graph traversal optimizations, and a GUI library to see how those work.
+Concretely the next steps I&amp;rsquo;m interested in are:
+Cleaning up my implementation some more, solving all TODOs, and fully commenting the code.</description>
+    </item>
+    <item>
+      <title>An FRP implementation in Haskell</title>
+      <link>https://aidy.dev/blog/simple-frp-implementation-1/</link>
+      <pubDate>Mon, 04 Dec 2023 00:00:00 +0000</pubDate>
+      <guid>https://aidy.dev/blog/simple-frp-implementation-1/</guid>
+      <description>Audience: This post is for meant for people familiar with Haskell, Classic style Functional Reactive Programming, and Reflex FRP in particular.
+I&amp;rsquo;ve been dissecting Reflex&amp;rsquo; Spider implementation, so I&amp;rsquo;m sharing how to implement a similar library in a series of blog posts. In this first post I&amp;rsquo;ll focus on a simple implementation that is sufficiently lazy for typical recursive FRP definitions to work. However, it&amp;rsquo;s completely unoptimized and not garbage collected so that it can&amp;rsquo;t be used for real applications yet.</description>
+    </item>
     <item>
       <title>2023-12-01</title>
       <link>https://aidy.dev/journal/2023-12-01/</link>
       <pubDate>Fri, 01 Dec 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-12-01/</guid>
       <description>Niggles while writing Haskell:
-I have to add dependencies manually to the Cabal file and then make sure I reload direnv. Module names have to match file hierarchy but Cabal doesn&amp;rsquo;t suggest an automated fix. HLS does though. Why can&amp;rsquo;t the module name be derived from the file name? Having to list all modules in my Cabal file. </description>
+I have to add dependencies manually to the Cabal file and then make sure I reload direnv. Module names have to match file hierarchy but Cabal doesn&amp;rsquo;t suggest an automated fix. HLS does though. Why can&amp;rsquo;t the module name be derived from the file name? Having to list all modules in my Cabal file. Having to add imports manually to my Haskell modules. </description>
     </item>
-    
     <item>
       <title>2023-11-18</title>
       <link>https://aidy.dev/journal/2023-11-18/</link>
       <pubDate>Sat, 18 Nov 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-11-18/</guid>
       <description>Thought: I should be able to run any expression in my code, being prompted for inputs. This makes it so you don&amp;rsquo;t have to define intermediate expressions if you want to test part of a bigger thing.</description>
     </item>
-    
     <item>
       <title>2023-11-04</title>
       <link>https://aidy.dev/journal/2023-11-04/</link>
       <pubDate>Sat, 04 Nov 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-11-04/</guid>
       <description>Long time no write! I&amp;rsquo;ve been continuing to explore Reflex&amp;rsquo; implementation. I&amp;rsquo;ve got it quite short now and I think I understand all parts, except why the extra-laziness of the buildIncremental=/=buildDynamic functions are needed. Hopefully I can figure that out by working through a failing test.
 My plan now is to delete the last of the optimizations I can find (which might only be the use of &amp;ldquo;height&amp;rdquo; to save on graph traversal), and then write about how to go from zero to Reflex Spider.</description>
     </item>
-    
     <item>
       <title>2023-08-21</title>
       <link>https://aidy.dev/journal/2023-08-21/</link>
       <pubDate>Mon, 21 Aug 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-08-21/</guid>
       <description>Thought while simplifying and getting to understand Reflex&amp;rsquo; Spider implementation:
 When doing this work I focused on ignoring things which are performance optimizations, e.g. &amp;lsquo;FastWeakBag&amp;rsquo; over &amp;lsquo;WeakBag&amp;rsquo; This allows seeing more patterns. When you&amp;rsquo;ve gotten to the essence of things you can re-introduce optimizations. </description>
     </item>
-    
     <item>
       <title>2023-08-07</title>
       <link>https://aidy.dev/journal/2023-08-07/</link>
       <pubDate>Mon, 07 Aug 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-08-07/</guid>
       <description>I&amp;rsquo;m still hard at work refactoring Reflex&amp;rsquo; Spider implementation and greatly improving my understanding of what&amp;rsquo;s going on and seeing hints of how I can make a more grokkable version.
 I&amp;rsquo;ve been doing this by constantly repeating the following:
 Inlining any function that&amp;rsquo;s only used once. In my experience splitting up imperative code into named procedures without their context, especially if they don&amp;rsquo;t capture a repeating pattern, is bad for grokking.</description>
     </item>
-    
     <item>
       <title>2023-07-17</title>
       <link>https://aidy.dev/journal/2023-07-17/</link>
       <pubDate>Mon, 17 Jul 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-07-17/</guid>
       <description>I&amp;rsquo;ve continued working on understanding how Reflex works and trying to implement FRP using an occurs :: Event a -&amp;gt; m (Maybe a) implementation primitive. Such a primitive might help with making a reasonably efficiont implementation which doesn&amp;rsquo;t rely on many event merge primitives such as mergeIncrementalG and mergeIncrementalWithMoveG from Reflex (mergeCheapWithMove, mergeCheap, and mergeIntCheap in the implementation). It might also make coincidence and functions like push in Reflex share code.</description>
     </item>
-    
     <item>
       <title>2023-06-18</title>
       <link>https://aidy.dev/journal/2023-06-30/</link>
       <pubDate>Fri, 30 Jun 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-06-30/</guid>
       <description>It&amp;rsquo;s been a long while since I wrote here! I attended the GHC Contributors Workshop and ZuriHac in the meanwhile and I&amp;rsquo;ve been working on implementing a Reflex-style FRP from scratch.
 The GHC Contributors Workshop was a great event and made me feel more comfortable to dive into the GHC code. ZuriHac as always was lovely and chilled out, and even had a Conal talk to keep the denotative programming spirits up &amp;lt;3.</description>
     </item>
-    
     <item>
       <title>2023-06-07</title>
       <link>https://aidy.dev/journal/2023-06-07/</link>
       <pubDate>Wed, 07 Jun 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-06-07/</guid>
       <description>I&amp;rsquo;m wondering if it&amp;rsquo;s possible to go from an FRP implementation in which accidental space leaks are possible by keeping a reference to an Event, to one in which that is not. In the former an Event is really just a list of occurrences/futures. In the latter you have a Now monad which ensures programs can only observe occurrences after &amp;ldquo;now&amp;rdquo;.
 My first thought was that you&amp;rsquo;d wrap every Event in a Behavior to make a new Event type (this behavior being equivalent to the Now data type).</description>
     </item>
-    
     <item>
       <title>2023-06-05</title>
       <link>https://aidy.dev/journal/2023-06-05/</link>
       <pubDate>Mon, 05 Jun 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-06-05/</guid>
       <description>I&amp;rsquo;ve been reading Sylvain Henry, John Ericson, and Jeffrey M. Young&amp;rsquo;s &amp;ldquo;Modularizing GHC&amp;rdquo; paper which discusses the current state of the GHC code base and how it might be improved. As of now the code has become inflexible due to new work (necessarily?) choosing the path of lowest friction to add features. I imagine doing thorough refactorings when you&amp;rsquo;re on a PhD thesis time budget and a lot of others are also trying to add features isn&amp;rsquo;t easy.</description>
     </item>
-    
     <item>
       <title>2023-06-01</title>
       <link>https://aidy.dev/journal/2023-06-01/</link>
       <pubDate>Thu, 01 Jun 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-06-01/</guid>
       <description>I&amp;rsquo;m back from walking the Cape Wrath Trail! Three weeks of wonderful Highlands nature, many ticks, and a few midges.
 I did some note taking about programming with objects/identity/user intention/causality while on the trail and I&amp;rsquo;ve been experimenting with FRP implementation. I&amp;rsquo;m not entirely sure where I&amp;rsquo;m going with that. I&amp;rsquo;d need good test cases to see that what I&amp;rsquo;m doing is correct, and I&amp;rsquo;d love to write interactive programs but that is annoying without a good GUI library.</description>
     </item>
-    
     <item>
       <title>2023-04-28</title>
       <link>https://aidy.dev/journal/2023-04-28/</link>
       <pubDate>Fri, 28 Apr 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-04-28/</guid>
       <description>Back from hiatus for a few days.
 I just watched Gilad Bracha&amp;rsquo;s presentation on Ampleforth, a live-coding/literate programming/notebook/GUI environment. I loved how you could go from GUI element to definition, compose definitions and document any way you like, and how editing definitions is instantly reflected in the environment. What I think is missing is that in the markup elements are referred to by strings, so you have to think about naming objects if you want to refer to them.</description>
     </item>
-    
     <item>
       <title>2023-04-13</title>
       <link>https://aidy.dev/journal/2023-04-13/</link>
       <pubDate>Thu, 13 Apr 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-04-13/</guid>
       <description>Some thoughts on Objects in FRP.
 Denotative Identity and Objects, Denotative Object-Oriented Programming I see identity (in the sense of an object having an identity) as a problem in our current functional programming practice. It seems that we invent it over and over again whenever we need it, manually generating identifiers and tracking whatever values are supposed to be associated with that identifier. Or, we go the impure route and use mutable references and revert back to impure imperative programming.</description>
     </item>
-    
     <item>
       <title>2023-04-12</title>
       <link>https://aidy.dev/journal/2023-04-12/</link>
       <pubDate>Wed, 12 Apr 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-04-12/</guid>
-      <description>Added [[&amp;lt;/foc-ideas/first-class-timelines.pre-p&amp;gt;</description>
+      <description>Added FRP with first-class timelines FOC entry.</description>
     </item>
-    
     <item>
       <title>A DSL should have its own debugger</title>
       <link>https://aidy.dev/foc-ideas/dsl-debuggers/</link>
       <pubDate>Tue, 11 Apr 2023 19:06:00 +0100</pubDate>
-      
       <guid>https://aidy.dev/foc-ideas/dsl-debuggers/</guid>
       <description>From research journal entry 2023-02-24:
 For example, an FRP debugger should tell you “what is true at time t” (values of behaviors, any event occurrences). If say you wrote an infinite recursion in the non-FRP code, you should be able to drop down to a friendly execution model for that code.
 I&amp;rsquo;m currently not sure what exactly is needed to make this happen.
 If you make an embedded DSL I suppose you can also implement a little debugger for it, but the real trick would be for your debugger to be aware of the debugger for the language below you.</description>
     </item>
-    
     <item>
       <title>Thoughts on comfortable GUI development</title>
       <link>https://aidy.dev/foc-ideas/gui-creation/</link>
       <pubDate>Tue, 11 Apr 2023 12:35:00 +0100</pubDate>
-      
       <guid>https://aidy.dev/foc-ideas/gui-creation/</guid>
       <description>Debugging From research journal entry 2023-02-24.
 When creating GUIs you might want to know:
 How is this element defined? Where does it come from? Why does it exist/am I seeing it? From the entry as well:
 […] you should be able to enter a special mode while developing which allows you to click on a button and be taken to its editable definition. Editing that definition should either change that button (like the DOM editor in your browser) or all buttons (but that might render the current state impossible to reach?</description>
     </item>
-    
     <item>
       <title>2023-04-11</title>
       <link>https://aidy.dev/journal/2023-04-11/</link>
       <pubDate>Tue, 11 Apr 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-04-11/</guid>
       <description>The power of a denotation for causality? I&amp;rsquo;m having some brain sparks related to causality. I was thinking about how when defining GUIs you want to be able to go from the GUI element to the code that made it exist, or the history that makes that you&amp;rsquo;re seeing on the screen. If you have a good model for causality, i.e. &amp;ldquo;what lead to this happening/that existing&amp;rdquo;, you might be able to include &amp;ldquo;because this code was written, these buttons were clicked, etc.</description>
     </item>
-    
     <item>
       <title>FRP with first-class timelines</title>
       <link>https://aidy.dev/foc-ideas/first-class-timelines/</link>
       <pubDate>Tue, 11 Apr 2023 00:00:00 +0100</pubDate>
-      
       <guid>https://aidy.dev/foc-ideas/first-class-timelines/</guid>
       <description>From journal entry Undo via timeline-of-actions manipulation:
 My master&amp;rsquo;s thesis was about making timelines/events in FRP first class values which can be modified, and using that to implement things like undo. I think this is a concept which should be explored more, and which would render an FRP-based programming environment super useful, because you could ask &amp;ldquo;what-if&amp;rdquo; questions and have a much better interactive development/debugging experience.
 Having an FRP implementation in which timelines (Events) are manipulable allows:</description>
     </item>
-    
     <item>
       <title>2023-04-10</title>
       <link>https://aidy.dev/journal/2023-04-10/</link>
       <pubDate>Mon, 10 Apr 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-04-10/</guid>
       <description>I asked on the Future of Coding Slack whether anyone had ideas relating to the program state vs definition idea and some interesting links came up.
 The entangled strands of time in software development Nick Smith linked his Twitter thread, which shared many of the same thoughts I&amp;rsquo;m having, links to a paper: &amp;ldquo;The entangled strands of time in software development&amp;rdquo;, Matthias Hauswirth and Mohammad Reza Azadmanesh 2017.
 This paper looks at what programmers need from their environment.</description>
     </item>
-    
     <item>
       <title>2023-03-18</title>
       <link>https://aidy.dev/journal/2023-03-18/</link>
       <pubDate>Tue, 04 Apr 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-03-18/</guid>
       <description>Rather than immediately attempt my own implementation of FRP, I&amp;rsquo;ve been working on understanding Reflex&amp;rsquo; Spider implementation. I started out with the original code—randomly deleting anything that didn&amp;rsquo;t seem essential like Incremental and Dynamic (because they can be expressed in terms of Event and Behavior), but it seems that Dynamic might be a basic building block of the implementation? Maybe the way behaviors work is actually via something Dynamic-like?
 Anyway, I&amp;rsquo;ve re-copied the whole Reflex implementation and I&amp;rsquo;m now simplifying with the help of Git.</description>
     </item>
-    
     <item>
       <title>2023-04-04</title>
       <link>https://aidy.dev/journal/2023-04-04/</link>
       <pubDate>Tue, 04 Apr 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-04-04/</guid>
       <description>I added the first topic to my &amp;ldquo;ideas for the future of coding&amp;rdquo; section on the site (current title: Un-separating program state and definition).
 Logging this thought I&amp;rsquo;ve been having for a long time (if I&amp;rsquo;m not repeating an earlier entry):
 An action and its intent should be first class things I think that programming with a history of first class, meaningful, user/programmer actions, sounds very valuable. Actions are things like: clicking a button to do something, editing the definition of a program,&amp;hellip; You need to capture the intent of the action and the causality, not just the lower level effects of the action.</description>
     </item>
-    
     <item>
       <title>Re-unifying program state and definition</title>
       <link>https://aidy.dev/foc-ideas/state-and-program-definition/</link>
       <pubDate>Sun, 02 Apr 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/foc-ideas/state-and-program-definition/</guid>
       <description>Why can&amp;rsquo;t program state and source evolve together? This used to be the case in Smalltalk images and other systems, but it&amp;rsquo;s completely gone from mainstream development.
 From research journal entry /journal/2023-02-24/:
 I was recently helping a friend with a Python project and we had to use a variable to store some text that we’d modify later in the program. She was surprised to learn that this wouldn’t change the text in the source code as well.</description>
     </item>
-    
     <item>
       <title>2023-03-19</title>
       <link>https://aidy.dev/journal/2023-03-19/</link>
       <pubDate>Sun, 19 Mar 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-03-19/</guid>
       <description>I just remembered another useful FRP feature which currently doesn&amp;rsquo;t exist. It would solve the &amp;ldquo;I wrote my program as a function of Event a, but I want it to accept input looking something like Event [a], where [a] is an ordered sequence of occurrences that have to happen &amp;ldquo;within the current moment&amp;rdquo;. Doing this safely, especially if you want to pass multiple of these Event [a] values to a program, seems tricky.</description>
     </item>
-    
     <item>
       <title>2023-03-13</title>
       <link>https://aidy.dev/journal/2023-03-13/</link>
       <pubDate>Mon, 13 Mar 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-03-13/</guid>
       <description>I started working on an implementation of Reflex-like FRP in Haskell. I&amp;rsquo;ve long wondered how it all works and not understanding the internals has held me back from understanding what goes wrong when my mad experiments fail. I&amp;rsquo;m taking this as an opportunity to learn about haskell.nix as well.
 Things I&amp;rsquo;d like to explore with this implementation:
 A Now monad which has occurs :: Event t a -&amp;gt; Now (Maybe a) Experiment with first-class timelines.</description>
     </item>
-    
     <item>
       <title>2023-03-12</title>
       <link>https://aidy.dev/journal/2023-03-12/</link>
       <pubDate>Sun, 12 Mar 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-03-12/</guid>
       <description>I started reading Ink and Switch&amp;rsquo;s article on their Upwelling project. I&amp;rsquo;m really enjoying it so far and I&amp;rsquo;m excited to see other people are sharing my thoughts on how collaboration tools should work.</description>
     </item>
-    
     <item>
       <title>2023-03-10</title>
       <link>https://aidy.dev/journal/2023-03-10/</link>
       <pubDate>Fri, 10 Mar 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-03-10/</guid>
       <description>More thoughts and questions:
 SmallTalk-y environments and distributed programming Why does it feel like SmallTalk environments don&amp;rsquo;t do so well for distributed programming? (Pure ignorance here, maybe they do.) Does any &amp;ldquo;more than text&amp;rdquo; environment do well?
 Concrete examples vs abstractions I listened to the FoC podcast episode on Magic Ink. In it the thought comes up that design tools should work via concrete examples instead of starting with abstractions, like &amp;ldquo;normal&amp;rdquo; programming does.</description>
     </item>
-    
     <item>
       <title>2023-02-25</title>
       <link>https://aidy.dev/journal/2023-02-25/</link>
       <pubDate>Sat, 25 Feb 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-02-25/</guid>
       <description>I think it would be good to have a list of projects I&amp;rsquo;m (considering) working listed on my web site. Things I can think of right now:
 Play around with making Obelisk composable (components with frontend, backend, and database) Finish my &amp;ldquo;distributed FRP&amp;rdquo; paper? I got a demotivated and burnt out on this tbh. Blog post about denotative distributed programming. Trying to find an amazing implementation of Paxos in a toy distributed FRP implementation.</description>
     </item>
-    
     <item>
       <title>2023-02-24</title>
       <link>https://aidy.dev/journal/2023-02-24/</link>
       <pubDate>Fri, 24 Feb 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-02-24/</guid>
       <description>Thoughts I wrote down during my Fisherman&amp;rsquo;s Trail walk:
 Debuggers should work on different semantic levels For example, an FRP debugger should tell you &amp;ldquo;what is true at time t&amp;rdquo; (values of behaviors, any event occurrences). If say you wrote an infinite recursion in the non-FRP code, you should be able to drop down to a friendly execution model for that code.
 Why couldn&amp;rsquo;t Smalltalk be a purely functional programming environment?</description>
     </item>
-    
     <item>
       <title>2023-02-22</title>
       <link>https://aidy.dev/journal/2023-02-22/</link>
       <pubDate>Wed, 22 Feb 2023 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/journal/2023-02-22/</guid>
       <description>I&amp;rsquo;d really like to find out how a library like Reflex works. I also just found out that browsers support weak references and finalizers in JavaScript now, so I think that means Reflex Spider-style implementations can now be done in JS.
 IIRC something that&amp;rsquo;s expensive in Reflex is to know whether Event (Event a) has a simultaneous occurrence. Another expensive thing is joining Dynamic (because of the previous simultaneous nested event occurrence thing?</description>
     </item>
-    
     <item>
       <title>Higher-order patterns in replicated data types</title>
       <link>https://aidy.dev/papers/patterns-in-replicated-data-types/</link>
       <pubDate>Mon, 25 Mar 2019 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/papers/patterns-in-replicated-data-types/</guid>
       <description>In this paper we argue that the essence of CRDTs is not about being &amp;ldquo;operation-based&amp;rdquo; or &amp;ldquo;state-based&amp;rdquo;. Instead, CRDTs have a more abstract meaning: they are ways to derive a value from a set of known operations. These derivations follow a few simple patterns which can be reused to succinctly define the individual behaviors of a large catalog of CRDTs. This means that when writing complex CRDTs it might be worth creating a little programming language which supports those patterns as first class primitives and implements them efficiently.</description>
     </item>
-    
-    <item>
-      <title></title>
-      <link>https://aidy.dev/all/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://aidy.dev/all/</guid>
-      <description>Research journal 2023-11-18 Thought: I should be able to run any expression in my code, being prompted for inputs. This makes it so you don&amp;rsquo;t have to define intermediate expressions if you want to test part of a bigger thing.
-2023-11-04 Long time no write! I&amp;rsquo;ve been continuing to explore Reflex&amp;rsquo; implementation. I&amp;rsquo;ve got it quite short now and I think I understand all parts, except why the extra-laziness of the buildIncremental=/=buildDynamic functions are needed.</description>
-    </item>
-    
-    <item>
-      <title>Research journal</title>
-      <link>https://aidy.dev/journal/all/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://aidy.dev/journal/all/</guid>
-      <description>2023-11-18 Thought: I should be able to run any expression in my code, being prompted for inputs. This makes it so you don&amp;rsquo;t have to define intermediate expressions if you want to test part of a bigger thing.
-2023-11-04 Long time no write! I&amp;rsquo;ve been continuing to explore Reflex&amp;rsquo; implementation. I&amp;rsquo;ve got it quite short now and I think I understand all parts, except why the extra-laziness of the buildIncremental=/=buildDynamic functions are needed.</description>
-    </item>
-    
   </channel>
 </rss>

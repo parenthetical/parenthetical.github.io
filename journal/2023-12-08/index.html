@@ -4,9 +4,9 @@
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="generator" content="Hugo 0.120.3">
-		<title>Tag: Tags - Adriaan Leijnse</title>
+		<title>2023-12-08 - Adriaan Leijnse</title>
 
-		<meta name="description" content="">
+		<meta name="description" content="I figured I&rsquo;d try event subscription without returning the current known occurrence and just relying on the propagate callback for everything. This made the code a lot shorter but now my original way to handle the immediate unsubscribe of the inner event in coincidence no longer works without a FixIO cycle. Adding an unsubscribe queue works to make that lazy but I&rsquo;d rather avoid it so I&rsquo;m spending some time figuring out if that&rsquo;s possible.">
 
 
 		
@@ -59,6 +59,8 @@
           </li><li>
             <a href="/journal/"
                
+               class="active"
+               
                >
               Journal
             </a>
@@ -73,19 +75,41 @@
     </header>
     <main class="container">
 
-<section class="terms">
-	<hgroup id="brand">
-	<h5>Tag:</h5>
-	<h1>Tags</h1>
+<article>
+  <header>
+    <hgroup id="brand">
+      <h1>
+        Journal entry for 
 	
-</hgroup>
-<hr class="sep" />
+        
+	<time datetime="2023-12-08 00:00:00 &#43;0000 UTC">December 8, 2023</time>
+        
+	<span class="no-print">
+	  <span>
+      </h1>
+    </hgroup>
+    <hr class="sep" />
+  </header>
+  <p>I figured I&rsquo;d try event subscription without returning the current known occurrence and just relying on the propagate callback for everything.
+This made the code a lot shorter but now my original way to handle the immediate unsubscribe of the inner event in <code>coincidence</code> no longer works without a FixIO cycle.
+Adding an unsubscribe queue works to make that lazy but I&rsquo;d rather avoid it so I&rsquo;m spending some time figuring out if that&rsquo;s possible.</p>
 
-	
-	<ul style="list-style: none;">
-		
-	</ul>
-</section>
+</article>
+<nav class="no-print post-nav">
+  
+  <a class="prev-post" href="https://aidy.dev/journal/2023-12-06/">
+    <img class="icon-text" src="/img/prev.svg"/>2023-12-06</a>
+  
+  
+  <a class="next-post" href="https://aidy.dev/journal/2023-12-10/">2023-12-10<img class="icon-text" src="/img/next.svg"/>
+  </a>
+  
+</nav>
+
+
+
+
+
 		        <hr class="bottom-sep" />
 		</main>
 		<footer class="container no-print">

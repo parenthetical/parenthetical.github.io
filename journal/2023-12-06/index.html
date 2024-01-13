@@ -4,10 +4,11 @@
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="generator" content="Hugo 0.120.3">
-		<title>2023-02-25 - Adriaan Leijnse</title>
+		<title>2023-12-06 - Adriaan Leijnse</title>
 
-		<meta name="description" content="I think it would be good to have a list of projects I&rsquo;m (considering) working listed on my web site. Things I can think of right now:
-Play around with making Obelisk composable (components with frontend, backend, and database) Finish my &ldquo;distributed FRP&rdquo; paper? I got a demotivated and burnt out on this tbh. Blog post about denotative distributed programming. Trying to find an amazing implementation of Paxos in a toy distributed FRP implementation.">
+		<meta name="description" content="I&rsquo;ve published a repo implementing FRP from scratch and I&rsquo;m in the process of writing an accompanying blog post. This implementation doesn&rsquo;t do any graph traversal optimisations but it is as expressive and lazier than Reflex. I&rsquo;m now hoping to add GC, graph traversal optimizations, and a GUI library to see how those work.
+Concretely the next steps I&rsquo;m interested in are:
+Cleaning up my implementation some more, solving all TODOs, and fully commenting the code.">
 
 
 		
@@ -83,7 +84,7 @@ Play around with making Obelisk composable (components with frontend, backend, a
         Journal entry for 
 	
         
-	<time datetime="2023-02-25 00:00:00 &#43;0000 UTC">February 25, 2023</time>
+	<time datetime="2023-12-06 00:00:00 &#43;0000 UTC">December 6, 2023</time>
         
 	<span class="no-print">
 	  <span>
@@ -91,23 +92,25 @@ Play around with making Obelisk composable (components with frontend, backend, a
     </hgroup>
     <hr class="sep" />
   </header>
-  <p>I think it would be good to have a list of projects I&rsquo;m (considering) working listed on my web site.
-Things I can think of right now:</p>
+  <p>I&rsquo;ve published a <a href="https://github.com/parenthetical/frp-journey">repo</a> implementing FRP from scratch and I&rsquo;m in the process of writing an accompanying blog post.
+This implementation doesn&rsquo;t do any graph traversal optimisations but it is as expressive and lazier than Reflex.
+I&rsquo;m now hoping to add GC, graph traversal optimizations, and a GUI library to see how those work.</p>
+<p>Concretely the next steps I&rsquo;m interested in are:</p>
 <ul>
-<li>Play around with making Obelisk composable (components with frontend, backend, and database)</li>
-<li>Finish my &ldquo;distributed FRP&rdquo; paper? I got a demotivated and burnt out on this tbh.</li>
-<li>Blog post about denotative distributed programming.</li>
-<li>Trying to find an amazing implementation of Paxos in a toy distributed FRP implementation.</li>
+<li>Cleaning up my implementation some more, solving all TODOs, and fully commenting the code.</li>
+<li>Writing a Todo-MVC version using my FRP implementation and threepenny-gui. This I&rsquo;m planning to do by first keeping the FRP and GUI separate and then combining the two in a nice API.</li>
 </ul>
+<p>I&rsquo;ve also just realize that instead of Reflex&rsquo; &ldquo;event subscription takes a callback and returns the current known occurrence (if any)&rdquo; I might be able to have event subscription call the callback immediately?
+I&rsquo;m not sure this works out but I&rsquo;ll give that a try now.</p>
 
 </article>
 <nav class="no-print post-nav">
   
-  <a class="prev-post" href="https://aidy.dev/journal/2023-02-24/">
-    <img class="icon-text" src="/img/prev.svg"/>2023-02-24</a>
+  <a class="prev-post" href="https://aidy.dev/journal/2023-12-01/">
+    <img class="icon-text" src="/img/prev.svg"/>2023-12-01</a>
   
   
-  <a class="next-post" href="https://aidy.dev/journal/2023-03-10/">2023-03-10<img class="icon-text" src="/img/next.svg"/>
+  <a class="next-post" href="https://aidy.dev/journal/2023-12-08/">2023-12-08<img class="icon-text" src="/img/next.svg"/>
   </a>
   
 </nav>

@@ -2,13 +2,34 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://aidy.dev/journal/2023-12-01/</loc>
-    <lastmod>2023-12-01T00:00:00+00:00</lastmod>
+    <loc>https://aidy.dev/journal/2023-12-15/</loc>
+    <lastmod>2023-12-15T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://aidy.dev/</loc>
-    <lastmod>2023-12-01T00:00:00+00:00</lastmod>
+    <lastmod>2023-12-15T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://aidy.dev/journal/</loc>
+    <lastmod>2023-12-15T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://aidy.dev/journal/2023-12-11/</loc>
+    <lastmod>2023-12-11T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://aidy.dev/journal/2023-12-10/</loc>
+    <lastmod>2023-12-10T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://aidy.dev/journal/2023-12-08/</loc>
+    <lastmod>2023-12-08T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://aidy.dev/journal/2023-12-06/</loc>
+    <lastmod>2023-12-06T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://aidy.dev/blog/simple-frp-implementation-1/</loc>
+    <lastmod>2023-12-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://aidy.dev/blog/</loc>
+    <lastmod>2023-12-04T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://aidy.dev/journal/2023-12-01/</loc>
     <lastmod>2023-12-01T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://aidy.dev/journal/2023-11-18/</loc>
@@ -100,10 +121,6 @@
   </url><url>
     <loc>https://aidy.dev/papers/</loc>
     <lastmod>2019-03-25T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://aidy.dev/all/</loc>
-  </url><url>
-    <loc>https://aidy.dev/journal/all/</loc>
   </url><url>
     <loc>https://aidy.dev/tags/</loc>
   </url>

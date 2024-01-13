@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.120.3">
+		<title>2023-12-10 - Adriaan Leijnse</title>
+
+		<meta name="description" content="I now have an implementation in three ways and I&rsquo;m not sure which is best. All this was because fixIO is not lazy enough to do:
+fixIO $ \unsubscribe -&gt; do subscribe e $ \propagate -&gt; do ... unsubscribe When originally implementing subscribe as:
+subscribe :: Event a -&gt; (Maybe a -&gt; IO ()) -&gt; (Unsubscribe, Maybe (Maybe a)) This fixIO problem didn&rsquo;t exist because processing the initial value happened after the subscribe had run.">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <nav id="navbar"
+           style="
+                  margin-bottom: 3rem;
+                  padding-top: 1rem;
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: flex-end;
+                  column-gap: 1.7rem;
+                  "             >
+        <a href="/"
+           >
+          <h1 style="
+                     margin: 0.2rem 0;
+                     padding: 0;
+                     font-size: 1.6rem;
+                     font-family: roman;
+                     color: #777;
+                     ">
+            Adriaan Leijnse
+          </h1>
+        </a>
+        <ul>
+          <li>
+            <a href="/foc-ideas/"
+               
+               >
+              Future of Coding
+            </a>
+          </li><li>
+            <a href="/journal/"
+               
+               class="active"
+               
+               >
+              Journal
+            </a>
+          </li><li>
+            <a href="/papers/"
+               
+               >
+              Papers
+            </a>
+          </li></ul>
+      </nav>
+    </header>
+    <main class="container">
+
+<article>
+  <header>
+    <hgroup id="brand">
+      <h1>
+        Journal entry for 
+	
+        
+	<time datetime="2023-12-10 00:00:00 &#43;0000 UTC">December 10, 2023</time>
+        
+	<span class="no-print">
+	  <span>
+      </h1>
+    </hgroup>
+    <hr class="sep" />
+  </header>
+  <p>I now have an implementation in three ways and I&rsquo;m not sure which is best.
+All this was because fixIO is not lazy enough to do:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">fixIO</span> <span class="o">$</span> <span class="nf">\</span><span class="n">unsubscribe</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">  <span class="n">subscribe</span> <span class="n">e</span> <span class="o">$</span> <span class="nf">\</span><span class="n">propagate</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">    <span class="o">...</span>
+</span></span><span class="line"><span class="cl">    <span class="n">unsubscribe</span>
+</span></span></code></pre></div><p>When originally implementing subscribe as:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">subscribe</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="nb">()</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="kt">Unsubscribe</span><span class="p">,</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">))</span>
+</span></span></code></pre></div><p>This fixIO problem didn&rsquo;t exist because processing the initial value happened after the subscribe had run.
+Now I was trying to implement the FRP interface without having to return this <code>Maybe (Maybe a)</code> (occurrence known at subscribe time or not and what&rsquo;s its value).
+Maybe with my new insights I&rsquo;ll give the original version a shot again and see if I can make a shorter implementation using it.</p>
+<p>The three options I came up with are:</p>
+<dl>
+<dt>branch <a href="https://github.com/parenthetical/frp-journey/tree/no-unsubscribe-queue-via-passing-in-unsubscribe-to-subscribe">no-unsubscribe-queue-via-passing-in-unsubscribe-to-subscribe</a></dt>
+<dd>Here I implemented event subscription without returning the unsubscribe, instead it&rsquo;s passed in.
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl">       <span class="kr">type</span> <span class="kt">Subscriber</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Unsubscribe</span> <span class="ow">-&gt;</span> <span class="kt">Maybe</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="nb">()</span>
+</span></span><span class="line"><span class="cl">       <span class="kr">type</span> <span class="kt">Unsubscribe</span> <span class="ow">=</span> <span class="kt">IO</span> <span class="nb">()</span>
+</span></span><span class="line"><span class="cl">       <span class="kr">newtype</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Event</span> <span class="p">{</span> <span class="n">subscribe</span> <span class="ow">::</span> <span class="kt">Subscriber</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="nb">()</span> <span class="p">}</span>
+</span></span></code></pre></div><p>I had to use <code>unsafePerformIO</code> to save the unsubscribe action in some places.
+The advantage of this one is that I didn&rsquo;t have to use a delaying queue for unsubscribing in <code>coincidence</code>, but everything else became a little harder.</p>
+</dd>
+<dt>branch <a href="https://github.com/parenthetical/frp-journey/tree/no-unsubscribeQueue">no-unsubscribe-queue-via-passing-in-unsubscribe-to-subscribe</a></dt>
+<dd>Here I have subscribe as:
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl">       <span class="kr">type</span> <span class="kt">Subscriber</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Maybe</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="nb">()</span>
+</span></span><span class="line"><span class="cl">       <span class="kr">newtype</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Event</span> <span class="p">{</span> <span class="n">subscribe</span> <span class="ow">::</span> <span class="kt">Subscriber</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="kt">Unsubscribe</span> <span class="p">}</span>
+</span></span></code></pre></div><p>Here <code>coincidence</code> looks like:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl">       <span class="n">coincidence</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="p">(</span><span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl">       <span class="n">coincidence</span> <span class="n">coincidenceParent</span> <span class="ow">=</span> <span class="n">cacheEvent</span> <span class="o">$</span> <span class="kt">Event</span> <span class="o">$</span> <span class="nf">\</span><span class="n">propagate</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">         <span class="n">subscribe</span> <span class="n">coincidenceParent</span> <span class="o">$</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">           <span class="n">maybe</span> <span class="p">(</span><span class="n">propagate</span> <span class="kt">Nothing</span><span class="p">)</span> <span class="o">$</span> <span class="nf">\</span><span class="n">e</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">             <span class="n">innerEUnsubscribeRef</span> <span class="ow">::</span> <span class="kt">IORef</span> <span class="p">(</span><span class="kt">IO</span> <span class="nb">()</span><span class="p">)</span> <span class="ow">&lt;-</span> <span class="n">newIORef</span> <span class="o">$</span> <span class="n">pure</span> <span class="nb">()</span>
+</span></span><span class="line"><span class="cl">             <span class="n">occWasKnownRef</span> <span class="ow">&lt;-</span> <span class="n">newIORef</span> <span class="kt">False</span>
+</span></span><span class="line"><span class="cl">             <span class="n">unsubscribe</span> <span class="ow">&lt;-</span> <span class="n">subscribe</span> <span class="n">e</span> <span class="p">(</span><span class="nf">\</span><span class="n">occ</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">                                            <span class="n">writeIORef</span> <span class="n">occWasKnownRef</span> <span class="kt">True</span>
+</span></span><span class="line"><span class="cl">                                            <span class="n">join</span> <span class="p">(</span><span class="n">readIORef</span> <span class="n">innerEUnsubscribeRef</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                                            <span class="n">propagate</span> <span class="n">occ</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">             <span class="n">writeIORef</span> <span class="n">innerEUnsubscribeRef</span> <span class="n">unsubscribe</span>
+</span></span><span class="line"><span class="cl">             <span class="n">occKnown</span> <span class="ow">&lt;-</span> <span class="n">readIORef</span> <span class="n">occWasKnownRef</span>
+</span></span><span class="line"><span class="cl">             <span class="n">when</span> <span class="n">occKnown</span> <span class="n">unsubscribe</span>
+</span></span></code></pre></div><p>Which mimics the original subscribe.</p>
+<p>Every other function is simpler to implement.</p>
+</dd>
+<dt>branch <a href="https://github.com/parenthetical/frp-journey/tree/coincidence-using-toClearQueue">coincidence-using-toClearQueue</a></dt>
+<dd><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl">         <span class="kr">type</span> <span class="kt">Subscriber</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Maybe</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="nb">()</span>
+</span></span><span class="line"><span class="cl">         <span class="kr">newtype</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Event</span> <span class="p">{</span> <span class="n">subscribe</span> <span class="ow">::</span> <span class="kt">Subscriber</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="kt">Unsubscribe</span> <span class="p">}</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl">       <span class="n">coincidence</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="p">(</span><span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl">       <span class="n">coincidence</span> <span class="n">e</span> <span class="ow">=</span> <span class="n">cacheEvent</span> <span class="o">$</span> <span class="kt">Event</span> <span class="o">$</span> <span class="nf">\</span><span class="n">propagate</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">         <span class="n">subscribe</span> <span class="n">e</span> <span class="o">$</span> <span class="n">maybe</span> <span class="p">(</span><span class="n">propagate</span> <span class="kt">Nothing</span><span class="p">)</span> <span class="p">(</span><span class="n">addToQueue</span> <span class="n">toClearQueueRef</span> <span class="o">&lt;=&lt;</span> <span class="p">(`</span><span class="n">subscribe</span><span class="p">`</span> <span class="n">propagate</span><span class="p">))</span>
+</span></span></code></pre></div>This one uses the event occurrence clearing queue to unsubscribe from the inner coincidence event.</dd>
+</dl>
+<p>I&rsquo;m going to add the rest of the Reflex semantics test suite (skipped fan/Dynamic stuff) for some added confidence and then go back to the original subscribe function definition to see if I can make things a little shorter with it.</p>
+<p>The original subscribe function as found in Reflex is here <a href="https://github.com/parenthetical/frp-journey/tree/original-subscribe-definition">https://github.com/parenthetical/frp-journey/tree/original-subscribe-definition</a>.</p>
+
+</article>
+<nav class="no-print post-nav">
+  
+  <a class="prev-post" href="https://aidy.dev/journal/2023-12-08/">
+    <img class="icon-text" src="/img/prev.svg"/>2023-12-08</a>
+  
+  
+  <a class="next-post" href="https://aidy.dev/journal/2023-12-11/">2023-12-11<img class="icon-text" src="/img/next.svg"/>
+  </a>
+  
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
+
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+

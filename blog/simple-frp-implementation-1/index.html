@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.120.3">
+		<title>An FRP implementation in Haskell - Adriaan Leijnse</title>
+
+		<meta name="description" content="Audience: This post is for meant for people familiar with Haskell, Classic style Functional Reactive Programming, and Reflex FRP in particular.
+I&rsquo;ve been dissecting Reflex&rsquo; Spider implementation, so I&rsquo;m sharing how to implement a similar library in a series of blog posts. In this first post I&rsquo;ll focus on a simple implementation that is sufficiently lazy for typical recursive FRP definitions to work. However, it&rsquo;s completely unoptimized and not garbage collected so that it can&rsquo;t be used for real applications yet.">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <nav id="navbar"
+           style="
+                  margin-bottom: 3rem;
+                  padding-top: 1rem;
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: flex-end;
+                  column-gap: 1.7rem;
+                  "             >
+        <a href="/"
+           >
+          <h1 style="
+                     margin: 0.2rem 0;
+                     padding: 0;
+                     font-size: 1.6rem;
+                     font-family: roman;
+                     color: #777;
+                     ">
+            Adriaan Leijnse
+          </h1>
+        </a>
+        <ul>
+          <li>
+            <a href="/foc-ideas/"
+               
+               >
+              Future of Coding
+            </a>
+          </li><li>
+            <a href="/journal/"
+               
+               >
+              Journal
+            </a>
+          </li><li>
+            <a href="/papers/"
+               
+               >
+              Papers
+            </a>
+          </li></ul>
+      </nav>
+    </header>
+    <main class="container">
+
+<article>
+	<header><hgroup id="brand">
+	<h1>An FRP implementation in Haskell</h1>
+        
+	<h5>
+	  
+          
+	    <time datetime="2023-12-04 00:00:00 &#43;0000 UTC">Dec 04, 2023</time>
+          
+		<span class="no-print">
+			<span>
+	</h5>
+	
+</hgroup>
+<hr class="sep" />
+</header>
+	<div class="preface">
+<p>Audience: This post is for meant for people familiar with Haskell, Classic style Functional Reactive Programming, and Reflex FRP in particular.</p>
+</div>
+<p>I&rsquo;ve been dissecting Reflex&rsquo; <a href="https://github.com/reflex-frp/reflex/blob/b7d933a33a72949a700414bda7a23aa90105431a/src/Reflex/Spider/Internal.hs">Spider</a> implementation, so I&rsquo;m sharing how to implement a similar library in a series of blog posts.
+In this first post I&rsquo;ll focus on a simple implementation that is sufficiently lazy for typical recursive FRP definitions to work.
+However, it&rsquo;s completely unoptimized and not garbage collected so that it can&rsquo;t be used for real applications yet.</p>
+<h2 id="interface">Interface</h2>
+<p>We&rsquo;ll be looking at implementing a minimal higher-order Classic FRP interface and giving it an executable denotational semantics, similarly to <a href="https://github.com/reflex-frp/reflex/blob/b7d933a33a72949a700414bda7a23aa90105431a/src/Reflex/Pure.hs">Reflex.Pure</a>.
+The source can be found in <a href="https://github.com/parenthetical/frp-journey/blob/simple-frp-implementation-1/src/Frp/Class.hs">Frp.Class</a>; here&rsquo;s the interface:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="kr">module</span> <span class="nn">Frp.Class</span> <span class="kr">where</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- Imports omitted</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">class</span> <span class="p">(</span><span class="kt">MonadFix</span> <span class="p">(</span><span class="kt">Behavior</span> <span class="n">t</span><span class="p">),</span> <span class="kt">MonadFix</span> <span class="p">(</span><span class="kt">Moment</span> <span class="n">t</span><span class="p">))</span> <span class="ow">=&gt;</span> <span class="kt">Frp</span> <span class="p">(</span><span class="n">t</span> <span class="ow">::</span> <span class="kt">Type</span><span class="p">)</span> <span class="kr">where</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">data</span> <span class="kt">Behavior</span> <span class="n">t</span> <span class="ow">::</span> <span class="kt">Type</span> <span class="ow">-&gt;</span> <span class="kt">Type</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">data</span> <span class="kt">Event</span> <span class="n">t</span> <span class="ow">::</span> <span class="kt">Type</span> <span class="ow">-&gt;</span> <span class="kt">Type</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">type</span> <span class="kt">Moment</span> <span class="n">t</span> <span class="ow">::</span> <span class="kt">Type</span> <span class="ow">-&gt;</span> <span class="kt">Type</span>
+</span></span><span class="line"><span class="cl">  <span class="n">mapMaybeMoment</span> <span class="ow">::</span> <span class="p">(</span><span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Moment</span> <span class="n">t</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">b</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">t</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">t</span> <span class="n">b</span>
+</span></span><span class="line"><span class="cl">  <span class="n">coincidence</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="n">t</span> <span class="p">(</span><span class="kt">Event</span> <span class="n">t</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">t</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl">  <span class="n">merge</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="n">t</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">t</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">t</span> <span class="p">(</span><span class="kt">These</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">never</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="n">t</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl">  <span class="n">switch</span> <span class="ow">::</span> <span class="kt">Behavior</span> <span class="n">t</span> <span class="p">(</span><span class="kt">Event</span> <span class="n">t</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">t</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl">  <span class="n">now</span> <span class="ow">::</span> <span class="kt">Moment</span> <span class="n">t</span> <span class="p">(</span><span class="kt">Event</span> <span class="n">t</span> <span class="nb">()</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sample</span> <span class="ow">::</span> <span class="kt">Behavior</span> <span class="n">t</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Moment</span> <span class="n">t</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl">  <span class="n">hold</span> <span class="ow">::</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">t</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Moment</span> <span class="n">t</span> <span class="p">(</span><span class="kt">Behavior</span> <span class="n">t</span> <span class="n">a</span><span class="p">)</span>
+</span></span></code></pre></div><p>I borrowed the <code>Moment</code> name from the <a href="http://wiki.haskell.org/Reactive-banana">reactive-banana</a> FRP library; it&rsquo;s also equivalent to the <code>PushM</code> type from Reflex.</p>
+<h2 id="semantics--for-reference">Semantics (for reference)</h2>
+<p>To give a precise meaning to the above interface we can implement it using regular Haskell functions in terms of some concrete time value <em>t</em>.
+It needs to be enumerable so usually you&rsquo;d pick something like <code>Integer</code> to play around with.
+The source is in <a href="https://github.com/parenthetical/frp-journey/blob/simple-frp-implementation-1/src/Frp/Pure.hs">Frp.Pure</a>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="kr">module</span> <span class="nn">Frp.Pure</span> <span class="kr">where</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nn">Frp.Class</span>
+</span></span><span class="line"><span class="cl"><span class="c1">-- other imports omitted</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">data</span> <span class="kt">Pure</span> <span class="p">(</span><span class="n">t</span> <span class="ow">::</span> <span class="kt">Type</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">instance</span> <span class="p">(</span><span class="kt">Ord</span> <span class="n">t</span><span class="p">,</span> <span class="kt">Enum</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=&gt;</span> <span class="kt">Frp</span> <span class="p">(</span><span class="kt">Pure</span> <span class="n">t</span><span class="p">)</span> <span class="kr">where</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">newtype</span> <span class="kt">Behavior</span> <span class="p">(</span><span class="kt">Pure</span> <span class="n">t</span><span class="p">)</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">BehaviorP</span> <span class="p">{</span> <span class="n">at</span> <span class="ow">::</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">deriving</span> <span class="p">(</span><span class="kt">Functor</span><span class="p">,</span><span class="kt">Applicative</span><span class="p">,</span><span class="kt">Monad</span><span class="p">,</span><span class="kt">MonadFix</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">newtype</span> <span class="kt">Event</span> <span class="p">(</span><span class="kt">Pure</span> <span class="n">t</span><span class="p">)</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">EventP</span> <span class="p">{</span> <span class="n">occurs</span> <span class="ow">::</span> <span class="n">t</span> <span class="ow">-&gt;</span> <span class="kt">Maybe</span> <span class="n">a</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">type</span> <span class="kt">Moment</span> <span class="p">(</span><span class="kt">Pure</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=</span> <span class="p">(</span><span class="ow">-&gt;</span><span class="p">)</span> <span class="n">t</span>
+</span></span><span class="line"><span class="cl">  <span class="n">mapMaybeMoment</span> <span class="n">f</span> <span class="ow">=</span> <span class="kt">EventP</span> <span class="o">.</span> <span class="n">runMaybeT</span> <span class="o">.</span> <span class="p">(</span><span class="kt">MaybeT</span> <span class="o">.</span> <span class="n">f</span> <span class="o">&lt;=&lt;</span> <span class="kt">MaybeT</span> <span class="o">.</span> <span class="n">occurs</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">coincidence</span> <span class="ow">=</span> <span class="n">mapMaybeMoment</span> <span class="n">occurs</span>
+</span></span><span class="line"><span class="cl">  <span class="n">merge</span> <span class="n">a</span> <span class="n">b</span> <span class="ow">=</span> <span class="kt">EventP</span> <span class="o">$</span> <span class="n">align</span> <span class="o">&lt;$&gt;</span> <span class="n">occurs</span> <span class="n">a</span> <span class="o">&lt;*&gt;</span> <span class="n">occurs</span> <span class="n">b</span>
+</span></span><span class="line"><span class="cl">  <span class="n">never</span> <span class="ow">=</span> <span class="kt">EventP</span> <span class="o">$</span> <span class="n">pure</span> <span class="kt">Nothing</span>
+</span></span><span class="line"><span class="cl">  <span class="n">switch</span> <span class="ow">=</span> <span class="kt">EventP</span> <span class="o">.</span> <span class="p">(</span><span class="n">occurs</span> <span class="o">&lt;=&lt;</span> <span class="n">sample</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">now</span> <span class="n">t</span> <span class="ow">=</span> <span class="kt">EventP</span> <span class="o">$</span> <span class="n">guard</span> <span class="o">.</span> <span class="p">(</span><span class="n">t</span> <span class="o">==</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sample</span> <span class="ow">=</span> <span class="n">at</span>
+</span></span><span class="line"><span class="cl">  <span class="n">hold</span> <span class="n">a</span> <span class="n">e</span> <span class="n">from</span> <span class="ow">=</span> <span class="kt">BehaviorP</span> <span class="o">$</span> <span class="nf">\</span><span class="n">t</span> <span class="ow">-&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">if</span> <span class="n">t</span> <span class="o">&lt;=</span> <span class="n">from</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">then</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">else</span> <span class="n">fromMaybe</span> <span class="p">(</span><span class="n">sample</span> <span class="p">(</span><span class="n">hold</span> <span class="n">a</span> <span class="n">e</span> <span class="n">from</span><span class="p">)</span> <span class="p">(</span><span class="n">pred</span> <span class="n">t</span><span class="p">))</span> <span class="o">$</span> <span class="n">occurs</span> <span class="n">e</span> <span class="p">(</span><span class="n">pred</span> <span class="n">t</span><span class="p">)</span>
+</span></span></code></pre></div><p>In this pure implementation of the type classes above I&rsquo;ve done my best to avoid explicit mentions of time to make it obvious that the functions which solely deal with events do not refer to the past or future of any occurrences.</p>
+<h2 id="implementation-overview">Implementation overview</h2>
+<p>The implementation can be understood as having two phases for every logical point in time (i.e. when any event occurrences are triggered).</p>
+<p>First, a graph propagation algorithm visits every event to compute its occurrence.
+This phase takes care of all primitives which only deal with events, i.e. <code>mapMaybeMoment</code>, <code>coincidence</code>, <code>merge</code>, <code>never</code>, and <code>now</code>.</p>
+<p>The second phase takes care of updating and &ldquo;initializing&rdquo; and &ldquo;invalidating&rdquo; behaviors as a result of <code>hold</code>, as well as clearing any cached event occurrences.
+We&rsquo;ll see what that means later.</p>
+<p>Sampling behaviors can happen at any point during both phases.</p>
+<h2 id="implementing-events">Implementing events</h2>
+<p>As I said above, events are implemented via a graph traversal algorithm.
+The algorithm is hidden in the combinators.
+To do something with an event, you first subscribe to it by passing in a &ldquo;propagator&rdquo;, a callback or continuation of type <code>Maybe a -&gt; IO ()</code> which will be called when the event (non-)occurrence is known.
+This might be immediately after subscribing or at a later time during graph traversal.</p>
+<p>Subscribing to an event gives you an unsubscribe action which when called immediately stops your propagator from being called.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="kr">data</span> <span class="kt">Impl</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">type</span> <span class="kt">Propagator</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Maybe</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="nb">()</span>
+</span></span><span class="line"><span class="cl"><span class="kr">type</span> <span class="kt">Unsubscriber</span> <span class="ow">=</span> <span class="kt">IO</span> <span class="nb">()</span>
+</span></span><span class="line"><span class="cl"><span class="kr">instance</span> <span class="kt">Frp</span> <span class="kt">Impl</span> <span class="kr">where</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">newtype</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">EventI</span> <span class="p">{</span> <span class="n">subscribe</span> <span class="ow">::</span> <span class="kt">Propagator</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="kt">Unsubscriber</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">type</span> <span class="kt">Moment</span> <span class="kt">Impl</span> <span class="ow">=</span> <span class="kt">IO</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">-- ...</span>
+</span></span></code></pre></div><p>To ensure that every event is always visited there is a single root event called <code>rootTickE</code> which occurs whenever any other event occurs.
+This also gives us trivial implementations for <code>now</code> and <code>never</code>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl">  <span class="n">now</span> <span class="ow">=</span> <span class="n">headE</span> <span class="n">rootTickE</span>
+</span></span><span class="line"><span class="cl">  <span class="n">never</span> <span class="ow">=</span> <span class="n">undefined</span> <span class="o">&lt;$</span> <span class="n">filter</span> <span class="p">(</span><span class="n">const</span> <span class="kt">False</span><span class="p">)</span> <span class="n">rootTickE</span>
+</span></span></code></pre></div><p>where <code>headE</code> is a derived function:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">headE</span> <span class="ow">::</span> <span class="p">(</span><span class="kt">Frp</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=&gt;</span> <span class="kt">Event</span> <span class="n">t</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Moment</span> <span class="n">t</span> <span class="p">(</span><span class="kt">Event</span> <span class="n">t</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">headE</span> <span class="n">e</span> <span class="ow">=</span> <span class="n">mfix</span> <span class="o">$</span> <span class="n">fmap</span> <span class="n">switch</span> <span class="o">.</span> <span class="n">hold</span> <span class="n">e</span> <span class="o">.</span> <span class="n">fmap</span> <span class="p">(</span><span class="n">const</span> <span class="n">never</span><span class="p">)</span>
+</span></span></code></pre></div><p>Below are the implementations of <code>mapMaybeMoment</code>, <code>coincidence</code>, and <code>merge</code>.</p>
+<h3 id="mapmaybemoment">mapMaybeMoment</h3>
+<p>This is the simplest function: it calls the propagator with the result of applying <code>f</code> to the occurrences of <code>e</code>.
+Unsubscribing from the <code>mapMaybeMoment</code> is the same as unsubscribing from <code>e</code>, so we can simply return that unsubscribe action.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">mapMaybeMoment</span> <span class="ow">::</span> <span class="p">(</span><span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Moment</span> <span class="kt">Impl</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">b</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">b</span>
+</span></span><span class="line"><span class="cl"><span class="nf">mapMaybeMoment</span> <span class="n">f</span> <span class="n">e</span> <span class="ow">=</span> <span class="n">cacheEvent</span> <span class="o">$</span> <span class="kt">EventI</span> <span class="o">$</span> <span class="nf">\</span><span class="n">propagate</span> <span class="ow">-&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">subscribe</span> <span class="n">e</span> <span class="o">$</span> <span class="n">propagate</span> <span class="o">&lt;=&lt;</span> <span class="n">fmap</span> <span class="n">join</span> <span class="o">.</span> <span class="n">mapM</span> <span class="n">f</span>
+</span></span></code></pre></div><h3 id="coincidence">coincidence</h3>
+<p><code>coincidence</code> takes an event of events and returns an event with an occurrence on both the outer and inner events. Its implementation subscribes first to the outer event and then to each inner event, propagating on the first occurrence of the inner. It immediately unsubscribes from the inner event after propagating by queing it in the event clearing queue.
+Unsubscribing from the <code>coincidence</code> is the same as unsubscribing from <code>e</code>, so we can simply return that unsubscribe action, knowing that the inner will be unsubscribed from</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">coincidence</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="p">(</span><span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl"><span class="nf">coincidence</span> <span class="n">e</span> <span class="ow">=</span> <span class="n">cacheEvent</span> <span class="o">$</span> <span class="kt">EventI</span> <span class="o">$</span> <span class="nf">\</span><span class="n">propagate</span> <span class="ow">-&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">subscribe</span> <span class="n">e</span> <span class="o">$</span>
+</span></span><span class="line"><span class="cl">    <span class="n">maybe</span> <span class="p">(</span><span class="n">propagate</span> <span class="kt">Nothing</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="n">addToEnvQueue</span> <span class="n">toClearQueueRef</span> <span class="o">&lt;=&lt;</span> <span class="p">(`</span><span class="n">subscribe</span><span class="p">`</span> <span class="n">propagate</span><span class="p">))</span>
+</span></span></code></pre></div><h3 id="merge">merge</h3>
+<p>To merge two events we have to save the occurrence of the first occurring one until the other one is known as well, after which we can propagate.
+Unsubscribing from the merge is the same as unsubscribing from both input events.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">merge</span> <span class="ow">::</span> <span class="n">forall</span> <span class="n">a</span> <span class="n">b</span><span class="o">.</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="p">(</span><span class="kt">These</span> <span class="n">a</span> <span class="n">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">merge</span> <span class="n">a</span> <span class="n">b</span> <span class="ow">=</span> <span class="n">cacheEvent</span> <span class="o">$</span> <span class="kt">EventI</span> <span class="o">$</span> <span class="nf">\</span><span class="n">propagate</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">  <span class="n">aOccRef</span> <span class="ow">&lt;-</span> <span class="n">newIORef</span> <span class="kt">Nothing</span>
+</span></span><span class="line"><span class="cl">  <span class="n">bOccRef</span> <span class="ow">&lt;-</span> <span class="n">newIORef</span> <span class="kt">Nothing</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">let</span> <span class="n">doSub</span> <span class="ow">::</span> <span class="n">forall</span> <span class="n">c</span><span class="o">.</span> <span class="kt">IORef</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">c</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">                      <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">c</span>
+</span></span><span class="line"><span class="cl">                      <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="kt">Unsubscriber</span>
+</span></span><span class="line"><span class="cl">      <span class="n">doSub</span> <span class="n">occRef</span> <span class="n">e</span> <span class="ow">=</span> <span class="n">subscribe</span> <span class="n">e</span> <span class="o">$</span> <span class="nf">\</span><span class="n">occ</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">          <span class="n">writeIORef</span> <span class="n">occRef</span> <span class="o">.</span> <span class="kt">Just</span> <span class="o">$</span> <span class="n">occ</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">-- Check if we have both inputs when any input is called.</span>
+</span></span><span class="line"><span class="cl">          <span class="c1">-- If yes, clear caches and propagate.</span>
+</span></span><span class="line"><span class="cl">          <span class="n">mapM_</span> <span class="p">(</span><span class="nf">\</span><span class="n">occRes</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">writeIORef</span> <span class="n">aOccRef</span> <span class="kt">Nothing</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">writeIORef</span> <span class="n">bOccRef</span> <span class="kt">Nothing</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">propagate</span> <span class="n">occRes</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="o">=&lt;&lt;</span> <span class="n">liftA2</span> <span class="n">align</span> <span class="o">&lt;$&gt;</span> <span class="n">readIORef</span> <span class="n">aOccRef</span> <span class="o">&lt;*&gt;</span> <span class="n">readIORef</span> <span class="n">bOccRef</span>
+</span></span><span class="line"><span class="cl">  <span class="p">(</span><span class="o">&gt;&gt;</span><span class="p">)</span> <span class="o">&lt;$&gt;</span> <span class="n">doSub</span> <span class="n">aOccRef</span> <span class="n">a</span> <span class="o">&lt;*&gt;</span> <span class="n">doSub</span> <span class="n">bOccRef</span> <span class="n">b</span>
+</span></span></code></pre></div><h2 id="implementing-behaviors">Implementing behaviors</h2>
+<p>In essence behaviors are an IO action which returns the current value of the behavior.
+However, in order to make <code>switch</code> implementable we allow an an optional &ldquo;invalidator&rdquo; action to be passed in when reading the behavior value.
+This action which will be called when the behavior&rsquo;s value might be updated:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="kr">newtype</span> <span class="kt">Behavior</span> <span class="kt">Impl</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">BehaviorI</span> <span class="p">(</span><span class="kt">ReaderT</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="kt">Invalidator</span><span class="p">)</span> <span class="kt">IO</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">deriving</span> <span class="p">(</span><span class="kt">Functor</span><span class="p">,</span> <span class="kt">Applicative</span><span class="p">,</span> <span class="kt">Monad</span><span class="p">,</span> <span class="kt">MonadFix</span><span class="p">)</span>
+</span></span></code></pre></div><h3 id="sample">sample</h3>
+<p>Sample evaluates the behavior value without passing in an invalidator.
+In order to allow code recursive code involving behaviors and sampling to work, sampling is done lazily.
+We do need to force the value before the behavior changes however, otherwise we might be reading a new value while the semantics says we should have read the old one.
+I&rsquo;ve done this by using the &ldquo;behavior initialization queue&rdquo; (see later in <a href="#runFrame">Running a frame, and the queues</a>).</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl">  <span class="n">sample</span> <span class="ow">::</span> <span class="kt">Behavior</span> <span class="kt">Impl</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Moment</span> <span class="kt">Impl</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl">  <span class="n">sample</span> <span class="p">(</span><span class="kt">BehaviorI</span> <span class="n">b</span><span class="p">)</span> <span class="ow">=</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">    <span class="n">res</span> <span class="ow">&lt;-</span> <span class="n">unsafeInterleaveIO</span> <span class="o">$</span> <span class="n">runReaderT</span> <span class="n">b</span> <span class="kt">Nothing</span>
+</span></span><span class="line"><span class="cl">    <span class="n">addToEnvQueue</span> <span class="n">behaviorInitsRef</span> <span class="o">$</span> <span class="n">void</span> <span class="o">.</span> <span class="n">evaluate</span> <span class="o">$</span> <span class="n">res</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pure</span> <span class="n">res</span>
+</span></span></code></pre></div><p>With the lazy sampling we can write code which recursion between <code>sample</code> and <code>hold</code>, such as this code from the test suite <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup>:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">holdSampleStrictness</span> <span class="n">e1</span> <span class="ow">=</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">  <span class="n">rec</span>
+</span></span><span class="line"><span class="cl">    <span class="n">a</span> <span class="ow">&lt;-</span> <span class="n">sample</span> <span class="n">b</span>
+</span></span><span class="line"><span class="cl">    <span class="n">b&#39;</span> <span class="ow">&lt;-</span> <span class="n">hold</span> <span class="n">a</span> <span class="n">e1</span>
+</span></span><span class="line"><span class="cl">    <span class="n">b</span> <span class="ow">&lt;-</span> <span class="n">hold</span> <span class="s">&#34;0&#34;</span> <span class="n">e1</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">_</span> <span class="ow">&lt;-</span> <span class="n">sample</span> <span class="n">b&#39;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">pure</span> <span class="n">b&#39;</span>
+</span></span></code></pre></div><p>It might seem far-fetched but you do run into these scenarios, especially when trying to implement higher-level abstractions in my experience.
+Reflex by default is not lazy in its <code>sample</code>, instead relying on a family of functions prefixed by <code>build</code> to achieve it.
+This however requires you to know in advance whether you&rsquo;re going to need this feature when writing your code.</p>
+<h3 id="hold">hold</h3>
+<p>This is your one-stop-shop for creating behaviors:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">hold</span> <span class="ow">::</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Moment</span> <span class="kt">Impl</span> <span class="p">(</span><span class="kt">Behavior</span> <span class="kt">Impl</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">hold</span> <span class="n">v0</span> <span class="n">e</span> <span class="ow">=</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">  <span class="n">invsRef</span> <span class="ow">&lt;-</span> <span class="n">newIORef</span> <span class="kt">[]</span>
+</span></span><span class="line"><span class="cl">  <span class="n">valRef</span> <span class="ow">&lt;-</span> <span class="n">newIORef</span> <span class="n">v0</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">-- Make sure not to touch &#39;e&#39; eagerly, instead wait for Behavior init time.</span>
+</span></span><span class="line"><span class="cl">  <span class="n">addToEnvQueue</span> <span class="n">behaviorInitsRef</span> <span class="o">$</span> <span class="n">void</span> <span class="o">$</span> <span class="n">subscribe</span> <span class="n">e</span> <span class="o">$</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mapM_</span> <span class="p">(</span><span class="nf">\</span><span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">addToEnvQueue</span> <span class="n">behaviorAssignmentsRef</span>
+</span></span><span class="line"><span class="cl">                 <span class="o">$</span> <span class="kt">BehaviorAssignment</span> <span class="n">valRef</span> <span class="n">a</span> <span class="n">invsRef</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">pure</span> <span class="o">$</span> <span class="kt">BehaviorI</span> <span class="o">$</span> <span class="kt">ReaderT</span> <span class="o">$</span> <span class="nf">\</span><span class="n">invalidator</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mapM_</span> <span class="p">(</span><span class="n">modifyIORef</span> <span class="n">invsRef</span> <span class="o">.</span> <span class="p">(</span><span class="kt">:</span><span class="p">))</span> <span class="n">invalidator</span>
+</span></span><span class="line"><span class="cl">    <span class="n">readIORef</span> <span class="n">valRef</span>
+</span></span></code></pre></div><p>A behavior is a list of <code>Invalidator</code> actions, <code>invsRef</code>, and a a mutable <code>valRef</code> containing the current value of the behavior, updated to the latest occurrence of <code>e</code> and starting at <code>v0</code>.
+This update only happens when all the events have been visited however, because we want <code>sample</code> to return the old value to conform to the semantics.</p>
+<p>To make sure we can write recursive definitions such as <code>accum</code><sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup>, we&rsquo;re not allowed to immediately subscribe to (and thus evaluate) <code>e</code>.
+Instead we&rsquo;ll queue the subscribe in a &ldquo;behavior initialization queue&rdquo;.
+Whenever there is an occurrence of <code>e</code>, we&rsquo;ll add the update of <code>valRef</code> to a &ldquo;behavior assignments&rdquo; queue.
+This queue <em>must</em> be processed after the initializations, because at initialization time we still want any events that are being subscribed to to see the old value of the behavior.
+As before, see <a href="#runFrame"><code>runFrame</code></a> for the full handling of all the queues.</p>
+<h2 id="implementing-switching">Implementing switching</h2>
+<p>The <code>switch</code> primitive returns an event from an event-valued behavior, where the occurrences of the resulting event are those of the current event in the behavior.
+To achieve this the implementation relies on sampling the behavior with an invalidator which will unsubscribe from the previous event and subscribe to the new event.</p>
+<p>We need to take care however to stop this cycle when the resulting event from <code>switch</code> is unsubscribed from.
+For this I&rsquo;m storing the current unsubscriber in a maybe-valued <code>maybeUnsubscribeInnerERef</code>, and setting it to <code>Nothing</code> in the <code>switch</code> event&rsquo;s unsubscriber:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">switch</span> <span class="ow">::</span> <span class="kt">Behavior</span> <span class="kt">Impl</span> <span class="p">(</span><span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl"><span class="nf">switch</span> <span class="p">(</span><span class="kt">BehaviorI</span> <span class="n">switchParent</span><span class="p">)</span> <span class="ow">=</span> <span class="n">cacheEvent</span> <span class="o">$</span> <span class="kt">EventI</span> <span class="o">$</span> <span class="nf">\</span><span class="n">propagate</span> <span class="ow">-&gt;</span> <span class="n">mdo</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">let</span> <span class="n">unsubscribeAndSetUnsubscriberWith</span> <span class="ow">::</span> <span class="kt">IO</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="p">(</span><span class="kt">IO</span> <span class="nb">()</span><span class="p">))</span> <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="nb">()</span>
+</span></span><span class="line"><span class="cl">      <span class="n">unsubscribeAndSetUnsubscriberWith</span> <span class="n">f</span> <span class="ow">=</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">        <span class="n">maybeUnsubscribeInner</span> <span class="ow">&lt;-</span> <span class="n">readIORef</span> <span class="n">maybeUnsubscribeInnerERef</span>
+</span></span><span class="line"><span class="cl">        <span class="n">for_</span> <span class="n">maybeUnsubscribeInner</span> <span class="o">$</span> <span class="nf">\</span><span class="n">unsubscribe</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">          <span class="n">unsubscribe</span>
+</span></span><span class="line"><span class="cl">          <span class="n">writeIORef</span> <span class="n">maybeUnsubscribeInnerERef</span> <span class="o">=&lt;&lt;</span> <span class="n">f</span>
+</span></span><span class="line"><span class="cl">  <span class="n">maybeUnsubscribeInnerERef</span> <span class="ow">::</span> <span class="kt">IORef</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="kt">Unsubscriber</span><span class="p">)</span> <span class="ow">&lt;-</span>
+</span></span><span class="line"><span class="cl">    <span class="n">newIORef</span> <span class="o">&lt;=&lt;</span> <span class="n">fix</span> <span class="o">$</span> <span class="nf">\</span><span class="n">subscribeAndResetOnInvalidate</span> <span class="ow">-&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">fmap</span> <span class="kt">Just</span> <span class="o">.</span> <span class="p">(`</span><span class="n">subscribe</span><span class="p">`</span> <span class="n">propagate</span><span class="p">)</span> <span class="o">&lt;=&lt;</span> <span class="n">runReaderT</span> <span class="n">switchParent</span> <span class="o">.</span> <span class="kt">Just</span>
+</span></span><span class="line"><span class="cl">      <span class="o">$</span> <span class="n">unsubscribeAndSetUnsubscriberWith</span> <span class="n">subscribeAndResetOnInvalidate</span>
+</span></span><span class="line"><span class="cl">  <span class="n">pure</span> <span class="o">$</span> <span class="n">unsubscribeAndSetUnsubscriberWith</span> <span class="p">(</span><span class="n">pure</span> <span class="kt">Nothing</span><span class="p">)</span>
+</span></span></code></pre></div><h2 id="imperative-interface">Imperative interface</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">newEvent</span> <span class="ow">::</span> <span class="kt">IO</span> <span class="p">(</span><span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">EventTrigger</span><span class="p">,</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">subscribeEvent</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="p">(</span><span class="kt">ReadTime</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="nf">readBehavior</span> <span class="ow">::</span> <span class="kt">Behavior</span> <span class="kt">Impl</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">ReadTime</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl"><span class="nf">runFrame</span> <span class="ow">::</span> <span class="p">[</span><span class="kt">EventTrigger</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">ReadTime</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="n">a</span>
+</span></span></code></pre></div><h2 id="runFrame">Running a frame, and the queues</h2>
+<p>To make a single point in time pass and optionally have some events occur at tha t time, you use the <code>runFrame</code> function.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">runFrame</span> <span class="ow">::</span> <span class="p">[</span><span class="kt">EventTrigger</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="kt">ReadTime</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl"><span class="nf">runFrame</span> <span class="n">triggers</span> <span class="n">program</span> <span class="ow">=</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">let</span> <span class="p">(</span><span class="kt">Env</span> <span class="p">{</span> <span class="n">toClearQueueRef</span><span class="p">,</span> <span class="n">behaviorInitsRef</span><span class="p">,</span> <span class="n">behaviorAssignmentsRef</span> <span class="p">})</span> <span class="ow">=</span> <span class="n">theEnv</span>
+</span></span><span class="line"><span class="cl">  <span class="n">mapM_</span> <span class="n">runEventTrigger</span> <span class="n">triggers</span>
+</span></span><span class="line"><span class="cl">  <span class="n">propagateRoot</span>
+</span></span><span class="line"><span class="cl">  <span class="n">res</span> <span class="ow">&lt;-</span> <span class="n">runReadTime</span> <span class="n">program</span>
+</span></span><span class="line"><span class="cl">  <span class="n">fix</span> <span class="o">$</span> <span class="nf">\</span><span class="n">runHoldInits</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">    <span class="n">inits</span> <span class="ow">&lt;-</span> <span class="n">readIORef</span> <span class="n">behaviorInitsRef</span>
+</span></span><span class="line"><span class="cl">    <span class="n">unless</span> <span class="p">(</span><span class="n">null</span> <span class="n">inits</span><span class="p">)</span> <span class="o">$</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">      <span class="n">writeIORef</span> <span class="n">behaviorInitsRef</span> <span class="kt">[]</span>
+</span></span><span class="line"><span class="cl">      <span class="n">sequence_</span> <span class="n">inits</span>
+</span></span><span class="line"><span class="cl">      <span class="n">runHoldInits</span>
+</span></span><span class="line"><span class="cl">  <span class="n">atomicModifyIORef</span> <span class="n">toClearQueueRef</span> <span class="p">(</span><span class="kt">[]</span><span class="p">,)</span> <span class="o">&gt;&gt;=</span> <span class="n">sequence_</span>
+</span></span><span class="line"><span class="cl">  <span class="n">atomicModifyIORef</span> <span class="n">behaviorAssignmentsRef</span> <span class="p">(</span><span class="kt">[]</span><span class="p">,)</span>
+</span></span><span class="line"><span class="cl">    <span class="o">&gt;&gt;=</span> <span class="n">mapM_</span> <span class="p">(</span><span class="nf">\</span><span class="p">(</span><span class="kt">BehaviorAssignment</span> <span class="n">valRef</span> <span class="n">a</span> <span class="n">invalidatorsRef</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">                  <span class="n">writeIORef</span> <span class="n">valRef</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl">                  <span class="n">atomicModifyIORef</span> <span class="n">invalidatorsRef</span> <span class="p">(</span><span class="kt">[]</span><span class="p">,)</span> <span class="o">&gt;&gt;=</span> <span class="n">sequence_</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="n">pure</span> <span class="n">res</span>
+</span></span></code></pre></div><h2 id="running-a-program-creating-root-events-and-linking-them-to-io-actions">Running a program, creating root events and linking them to IO actions</h2>
+<h3 id="events">Events</h3>
+<p>Events are conceptually implemented as a graph propagation algorithm in which each Event-typed expression in the code has a node in the graph.
+The graph is a directed acyclic graph (DAG).
+While processing a single time frame events are visited in topological order.</p>
+<p>Because of the higher-order nature of the interface, the implementation has to be able to deal with events being added to the graph while propagation is happening.
+The graph is built via a function called <code>subscribeAndRead</code> which takes an event and returns an <code>Unsubscribe</code> action as well as a value describing whether or not the event has already been visited (and thus it&rsquo;s occurrence value for the frame was already known):</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="kr">type</span> <span class="kt">Unsubscribe</span> <span class="ow">=</span> <span class="kt">IO</span> <span class="nb">()</span>
+</span></span><span class="line"><span class="cl"><span class="kr">newtype</span> <span class="kt">Event</span> <span class="kt">Impl</span> <span class="n">a</span> <span class="ow">=</span> <span class="kt">Event</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span> <span class="n">subscribeAndRead</span> <span class="ow">::</span> <span class="kt">Subscriber</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="p">(</span><span class="kt">Unsubscribe</span><span class="p">,</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="n">a</span><span class="p">))</span> <span class="p">}</span>
+</span></span></code></pre></div><p>As long as you&rsquo;re subscribed you&rsquo;ll receive updates, once the <code>Unsubscribe</code> action is called you will no longer be propagated to.</p>
+<h3 id="the-root-event">The root event</h3>
+<p>This implementation has a single root event at which the graph traversal starts.
+All subscribers to the root event are kept and visited one by one by calling the <code>propagateRoot</code> IO action.</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="cm">{-# NOINLINE _root #-}</span>
+</span></span><span class="line"><span class="cl"><span class="nf">_root</span> <span class="ow">::</span> <span class="p">(</span><span class="kt">Event</span> <span class="kt">Impl</span> <span class="nb">()</span><span class="p">,</span> <span class="kt">IO</span> <span class="nb">()</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">_root</span><span class="o">@</span><span class="p">(</span><span class="n">rootTickE</span><span class="p">,</span> <span class="n">propagateRoot</span><span class="p">)</span> <span class="ow">=</span> <span class="n">unsafePerformIO</span> <span class="o">$</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">  <span class="n">subscribersRef</span> <span class="ow">&lt;-</span> <span class="n">newIORef</span> <span class="n">mempty</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ctrRef</span> <span class="ow">&lt;-</span> <span class="n">newIORef</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">  <span class="n">occRef</span> <span class="ow">&lt;-</span> <span class="n">newIORef</span> <span class="kt">Nothing</span>
+</span></span><span class="line"><span class="cl">  <span class="n">pure</span> <span class="p">(</span> <span class="kt">Event</span> <span class="o">$</span> <span class="nf">\</span><span class="n">sub</span> <span class="ow">-&gt;</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">           <span class="n">thisSubId</span> <span class="ow">&lt;-</span> <span class="n">atomicModifyIORef</span> <span class="n">ctrRef</span> <span class="p">(</span><span class="nf">\</span><span class="n">i</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="n">succ</span> <span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">           <span class="n">modifyIORef</span> <span class="n">subscribersRef</span> <span class="o">$</span> <span class="kt">IntMap</span><span class="o">.</span><span class="n">insert</span> <span class="n">thisSubId</span> <span class="n">sub</span>
+</span></span><span class="line"><span class="cl">           <span class="p">(</span><span class="n">modifyIORef</span> <span class="n">subscribersRef</span> <span class="p">(</span><span class="kt">IntMap</span><span class="o">.</span><span class="n">delete</span> <span class="n">thisSubId</span><span class="p">),)</span> <span class="o">&lt;$&gt;</span> <span class="n">readIORef</span> <span class="n">occRef</span>
+</span></span><span class="line"><span class="cl">       <span class="p">,</span> <span class="kr">do</span> <span class="n">writeAndScheduleClear</span> <span class="n">occRef</span> <span class="p">(</span><span class="kt">Just</span> <span class="nb">()</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="n">mapM_</span> <span class="p">(`</span><span class="n">subscriberPropagate</span><span class="p">`</span> <span class="kt">Just</span> <span class="nb">()</span><span class="p">)</span> <span class="o">=&lt;&lt;</span> <span class="n">readIORef</span> <span class="n">subscribersRef</span>
+</span></span><span class="line"><span class="cl">       <span class="p">)</span>
+</span></span></code></pre></div><h3 id="behaviors">Behaviors</h3>
+<p>The behavior update mechanism is used to implement <code>switch</code></p>
+<h3 id="caching-events">Caching events</h3>
+<div class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1">
+<p>TODO&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">accum</span> <span class="ow">::</span> <span class="p">(</span><span class="kt">Frp</span> <span class="n">t</span><span class="p">)</span> <span class="ow">=&gt;</span> <span class="p">(</span><span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">t</span> <span class="n">b</span> <span class="ow">-&gt;</span> <span class="kt">Moment</span> <span class="n">t</span> <span class="p">(</span><span class="kt">Behavior</span> <span class="n">t</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nf">accum</span> <span class="n">f</span> <span class="n">a</span> <span class="n">e</span> <span class="ow">=</span> <span class="n">mfix</span> <span class="o">$</span> <span class="nf">\</span><span class="n">x</span> <span class="ow">-&gt;</span> <span class="n">hold</span> <span class="n">a</span> <span class="o">.</span> <span class="n">mapMoment</span> <span class="p">(</span><span class="nf">\</span><span class="n">b</span> <span class="ow">-&gt;</span> <span class="p">(`</span><span class="n">f</span><span class="p">`</span> <span class="n">b</span><span class="p">)</span> <span class="o">&lt;$&gt;</span> <span class="n">sample</span> <span class="n">x</span><span class="p">)</span> <span class="o">$</span> <span class="n">e</span>
+</span></span></code></pre></div>&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></li>
+</ol>
+</div>
+
+</article>
+<nav class="no-print post-nav">
+
+
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
+
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+

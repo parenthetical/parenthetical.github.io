@@ -6,15 +6,14 @@
     <description>Recent content in Papers on Adriaan Leijnse</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 25 Mar 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://aidy.dev/papers/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 25 Mar 2019 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://aidy.dev/papers/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Higher-order patterns in replicated data types</title>
       <link>https://aidy.dev/papers/patterns-in-replicated-data-types/</link>
       <pubDate>Mon, 25 Mar 2019 00:00:00 +0000</pubDate>
-      
       <guid>https://aidy.dev/papers/patterns-in-replicated-data-types/</guid>
       <description>In this paper we argue that the essence of CRDTs is not about being &amp;ldquo;operation-based&amp;rdquo; or &amp;ldquo;state-based&amp;rdquo;. Instead, CRDTs have a more abstract meaning: they are ways to derive a value from a set of known operations. These derivations follow a few simple patterns which can be reused to succinctly define the individual behaviors of a large catalog of CRDTs. This means that when writing complex CRDTs it might be worth creating a little programming language which supports those patterns as first class primitives and implements them efficiently.</description>
     </item>
-    
   </channel>
 </rss>
