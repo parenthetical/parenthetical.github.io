@@ -6,8 +6,24 @@
     <description>Recent content on Adriaan Leijnse</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 15 Dec 2023 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 17 Jan 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://aidy.dev/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2024-01-17</title>
+      <link>https://aidy.dev/journal/2024-01-17/</link>
+      <pubDate>Wed, 17 Jan 2024 00:00:00 +0000</pubDate>
+      <guid>https://aidy.dev/journal/2024-01-17/</guid>
+      <description>You should be able to write comments which refer to identifiers in your code. Maybe even they could even refer to actual code fragments/expressions. When these identifiers or expressions change or are removed, your editor should warn you.</description>
+    </item>
+    <item>
+      <title>A simple and commented FRP implementation in Haskell</title>
+      <link>https://aidy.dev/blog/simple-frp-implementation-1/</link>
+      <pubDate>Wed, 17 Jan 2024 00:00:00 +0000</pubDate>
+      <guid>https://aidy.dev/blog/simple-frp-implementation-1/</guid>
+      <description>Audience: This post is for meant for people familiar with Haskell, Classic style Functional Reactive Programming, and Reflex FRP in particular.
+I&amp;rsquo;ve been dissecting Reflex&amp;rsquo; Spider implementation and I&amp;rsquo;ve started to implement an FRP library from scratch to test what I&amp;rsquo;ve learned. I&amp;rsquo;ve tried to add lots of comments so that it is educational for anyone wanting to explore FRP implementations.
+Hopefully I&amp;rsquo;ll keep expanding it with more features and optimizations, but so far it uses the most basic implementation I could think of:</description>
+    </item>
     <item>
       <title>2023-12-15</title>
       <link>https://aidy.dev/journal/2023-12-15/</link>
@@ -47,14 +63,6 @@ subscribe :: Event a -&amp;gt; (Maybe a -&amp;gt; IO ()) -&amp;gt; (Unsubscribe,
       <description>I&amp;rsquo;ve published a repo implementing FRP from scratch and I&amp;rsquo;m in the process of writing an accompanying blog post. This implementation doesn&amp;rsquo;t do any graph traversal optimisations but it is as expressive and lazier than Reflex. I&amp;rsquo;m now hoping to add GC, graph traversal optimizations, and a GUI library to see how those work.
 Concretely the next steps I&amp;rsquo;m interested in are:
 Cleaning up my implementation some more, solving all TODOs, and fully commenting the code.</description>
-    </item>
-    <item>
-      <title>An FRP implementation in Haskell</title>
-      <link>https://aidy.dev/blog/simple-frp-implementation-1/</link>
-      <pubDate>Mon, 04 Dec 2023 00:00:00 +0000</pubDate>
-      <guid>https://aidy.dev/blog/simple-frp-implementation-1/</guid>
-      <description>Audience: This post is for meant for people familiar with Haskell, Classic style Functional Reactive Programming, and Reflex FRP in particular.
-I&amp;rsquo;ve been dissecting Reflex&amp;rsquo; Spider implementation, so I&amp;rsquo;m sharing how to implement a similar library in a series of blog posts. In this first post I&amp;rsquo;ll focus on a simple implementation that is sufficiently lazy for typical recursive FRP definitions to work. However, it&amp;rsquo;s completely unoptimized and not garbage collected so that it can&amp;rsquo;t be used for real applications yet.</description>
     </item>
     <item>
       <title>2023-12-01</title>
