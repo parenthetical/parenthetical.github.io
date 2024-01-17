@@ -16,7 +16,7 @@
       <description>You should be able to write comments which refer to identifiers in your code. Maybe even they could even refer to actual code fragments/expressions. When these identifiers or expressions change or are removed, your editor should warn you.</description>
     </item>
     <item>
-      <title>A simple and commented FRP implementation in Haskell</title>
+      <title>A short FRP implementation in Haskell (with comments)</title>
       <link>https://aidy.dev/blog/simple-frp-implementation-1/</link>
       <pubDate>Wed, 17 Jan 2024 00:00:00 +0000</pubDate>
       <guid>https://aidy.dev/blog/simple-frp-implementation-1/</guid>

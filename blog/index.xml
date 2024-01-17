@@ -9,7 +9,7 @@
     <lastBuildDate>Wed, 17 Jan 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://aidy.dev/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>A simple and commented FRP implementation in Haskell</title>
+      <title>A short FRP implementation in Haskell (with comments)</title>
       <link>https://aidy.dev/blog/simple-frp-implementation-1/</link>
       <pubDate>Wed, 17 Jan 2024 00:00:00 +0000</pubDate>
       <guid>https://aidy.dev/blog/simple-frp-implementation-1/</guid>
