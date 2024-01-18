@@ -6,7 +6,8 @@
 		<meta name="generator" content="Hugo 0.120.3">
 		<title>2024-01-17 - Adriaan Leijnse</title>
 
-		<meta name="description" content="You should be able to write comments which refer to identifiers in your code. Maybe even they could even refer to actual code fragments/expressions. When these identifiers or expressions change or are removed, your editor should warn you.">
+		<meta name="description" content="Reflecting on where I&rsquo;m going The past half year I&rsquo;ve mostly worked on understanding Reflex and coding little FRP libraries. I&rsquo;m much happier with my understanding of the nuances now and I&rsquo;ve published a little FRP library and an accompanying blog post. This library should be able to serve as a platform to explore FRP related work.
+I feel like now is the time to continue with actual novel work and pick up my ideas again.">
 
 
 		
@@ -96,9 +97,45 @@
     </hgroup>
     <hr class="sep" />
   </header>
-  <h2 id="you-should-be-able-to-write-comments-which-refer-to-identifiers-in-your-code-dot">You should be able to write comments which refer to identifiers in your code.</h2>
-<p>Maybe even they could even refer to actual code fragments/expressions.
+  <h2 id="reflecting-on-where-i-m-going">Reflecting on where I&rsquo;m going</h2>
+<p>The past half year I&rsquo;ve mostly worked on understanding Reflex and coding little FRP libraries.
+I&rsquo;m much happier with my understanding of the nuances now and I&rsquo;ve published a little FRP library and an accompanying <a href="/blog/simple-frp-implementation-1/">blog post</a>.
+This library should be able to serve as a platform to explore FRP related work.</p>
+<p>I feel like now is the time to continue with actual novel work and pick up my ideas again.
+I&rsquo;m finding it hard to pick though. I don&rsquo;t have much internal motivation to work on generic &ldquo;purely distributed programming&rdquo; but at the same time that is where I have the most concrete material.
+Having some external motivation would definitely help here.
+Potentially writing down small bits of it as I go as blog posts too.</p>
+<p>My other ideas are mostly around what right now I can only summarize as &ldquo;purely functional Smalltalk meets <a href="https://www.unison-lang.org/">Unison</a> and <a href="https://hazel.org/">Hazel</a>&rdquo;.
+I don&rsquo;t know if I can do something concretely with that in Haskell without writing a language from scratch, because I think I&rsquo;d need something like DrRacket to make progress with this in an existing system.</p>
+<h2 id="thought-comments-need-need-to-stay-synchronized-with-the-actual-code">Thought: comments need need to stay synchronized with the actual code</h2>
+<p>You should be able to write comments which refer to identifiers in your code.
+Maybe they could even refer to actual code fragments/expressions.
 When these identifiers or expressions change or are removed, your editor should warn you.</p>
+<h2 id="how-distributed-frp-improves-over-processes-and-messages-programming">How Distributed FRP improves over processes-and-messages programming</h2>
+<p>When I submitted my (incomplete and understandably rejected) DFRP paper one of the reviewers commented that I should make clear what advantages DFRP has over the regular way of doing distributed programming.</p>
+<p>Some that I can think of:</p>
+<h3 id="no-need-to-ever-explicitly-send-information">No need to ever explicitly send information</h3>
+<p>This eliminates problems like deadlocks in which a process is blocked waiting for a message which will never come.
+There are not necessarily any processes, so they can&rsquo;t be blocked, but you could still write programs which assume something is going to happen and that that fact is going to be known at some point, even though either the thing doesn&rsquo;t happen or knowledge about it is never transferred.
+So it&rsquo;s still possible to write incorrect programs, but maybe a lower level notion of accidental deadlock is eliminated.
+The choreographic programming research says this is one of the main advantages of their paradigm. I know about this due to the HasChor <a href="https://github.com/gshen42/HasChor">library</a> and <a href="https://arxiv.org/abs/2303.00924">paper</a> from ICFP, which implements choreographic programming in Haskell. I found the paper easy to read and enjoyable to understand.</p>
+<h3 id="composability">Composability</h3>
+<p>Or: the main advantage of DFRP is that of all denotative/purely functional programming.
+With this you can split up distributed programs in a way which is not possible without introducing concurrency bugs in other languages.
+The only problem is I&rsquo;m having a hard time thinking of concrete examples while at the same time being convinced that this is a huge cause of lack of code reuse and easy to use abstractions in distributed programming (typical me).</p>
+<p>Maybe something that comes up in Paxos is a feasible example.
+When you read the algorithm, it says you want to get a <code>quorum</code> of &ldquo;promises&rdquo;, which is one concern.
+Then later the description says oh, and you also want to continue with &ldquo;the highest accepted proposal you got back&rdquo;, and this is another concern.
+Normally you&rsquo;d go back and change your quorum code to include that, because if you write launch a separate process to collect those the results might not be correct?
+(Launching processes is the only way to achieve composability in message-based distributed programming AFAIK.)</p>
+<p>Composing programs also forces you to write coordination code between components.</p>
+<h3 id="higher-level-abstractions-like-batching-of-received-messages-are-very-natural">Higher-level abstractions like batching of received messages are very natural</h3>
+<p>You can very easily write a &ldquo;aggregated commutative semigroup&rdquo; function or have it as a primitive in your library.
+With this comes ease of optimizations etc.
+I guess the main argument here is that automating these kinds of things in regular programming doesn&rsquo;t come as naturally?</p>
+<h3 id="the-model-is-compatible-with-continuous-transmission">The model is compatible with continuous transmission</h3>
+<p>I don&rsquo;t have any examples for this, but you should be able to write programs which are about continous signals being transmitted, rather than the discrete messages.</p>
+<p>Maybe things like &ldquo;average light intensity coming from the south&rdquo;??</p>
 
 </article>
 <nav class="no-print post-nav">

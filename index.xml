@@ -13,7 +13,8 @@
       <link>https://aidy.dev/journal/2024-01-17/</link>
       <pubDate>Wed, 17 Jan 2024 00:00:00 +0000</pubDate>
       <guid>https://aidy.dev/journal/2024-01-17/</guid>
-      <description>You should be able to write comments which refer to identifiers in your code. Maybe even they could even refer to actual code fragments/expressions. When these identifiers or expressions change or are removed, your editor should warn you.</description>
+      <description>Reflecting on where I&amp;rsquo;m going The past half year I&amp;rsquo;ve mostly worked on understanding Reflex and coding little FRP libraries. I&amp;rsquo;m much happier with my understanding of the nuances now and I&amp;rsquo;ve published a little FRP library and an accompanying blog post. This library should be able to serve as a platform to explore FRP related work.
+I feel like now is the time to continue with actual novel work and pick up my ideas again.</description>
     </item>
     <item>
       <title>A short FRP implementation in Haskell (with comments)</title>
