@@ -88,6 +88,48 @@
     <header>
       <h1>
         
+	<a href="/journal/2024-01-22/">
+          <span><time datetime="2024-01-22 00:00:00 &#43;0000 UTC">January 22, 2024</time></span>
+	</a>
+      </h1>
+    </header>
+    <p>Today I worked on translating my <a href="https://github.com/parenthetical/threepenny-gui-todomvc">Threepenny-GUI TodoMVC</a> to my FRP library.
+Reflex-DOM seems to do GUI by using the PerformEvent transformer which I think is an EventWriter for IO actions, but looking at Threepenny-GUI it seems they just fire off actions whenever?
+I&rsquo;m not entirely clear on the details of how to best implement this or what the reasons are for doing it a certain way.</p>
+<h2 id="switching-perspectives-in-an-frp-app--functional-imperative-visible-hidden-state">Switching perspectives in an FRP app (functional/imperative? visible/hidden state?)</h2>
+<p>I&rsquo;ve also had many thoughts or rather vague <em>vibes</em> come to me about how you should be able to switch the view around for an app like TodoMVC (or any interactive app I guess?) from &ldquo;functional-functional&rdquo; to &ldquo;functional-imperative&rdquo;.
+I&rsquo;m not even sure what that means, now that the vibes have fleeted :')</p>
+<p>Maybe: You can write FRP in a much more imperative way than usual by creating events out of nothing and add occurrences to them with a trigger or <code>tellEvent</code>.
+This is just as &ldquo;purely functional&rdquo; as using a state transformer for example.
+On the other hand you can always write the same thing while manually bubbling up the events.</p>
+<p>I&rsquo;m just remembering another aspect of this: suppose you want to know/keep some state like &ldquo;the current number of to-do items&rdquo;.
+You can do this explicitly incrementally with Reflex&rsquo; Incremental + PatchMap for example.
+But, you could also manually write out the way the counter changes with a more imperative feel, i.e. &ldquo;when a new task is added, increase the counter&rdquo;.</p>
+<p>Another thing is that you can write a to-do app with an explicit list of tasks in a behavior, and manually add identity to each task with an integer etc.
+Or you can hide the state and only expose how the things you see on screen are changed by plumbing events.</p>
+<p>It&rsquo;s all very vague and I&rsquo;d have to work out some examples to get a grasp on it.</p>
+<h3 id="example">Example</h3>
+<p>Consider the entry field for the todo list.
+When you press enter you want to clear it, so in a graphical environment you could select &ldquo;on enter key&rdquo; and then &ldquo;do action&rdquo;, click on the field, and select &ldquo;set contents&rdquo;, setting that to the empty string.
+This is obviously a very imperative way.
+But when you examine the field you should also be able to see the &ldquo;functional perspective&rdquo;: what influences the state of the field?</p>
+<p>Similarly, the list of tasks can be seen the collection of &ldquo;all initial tasks entered from the entry field + any modifications after the fact&rdquo;, or the entry field could say &ldquo;insert a task in the task list&rdquo;.</p>
+<h2 id="frp-smalltalk-tangible-functional-programming">FRP Smalltalk/tangible functional programming</h2>
+<p>I&rsquo;ve also been thinking about the FRP-based Smalltalk/IDE.
+Would it be a natural solution to composable, incremental program definitions?
+Like where you&rsquo;d write a let-binding it would actually be a behavior for each part.
+A behavior with <em>identity</em>.
+A denotative notion of identity is very important to make progress I think.</p>
+<p>Then I&rsquo;m not exactly sure what it means to &ldquo;run&rdquo; the programs.
+Like I&rsquo;ve written about before, you want to be able to look at and explore the state of a program.</p>
+<p>One interesting thing is that the state is fully determined by input + time.</p>
+
+  </article>
+  
+  <article>
+    <header>
+      <h1>
+        
 	<a href="/journal/2024-01-17/">
           <span><time datetime="2024-01-17 00:00:00 &#43;0000 UTC">January 17, 2024</time></span>
 	</a>

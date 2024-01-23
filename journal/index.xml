@@ -6,8 +6,16 @@
     <description>Recent content in Journal on Adriaan Leijnse</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 17 Jan 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 22 Jan 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://aidy.dev/journal/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2024-01-22</title>
+      <link>https://aidy.dev/journal/2024-01-22/</link>
+      <pubDate>Mon, 22 Jan 2024 00:00:00 +0000</pubDate>
+      <guid>https://aidy.dev/journal/2024-01-22/</guid>
+      <description>Today I worked on translating my Threepenny-GUI TodoMVC to my FRP library. Reflex-DOM seems to do GUI by using the PerformEvent transformer which I think is an EventWriter for IO actions, but looking at Threepenny-GUI it seems they just fire off actions whenever? I&amp;rsquo;m not entirely clear on the details of how to best implement this or what the reasons are for doing it a certain way.
+Switching perspectives in an FRP app (functional/imperative?</description>
+    </item>
     <item>
       <title>2024-01-17</title>
       <link>https://aidy.dev/journal/2024-01-17/</link>

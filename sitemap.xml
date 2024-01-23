@@ -2,19 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://aidy.dev/journal/2024-01-22/</loc>
+    <lastmod>2024-01-22T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://aidy.dev/</loc>
+    <lastmod>2024-01-22T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>https://aidy.dev/journal/</loc>
+    <lastmod>2024-01-22T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>https://aidy.dev/journal/2024-01-17/</loc>
     <lastmod>2024-01-17T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://aidy.dev/blog/simple-frp-implementation-1/</loc>
     <lastmod>2024-01-17T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>https://aidy.dev/</loc>
-    <lastmod>2024-01-17T00:00:00+00:00</lastmod>
-  </url><url>
     <loc>https://aidy.dev/blog/</loc>
-    <lastmod>2024-01-17T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://aidy.dev/journal/</loc>
     <lastmod>2024-01-17T00:00:00+00:00</lastmod>
   </url><url>
     <loc>https://aidy.dev/journal/2023-12-15/</loc>
