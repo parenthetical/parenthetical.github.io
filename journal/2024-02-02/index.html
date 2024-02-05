@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.120.3">
+		<title>2024-02-02 - Adriaan Leijnse</title>
+
+		<meta name="description" content="Experiment: Imperative FRP I just managed to get TodoMVC working with Threepenny-GUI, in an &ldquo;imperative FRP&rdquo; style. This means that I used functions with signatures like
+newTellEvent :: (CommutativeSemigroup a) =&gt; Moment (Event a -&gt; Moment (), Event a) This gives you a &ldquo;tellEvent&rdquo;/&ldquo;callback adder&rdquo; to which you can add events which of which the occurrences will be combined in the result event.
+It allows you to send event occurrences &ldquo;up&rdquo; from deep within the code without having to pass the events around, just like with Reflex&rsquo; EventWriter.">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <nav id="navbar"
+           style="
+                  margin-bottom: 3rem;
+                  padding-top: 1rem;
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: flex-end;
+                  column-gap: 1.7rem;
+                  "             >
+        <a href="/"
+           >
+          <h1 style="
+                     margin: 0.2rem 0;
+                     padding: 0;
+                     font-size: 1.6rem;
+                     font-family: roman;
+                     color: #777;
+                     ">
+            Adriaan Leijnse
+          </h1>
+        </a>
+        <ul>
+          <li>
+            <a href="/blog/"
+               
+               >
+              Blog
+            </a>
+          </li><li>
+            <a href="/foc-ideas/"
+               
+               >
+              Future of Coding
+            </a>
+          </li><li>
+            <a href="/journal/"
+               
+               class="active"
+               
+               >
+              Journal
+            </a>
+          </li><li>
+            <a href="/papers/"
+               
+               >
+              Papers
+            </a>
+          </li></ul>
+      </nav>
+    </header>
+    <main class="container">
+
+<article>
+  <header>
+    <hgroup id="brand">
+      <h1>
+        Journal entry for 
+	
+        
+	<time datetime="2024-02-02 00:00:00 &#43;0000 UTC">February 2, 2024</time>
+        
+	<span class="no-print">
+	  <span>
+      </h1>
+    </hgroup>
+    <hr class="sep" />
+  </header>
+  <h2 id="experiment-imperative-frp">Experiment: Imperative FRP</h2>
+<p>I just managed to get TodoMVC working with Threepenny-GUI, in an &ldquo;imperative FRP&rdquo; style.
+This means that I used functions with signatures like</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">newTellEvent</span> <span class="ow">::</span> <span class="p">(</span><span class="kt">CommutativeSemigroup</span> <span class="n">a</span><span class="p">)</span> <span class="ow">=&gt;</span> <span class="kt">Moment</span> <span class="p">(</span><span class="kt">Event</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Moment</span> <span class="nb">()</span><span class="p">,</span> <span class="kt">Event</span> <span class="n">a</span><span class="p">)</span>
+</span></span></code></pre></div><p>This gives you a &ldquo;tellEvent&rdquo;/&ldquo;callback adder&rdquo; to which you can add events which of which the occurrences will be combined in the result event.</p>
+<p>It allows you to send event occurrences &ldquo;up&rdquo; from deep within the code without having to pass the events around, just like with Reflex&rsquo; EventWriter.
+EventWriter is much more cumbersome to use I feel, but on the other hand <code>newTellEvent</code> would need some way to ensure that you cannot pass the &ldquo;tellEvent&rdquo; outside of the scope, which might lead to implementation problems?
+I think figuring out the semantics for <code>newTellEvent</code> might help me figure things out more on that front.</p>
+<p>Another thing I did is implement things like the &ldquo;x items left&rdquo; feature of TodoMVC by having</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="kr">do</span> <span class="p">(</span><span class="n">tellAdjustCompletedCount</span><span class="p">,</span> <span class="n">adjustCompletedCountE</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="p">(</span><span class="kt">Sum</span> <span class="kt">Int</span><span class="p">))</span> <span class="ow">&lt;-</span> <span class="n">newTellEvent</span>
+</span></span><span class="line"><span class="cl">   <span class="p">(</span><span class="n">tellAdjustTodoCount</span><span class="p">,</span> <span class="n">adjustTodoCount</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="p">(</span><span class="kt">Sum</span> <span class="kt">Int</span><span class="p">))</span> <span class="ow">&lt;-</span> <span class="n">newTellEvent</span>
+</span></span><span class="line"><span class="cl">   <span class="o">...</span>
+</span></span></code></pre></div><p>Then on every todo add, completetion, delete, toggle, etc. you tell <code>Sum 1</code> or <code>Sum (-1)</code>.
+This is quite error prone (you might miss something which should influence the count), but at the same time much less error prone than doing it with IORefs, because you still have the trustable FRP semantics backing you up, making sure that whatever happens at time t stays true at time t.</p>
+<h3 id="why-do-this">Why do this?</h3>
+<p>I think what you get is like a manual version of what you&rsquo;d get writing a fully declarative TodoMVC with all the optimizations, e.g. using Reflex&rsquo; Incremental data type.</p>
+<h3 id="a-better-interface">A better interface?</h3>
+<p>Because tell/result always come in pairs, you might as well keep them in a single value.
+This could have Profunctor implemented on it.</p>
+<h3 id="future-of-programming-potential">Future of programming potential</h3>
+<p>I feel like having to use <code>newTellEvent</code> to do this is just a limitation of the current textual programming model.
+In an editor you might just be able to click at all the event producing locations deep in the code and combine them in a certain way, after which you can use the result anywhere else.</p>
+<p>The hard part would be to decide what &ldquo;context&rdquo; to use, because if a button is used all over a program you almost certainly want only a subset of buttons to count for your event.</p>
+
+</article>
+<nav class="no-print post-nav">
+  
+  <a class="prev-post" href="https://aidy.dev/journal/2024-01-27/">
+    <img class="icon-text" src="/img/prev.svg"/>2024-01-27</a>
+  
+  
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
+
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+
