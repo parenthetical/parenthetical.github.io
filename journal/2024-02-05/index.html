@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.120.3">
+		<title>2024-02-05 - Adriaan Leijnse</title>
+
+		<meta name="description" content="Bugs in my &ldquo;Imperative FRP&rdquo; TodoMVC: when an item is deleted it should stop contributing to the &ldquo;completed count&rdquo;. This wouldn&rsquo;t have been a problem with Reflex&rsquo; Adjustable behavior? This just goes to show that not doing these apps in a declarative style or at least with a list data type is really hard. Typically the list data type method doesn&rsquo;t have incremental bookkeeping of total/completed TODO items though.
+I&rsquo;m in the process of cleaning up my TodoMVC version.">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <nav id="navbar"
+           style="
+                  margin-bottom: 3rem;
+                  padding-top: 1rem;
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: flex-end;
+                  column-gap: 1.7rem;
+                  "             >
+        <a href="/"
+           >
+          <h1 style="
+                     margin: 0.2rem 0;
+                     padding: 0;
+                     font-size: 1.6rem;
+                     font-family: roman;
+                     color: #777;
+                     ">
+            Adriaan Leijnse
+          </h1>
+        </a>
+        <ul>
+          <li>
+            <a href="/blog/"
+               
+               >
+              Blog
+            </a>
+          </li><li>
+            <a href="/foc-ideas/"
+               
+               >
+              Future of Coding
+            </a>
+          </li><li>
+            <a href="/journal/"
+               
+               class="active"
+               
+               >
+              Journal
+            </a>
+          </li><li>
+            <a href="/papers/"
+               
+               >
+              Papers
+            </a>
+          </li></ul>
+      </nav>
+    </header>
+    <main class="container">
+
+<article>
+  <header>
+    <hgroup id="brand">
+      <h1>
+        Journal entry for 
+	
+        
+	<time datetime="2024-02-05 00:00:00 &#43;0000 UTC">February 5, 2024</time>
+        
+	<span class="no-print">
+	  <span>
+      </h1>
+    </hgroup>
+    <hr class="sep" />
+  </header>
+  <p>Bugs in my &ldquo;Imperative FRP&rdquo; TodoMVC: when an item is deleted it should stop contributing to the &ldquo;completed count&rdquo;.
+This wouldn&rsquo;t have been a problem with Reflex&rsquo; Adjustable behavior?
+This just goes to show that not doing these apps in a declarative style or at least with a list data type is really hard.
+Typically the list data type method doesn&rsquo;t have incremental bookkeeping of total/completed TODO items though.</p>
+<p>I&rsquo;m in the process of cleaning up my TodoMVC version.
+It&rsquo;s currently around a 110 lines of domain specific code.
+<a href="https://github.com/widok/todomvc/blob/master/src/main/scala/org/widok/todomvc/Application.scala">https://github.com/widok/todomvc/blob/master/src/main/scala/org/widok/todomvc/Application.scala</a> is about a 100 lines of domain specific code, so hopefully I can get under that.</p>
+<p>I am missing the persistence (&ldquo;LocalStorage&rdquo;) part of TodoMVC, but doing that in a very higher-order FRP style is something I need to explore still.
+The Widok version doesn&rsquo;t seem to handle that either AFAICT.</p>
+
+</article>
+<nav class="no-print post-nav">
+  
+  <a class="prev-post" href="https://aidy.dev/journal/2024-02-02/">
+    <img class="icon-text" src="/img/prev.svg"/>2024-02-02</a>
+  
+  
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
+
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+

@@ -6,8 +6,16 @@
     <description>Recent content on Adriaan Leijnse</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 02 Feb 2024 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 05 Feb 2024 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://aidy.dev/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>2024-02-05</title>
+      <link>https://aidy.dev/journal/2024-02-05/</link>
+      <pubDate>Mon, 05 Feb 2024 00:00:00 +0000</pubDate>
+      <guid>https://aidy.dev/journal/2024-02-05/</guid>
+      <description>Bugs in my &amp;ldquo;Imperative FRP&amp;rdquo; TodoMVC: when an item is deleted it should stop contributing to the &amp;ldquo;completed count&amp;rdquo;. This wouldn&amp;rsquo;t have been a problem with Reflex&amp;rsquo; Adjustable behavior? This just goes to show that not doing these apps in a declarative style or at least with a list data type is really hard. Typically the list data type method doesn&amp;rsquo;t have incremental bookkeeping of total/completed TODO items though.
+I&amp;rsquo;m in the process of cleaning up my TodoMVC version.</description>
+    </item>
     <item>
       <title>2024-02-02</title>
       <link>https://aidy.dev/journal/2024-02-02/</link>
