@@ -4,10 +4,10 @@
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="generator" content="Hugo 0.120.3">
-		<title>2024-02-05 - Adriaan Leijnse</title>
+		<title>2024-02-07 - Adriaan Leijnse</title>
 
-		<meta name="description" content="Bugs in my &ldquo;Imperative FRP&rdquo; TodoMVC: when an item is deleted it should stop contributing to the &ldquo;completed count&rdquo;. This wouldn&rsquo;t have been a problem with Reflex&rsquo; Adjustable behavior? This just goes to show that not doing these apps in a declarative style or at least with a list data type is really hard. Typically the list data type method doesn&rsquo;t have incremental bookkeeping of total/completed TODO items though.
-I&rsquo;m in the process of cleaning up my TodoMVC version.">
+		<meta name="description" content="I just hopped in on the Unison office hours (by accident) and Paul &amp; Rebecca were very helpful! I asked about laziness, GUI libraries, and identity-over-versions of smaller sub-expressions. The latter is something I think sorely needed for composition of components which cross many concerns but I don&rsquo;t have a coherent write-up of why.
+Rebecca linked me to a few GUI libraries that I can try out, @dfreeman/tv looks especially interesting:">
 
 
 		
@@ -89,7 +89,7 @@ I&rsquo;m in the process of cleaning up my TodoMVC version.">
         Journal entry for 
 	
         
-	<time datetime="2024-02-05 00:00:00 &#43;0000 UTC">February 5, 2024</time>
+	<time datetime="2024-02-07 00:00:00 &#43;0000 UTC">February 7, 2024</time>
         
 	<span class="no-print">
 	  <span>
@@ -97,25 +97,26 @@ I&rsquo;m in the process of cleaning up my TodoMVC version.">
     </hgroup>
     <hr class="sep" />
   </header>
-  <p>Bugs in my &ldquo;Imperative FRP&rdquo; TodoMVC: when an item is deleted it should stop contributing to the &ldquo;completed count&rdquo;.
-This wouldn&rsquo;t have been a problem with Reflex&rsquo; Adjustable behavior?
-This just goes to show that not doing these apps in a declarative style or at least with a list data type is really hard.
-Typically the list data type method doesn&rsquo;t have incremental bookkeeping of total/completed TODO items though.</p>
-<p>I&rsquo;m in the process of cleaning up my TodoMVC version.
-It&rsquo;s currently around a 110 lines of domain specific code.
-<a href="https://github.com/widok/todomvc/blob/master/src/main/scala/org/widok/todomvc/Application.scala">https://github.com/widok/todomvc/blob/master/src/main/scala/org/widok/todomvc/Application.scala</a> is about a 100 lines of domain specific code, so hopefully I can get under that.</p>
-<p>I am missing the persistence (&ldquo;LocalStorage&rdquo;) part of TodoMVC, but doing that in a very higher-order FRP style is something I need to explore still.
-The Widok version doesn&rsquo;t seem to handle that either AFAICT.</p>
+  <p>I just hopped in on the Unison office hours (by accident) and Paul &amp; Rebecca were very helpful!
+I asked about laziness, GUI libraries, and identity-over-versions of smaller sub-expressions.
+The latter is something I think sorely needed for composition of components which cross many concerns but I don&rsquo;t have a coherent write-up of why.</p>
+<p>Rebecca linked me to a few GUI libraries that I can try out, @dfreeman/tv looks especially interesting:</p>
+<ul>
+<li><a href="https://share.unison-lang.org/@alvaroc1/clarity">https://share.unison-lang.org/@alvaroc1/clarity</a></li>
+<li><a href="https://share.unison-lang.org/@dfreeman/tv">https://share.unison-lang.org/@dfreeman/tv</a></li>
+<li><a href="https://share.unison-lang.org/@tapegram/html">https://share.unison-lang.org/@tapegram/html</a></li>
+<li><a href="https://share.unison-lang.org/@tapegram/htmx">https://share.unison-lang.org/@tapegram/htmx</a></li>
+<li><a href="https://share.unison-lang.org/@hojberg/html">https://share.unison-lang.org/@hojberg/html</a></li>
+</ul>
+<p>This little chat motivated me to continue working on my distributed FRP paper, and to try out Unison.
+Their page at <a href="https://www.unison.cloud/our-approach/">https://www.unison.cloud/our-approach/</a> also looks like an interesting read.</p>
 
 </article>
 <nav class="no-print post-nav">
   
-  <a class="prev-post" href="https://aidy.dev/journal/2024-02-02/">
-    <img class="icon-text" src="/img/prev.svg"/>2024-02-02</a>
+  <a class="prev-post" href="https://aidy.dev/journal/2024-02-05/">
+    <img class="icon-text" src="/img/prev.svg"/>2024-02-05</a>
   
-  
-  <a class="next-post" href="https://aidy.dev/journal/2024-02-07/">2024-02-07<img class="icon-text" src="/img/next.svg"/>
-  </a>
   
 </nav>
 
