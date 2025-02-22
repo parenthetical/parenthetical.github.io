@@ -3,13 +3,16 @@
   	<head>
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="generator" content="Hugo 0.120.3">
+		<meta name="generator" content="Hugo 0.136.5">
 		<title>A DSL should have its own debugger - Adriaan Leijnse</title>
 
 		<meta name="description" content="From research journal entry 2023-02-24:
+
 For example, an FRP debugger should tell you “what is true at time t” (values of behaviors, any event occurrences). If say you wrote an infinite recursion in the non-FRP code, you should be able to drop down to a friendly execution model for that code.
+
 I&rsquo;m currently not sure what exactly is needed to make this happen.
-If you make an embedded DSL I suppose you can also implement a little debugger for it, but the real trick would be for your debugger to be aware of the debugger for the language below you.">
+If you make an embedded DSL I suppose you can also implement a little debugger for it, but the real trick would be for your debugger to be aware of the debugger for the language below you.
+This is even more important if programs in the DSL can use abritrary code.">
 
 
 		
@@ -130,7 +133,6 @@ This is even more important if programs in the DSL can use abritrary code.</p>
 				
 <a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
 <a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
-<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
 
 			</div>
 		</footer>

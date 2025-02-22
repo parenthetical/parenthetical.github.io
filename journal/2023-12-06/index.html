@@ -3,12 +3,19 @@
   	<head>
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="generator" content="Hugo 0.120.3">
+		<meta name="generator" content="Hugo 0.136.5">
 		<title>2023-12-06 - Adriaan Leijnse</title>
 
-		<meta name="description" content="I&rsquo;ve published a repo implementing FRP from scratch and I&rsquo;m in the process of writing an accompanying blog post. This implementation doesn&rsquo;t do any graph traversal optimisations but it is as expressive and lazier than Reflex. I&rsquo;m now hoping to add GC, graph traversal optimizations, and a GUI library to see how those work.
+		<meta name="description" content="I&rsquo;ve published a repo implementing FRP from scratch and I&rsquo;m in the process of writing an accompanying blog post.
+This implementation doesn&rsquo;t do any graph traversal optimisations but it is as expressive and lazier than Reflex.
+I&rsquo;m now hoping to add GC, graph traversal optimizations, and a GUI library to see how those work.
 Concretely the next steps I&rsquo;m interested in are:
-Cleaning up my implementation some more, solving all TODOs, and fully commenting the code.">
+
+Cleaning up my implementation some more, solving all TODOs, and fully commenting the code.
+Writing a Todo-MVC version using my FRP implementation and threepenny-gui. This I&rsquo;m planning to do by first keeping the FRP and GUI separate and then combining the two in a nice API.
+
+I&rsquo;ve also just realize that instead of Reflex&rsquo; &ldquo;event subscription takes a callback and returns the current known occurrence (if any)&rdquo; I might be able to have event subscription call the callback immediately?
+I&rsquo;m not sure this works out but I&rsquo;ll give that a try now.">
 
 
 		
@@ -132,7 +139,6 @@ I&rsquo;m not sure this works out but I&rsquo;ll give that a try now.</p>
 				
 <a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
 <a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
-<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
 
 			</div>
 		</footer>

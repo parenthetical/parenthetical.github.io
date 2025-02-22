@@ -3,12 +3,21 @@
   	<head>
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="generator" content="Hugo 0.120.3">
+		<meta name="generator" content="Hugo 0.136.5">
 		<title>2023-03-13 - Adriaan Leijnse</title>
 
-		<meta name="description" content="I started working on an implementation of Reflex-like FRP in Haskell. I&rsquo;ve long wondered how it all works and not understanding the internals has held me back from understanding what goes wrong when my mad experiments fail. I&rsquo;m taking this as an opportunity to learn about haskell.nix as well.
+		<meta name="description" content="I started working on an implementation of Reflex-like FRP in Haskell.
+I&rsquo;ve long wondered how it all works and not understanding the internals has held me back from understanding what goes wrong when my mad experiments fail.
+I&rsquo;m taking this as an opportunity to learn about haskell.nix as well.
 Things I&rsquo;d like to explore with this implementation:
-A Now monad which has occurs :: Event t a -&gt; Now (Maybe a) Experiment with first-class timelines.">
+
+A Now monad which has
+    occurs :: Event t a -&gt; Now (Maybe a)
+
+Experiment with first-class timelines.
+(Needs keeping the flexibility of Reflex&rsquo; parameterized types.)
+Maybe focus on commutative-first operations? I&rsquo;ve long thought that sequential-first over commutative-first is a mistake in library design, and Haskell suffers from it. (Another way to see this is &ldquo;sets over lists&rdquo;.)
+">
 
 
 		
@@ -134,7 +143,6 @@ I&rsquo;m taking this as an opportunity to learn about <a href="https://input-ou
 				
 <a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
 <a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
-<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
 
 			</div>
 		</footer>

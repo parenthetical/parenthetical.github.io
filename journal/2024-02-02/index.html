@@ -3,12 +3,17 @@
   	<head>
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="generator" content="Hugo 0.120.3">
+		<meta name="generator" content="Hugo 0.136.5">
 		<title>2024-02-02 - Adriaan Leijnse</title>
 
-		<meta name="description" content="Experiment: Imperative FRP I just managed to get TodoMVC working with Threepenny-GUI, in an &ldquo;imperative FRP&rdquo; style. This means that I used functions with signatures like
-newTellEvent :: (CommutativeSemigroup a) =&gt; Moment (Event a -&gt; Moment (), Event a) This gives you a &ldquo;tellEvent&rdquo;/&ldquo;callback adder&rdquo; to which you can add events which of which the occurrences will be combined in the result event.
-It allows you to send event occurrences &ldquo;up&rdquo; from deep within the code without having to pass the events around, just like with Reflex&rsquo; EventWriter.">
+		<meta name="description" content="Experiment: Imperative FRP
+I just managed to get TodoMVC working with Threepenny-GUI, in an &ldquo;imperative FRP&rdquo; style.
+This means that I used functions with signatures like
+newTellEvent :: (CommutativeSemigroup a) =&gt; Moment (Event a -&gt; Moment (), Event a)
+This gives you a &ldquo;tellEvent&rdquo;/&ldquo;callback adder&rdquo; to which you can add events which of which the occurrences will be combined in the result event.
+It allows you to send event occurrences &ldquo;up&rdquo; from deep within the code without having to pass the events around, just like with Reflex&rsquo; EventWriter.
+EventWriter is much more cumbersome to use I feel, but on the other hand newTellEvent would need some way to ensure that you cannot pass the &ldquo;tellEvent&rdquo; outside of the scope, which might lead to implementation problems?
+I think figuring out the semantics for newTellEvent might help me figure things out more on that front.">
 
 
 		
@@ -145,7 +150,6 @@ In an editor you might just be able to click at all the event producing location
 				
 <a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
 <a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
-<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
 
 			</div>
 		</footer>

@@ -4,7 +4,7 @@
     <title>Ideas for the future of coding on Adriaan Leijnse</title>
     <link>https://aidy.dev/foc-ideas/</link>
     <description>Recent content in Ideas for the future of coding on Adriaan Leijnse</description>
-    <generator>Hugo -- gohugo.io</generator>
+    <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Tue, 11 Apr 2023 19:06:00 +0100</lastBuildDate>
     <atom:link href="https://aidy.dev/foc-ideas/index.xml" rel="self" type="application/rss+xml" />
@@ -13,38 +13,28 @@
       <link>https://aidy.dev/foc-ideas/dsl-debuggers/</link>
       <pubDate>Tue, 11 Apr 2023 19:06:00 +0100</pubDate>
       <guid>https://aidy.dev/foc-ideas/dsl-debuggers/</guid>
-      <description>From research journal entry 2023-02-24:
-For example, an FRP debugger should tell you “what is true at time t” (values of behaviors, any event occurrences). If say you wrote an infinite recursion in the non-FRP code, you should be able to drop down to a friendly execution model for that code.
-I&amp;rsquo;m currently not sure what exactly is needed to make this happen.
-If you make an embedded DSL I suppose you can also implement a little debugger for it, but the real trick would be for your debugger to be aware of the debugger for the language below you.</description>
+      <description>&lt;p&gt;From research journal entry &lt;a href=&#34;https://aidy.dev/journal/2023-02-24/&#34;&gt;2023-02-24&lt;/a&gt;:&lt;/p&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;For example, an FRP debugger should tell you “what is true at time t” (values of behaviors, any event occurrences). If say you wrote an infinite recursion in the non-FRP code, you should be able to drop down to a friendly execution model for that code.&lt;/p&gt;&#xA;&lt;/blockquote&gt;&#xA;&lt;p&gt;I&amp;rsquo;m currently not sure what exactly is needed to make this happen.&lt;/p&gt;&#xA;&lt;p&gt;If you make an embedded DSL I suppose you can also implement a little debugger for it, but the real trick would be for your debugger to be aware of the debugger for the language below you.&#xA;This is even more important if programs in the DSL can use abritrary code.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Thoughts on comfortable GUI development</title>
       <link>https://aidy.dev/foc-ideas/gui-creation/</link>
       <pubDate>Tue, 11 Apr 2023 12:35:00 +0100</pubDate>
       <guid>https://aidy.dev/foc-ideas/gui-creation/</guid>
-      <description>Debugging From research journal entry 2023-02-24.
-When creating GUIs you might want to know:
-How is this element defined? Where does it come from? Why does it exist/am I seeing it? From the entry as well:
-[…] you should be able to enter a special mode while developing which allows you to click on a button and be taken to its editable definition. Editing that definition should either change that button (like the DOM editor in your browser) or all buttons (but that might render the current state impossible to reach?</description>
+      <description>&lt;h2 id=&#34;debugging&#34;&gt;Debugging&lt;/h2&gt;&#xA;&lt;p&gt;From research journal entry &lt;a href=&#34;https://aidy.dev/journal/2023-02-24/&#34;&gt;2023-02-24&lt;/a&gt;.&lt;/p&gt;&#xA;&lt;p&gt;When creating GUIs you might want to know:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;How is this element defined?&lt;/li&gt;&#xA;&lt;li&gt;Where does it come from?&lt;/li&gt;&#xA;&lt;li&gt;Why does it exist/am I seeing it?&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;From the entry as well:&lt;/p&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;[…] you should be able to enter a special mode while developing which allows you to click on a button and be taken to its editable definition. Editing that definition should either change that button (like the DOM editor in your browser) or all buttons (but that might render the current state impossible to reach?). Other things which would be cool is to know the causality of the button’s existence. E.g. which other buttons were pressed in the past to get to where we are?&lt;/p&gt;</description>
     </item>
     <item>
       <title>FRP with first-class timelines</title>
       <link>https://aidy.dev/foc-ideas/first-class-timelines/</link>
       <pubDate>Tue, 11 Apr 2023 00:00:00 +0100</pubDate>
       <guid>https://aidy.dev/foc-ideas/first-class-timelines/</guid>
-      <description>From journal entry Undo via timeline-of-actions manipulation:
-My master&amp;rsquo;s thesis was about making timelines/events in FRP first class values which can be modified, and using that to implement things like undo. I think this is a concept which should be explored more, and which would render an FRP-based programming environment super useful, because you could ask &amp;ldquo;what-if&amp;rdquo; questions and have a much better interactive development/debugging experience.
-Having an FRP implementation in which timelines (Events) are manipulable allows:</description>
+      <description>&lt;p&gt;From journal entry &lt;a href=&#34;https://aidy.dev/journal/2023-03-10/&#34;&gt;Undo via timeline-of-actions manipulation&lt;/a&gt;:&lt;/p&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;My master&amp;rsquo;s thesis was about making timelines/events in FRP first class values which can be modified, and using that to implement things like undo.&#xA;I think this is a concept which should be explored more, and which would render an FRP-based programming environment super useful, because you could ask &amp;ldquo;what-if&amp;rdquo; questions and have a much better interactive development/debugging experience.&lt;/p&gt;&#xA;&lt;/blockquote&gt;&#xA;&lt;p&gt;Having an FRP implementation in which timelines (Events) are manipulable allows:&lt;/p&gt;</description>
     </item>
     <item>
       <title>Re-unifying program state and definition</title>
       <link>https://aidy.dev/foc-ideas/state-and-program-definition/</link>
       <pubDate>Sun, 02 Apr 2023 00:00:00 +0000</pubDate>
       <guid>https://aidy.dev/foc-ideas/state-and-program-definition/</guid>
-      <description>Why can&amp;rsquo;t program state and source evolve together? This used to be the case in Smalltalk images and other systems, but it&amp;rsquo;s completely gone from mainstream development.
-From research journal entry /journal/2023-02-24/:
-I was recently helping a friend with a Python project and we had to use a variable to store some text that we’d modify later in the program. She was surprised to learn that this wouldn’t change the text in the source code as well.</description>
+      <description>&lt;p&gt;Why can&amp;rsquo;t program state and source evolve together?&#xA;This used to be the case in Smalltalk images and other systems, but it&amp;rsquo;s completely gone from mainstream development.&lt;/p&gt;&#xA;&lt;p&gt;From research journal entry &lt;a href=&#34;https://aidy.dev/journal/2023-02-24/&#34;&gt;/journal/2023-02-24/&lt;/a&gt;:&lt;/p&gt;&#xA;&lt;blockquote&gt;&#xA;&lt;p&gt;I was recently helping a friend with a Python project and we had to use a variable to store some text that we’d modify later in the program. She was surprised to learn that this wouldn’t change the text in the source code as well. I had to tell her that this was a reasonable assumption but that the field of programming is not yet ready for her futuristic ideas.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

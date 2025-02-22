@@ -4,12 +4,21 @@
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="generator" content="Hugo 0.136.5">
-		<title>2023-11-04 - Adriaan Leijnse</title>
+		<title>2024-02-08 - Adriaan Leijnse</title>
 
-		<meta name="description" content="Long time no write! I&rsquo;ve been continuing to explore Reflex&rsquo; implementation.
-I&rsquo;ve got it quite short now and I think I understand all parts, except why the extra-laziness of the buildIncremental=/=buildDynamic functions are needed.
-Hopefully I can figure that out by working through a failing test.
-My plan now is to delete the last of the optimizations I can find (which might only be the use of &ldquo;height&rdquo; to save on graph traversal), and then write about how to go from zero to Reflex Spider.">
+		<meta name="description" content="Reading Unison&rsquo;s &ldquo;Our Approach&rdquo;
+https://www.unison.cloud/our-approach/
+Starting off, I vibe with their
+
+Actual programming
+Logical. Compositional. Typed. Amazing.
+Building for the cloud
+A garbage fire of unguessable nonsense.
+
+meme very much!
+Whenever I have to exit my programming language and use a completely parallel tool I feel a lot of anxiety.
+It&rsquo;s better with Nix but Nix doesn&rsquo;t manage your state or do other things your regular programming language does.
+The rest of the post details their &ldquo;dream in 3 parts&rdquo;:">
 
 
 		
@@ -91,7 +100,7 @@ My plan now is to delete the last of the optimizations I can find (which might o
         Journal entry for 
 	
         
-	<time datetime="2023-11-04 00:00:00 &#43;0000 UTC">November 4, 2023</time>
+	<time datetime="2024-02-08 00:00:00 &#43;0000 UTC">February 8, 2024</time>
         
 	<span class="no-print">
 	  <span>
@@ -99,19 +108,35 @@ My plan now is to delete the last of the optimizations I can find (which might o
     </hgroup>
     <hr class="sep" />
   </header>
-  <p>Long time no write! I&rsquo;ve been continuing to explore Reflex&rsquo; implementation.
-I&rsquo;ve got it quite short now and I think I understand all parts, except why the extra-laziness of the <code>buildIncremental=/=buildDynamic</code> functions are needed.
-Hopefully I can figure that out by working through a failing test.</p>
-<p>My plan now is to delete the last of the optimizations I can find (which might only be the use of &ldquo;height&rdquo; to save on graph traversal), and then write about how to go from zero to Reflex Spider.</p>
+  <h2 id="reading-unison-s-our-approach">Reading Unison&rsquo;s &ldquo;Our Approach&rdquo;</h2>
+<p><a href="https://www.unison.cloud/our-approach/">https://www.unison.cloud/our-approach/</a></p>
+<p>Starting off, I vibe with their</p>
+<dl>
+<dt>Actual programming</dt>
+<dd>Logical. Compositional. Typed. Amazing.</dd>
+<dt>Building for the cloud</dt>
+<dd>A garbage fire of unguessable nonsense.</dd>
+</dl>
+<p>meme very much!
+Whenever I have to exit my programming language and use a completely parallel tool I feel a lot of anxiety.
+It&rsquo;s better with Nix but Nix doesn&rsquo;t manage your state or do other things your regular programming language does.</p>
+<p>The rest of the post details their &ldquo;dream in 3 parts&rdquo;:</p>
+<ul>
+<li>deployment from within your programming language (amazing)</li>
+<li>typed distributed programming, sold as &ldquo;calling services should be easy&rdquo;</li>
+<li>using storage should be as easy as using in-memory data</li>
+</ul>
+<p>The last section &ldquo;Why is it so complicated, anyway?&rdquo; (answer: you program a little box/process but going outside it is pain) is also lovely.
+I&rsquo;m looking forward to trying Unison out ASAP!</p>
 
 </article>
 <nav class="no-print post-nav">
   
-  <a class="prev-post" href="https://aidy.dev/journal/2023-08-21/">
-    <img class="icon-text" src="/img/prev.svg"/>2023-08-21</a>
+  <a class="prev-post" href="https://aidy.dev/journal/2024-02-07/">
+    <img class="icon-text" src="/img/prev.svg"/>2024-02-07</a>
   
   
-  <a class="next-post" href="https://aidy.dev/journal/2023-11-18/">2023-11-18<img class="icon-text" src="/img/next.svg"/>
+  <a class="next-post" href="https://aidy.dev/journal/2024-02-27/">2024-02-27<img class="icon-text" src="/img/next.svg"/>
   </a>
   
 </nav>

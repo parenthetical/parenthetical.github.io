@@ -3,11 +3,14 @@
   	<head>
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="generator" content="Hugo 0.120.3">
+		<meta name="generator" content="Hugo 0.136.5">
 		<title>2023-06-07 - Adriaan Leijnse</title>
 
-		<meta name="description" content="I&rsquo;m wondering if it&rsquo;s possible to go from an FRP implementation in which accidental space leaks are possible by keeping a reference to an Event, to one in which that is not. In the former an Event is really just a list of occurrences/futures. In the latter you have a Now monad which ensures programs can only observe occurrences after &ldquo;now&rdquo;.
-My first thought was that you&rsquo;d wrap every Event in a Behavior to make a new Event type (this behavior being equivalent to the Now data type).">
+		<meta name="description" content="I&rsquo;m wondering if it&rsquo;s possible to go from an FRP implementation in which accidental space leaks are possible by keeping a reference to an Event, to one in which that is not.
+In the former an Event is really just a list of occurrences/futures.
+In the latter you have a Now monad which ensures programs can only observe occurrences after &ldquo;now&rdquo;.
+My first thought was that you&rsquo;d wrap every Event in a Behavior to make a new Event type (this behavior being equivalent to the Now data type).
+This behaviour would automatically keep popping occurrences of the list-based event.">
 
 
 		
@@ -127,7 +130,6 @@ This behaviour would automatically keep popping occurrences of the list-based ev
 				
 <a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
 <a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
-<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
 
 			</div>
 		</footer>

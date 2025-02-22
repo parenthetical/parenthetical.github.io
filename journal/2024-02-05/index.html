@@ -3,11 +3,16 @@
   	<head>
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="generator" content="Hugo 0.120.3">
+		<meta name="generator" content="Hugo 0.136.5">
 		<title>2024-02-05 - Adriaan Leijnse</title>
 
-		<meta name="description" content="Bugs in my &ldquo;Imperative FRP&rdquo; TodoMVC: when an item is deleted it should stop contributing to the &ldquo;completed count&rdquo;. This wouldn&rsquo;t have been a problem with Reflex&rsquo; Adjustable behavior? This just goes to show that not doing these apps in a declarative style or at least with a list data type is really hard. Typically the list data type method doesn&rsquo;t have incremental bookkeeping of total/completed TODO items though.
-I&rsquo;m in the process of cleaning up my TodoMVC version.">
+		<meta name="description" content="Bugs in my &ldquo;Imperative FRP&rdquo; TodoMVC: when an item is deleted it should stop contributing to the &ldquo;completed count&rdquo;.
+This wouldn&rsquo;t have been a problem with Reflex&rsquo; Adjustable behavior?
+This just goes to show that not doing these apps in a declarative style or at least with a list data type is really hard.
+Typically the list data type method doesn&rsquo;t have incremental bookkeeping of total/completed TODO items though.
+I&rsquo;m in the process of cleaning up my TodoMVC version.
+It&rsquo;s currently around a 110 lines of domain specific code.
+https://github.com/widok/todomvc/blob/master/src/main/scala/org/widok/todomvc/Application.scala is about a 100 lines of domain specific code, so hopefully I can get under that.">
 
 
 		
@@ -130,7 +135,6 @@ The Widok version doesn&rsquo;t seem to handle that either AFAICT.</p>
 				
 <a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
 <a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
-<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
 
 			</div>
 		</footer>

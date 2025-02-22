@@ -4,12 +4,17 @@
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="generator" content="Hugo 0.136.5">
-		<title>2023-11-04 - Adriaan Leijnse</title>
+		<title>2024-03-18 - Adriaan Leijnse</title>
 
-		<meta name="description" content="Long time no write! I&rsquo;ve been continuing to explore Reflex&rsquo; implementation.
-I&rsquo;ve got it quite short now and I think I understand all parts, except why the extra-laziness of the buildIncremental=/=buildDynamic functions are needed.
-Hopefully I can figure that out by working through a failing test.
-My plan now is to delete the last of the optimizations I can find (which might only be the use of &ldquo;height&rdquo; to save on graph traversal), and then write about how to go from zero to Reflex Spider.">
+		<meta name="description" content="I&rsquo;m working on my FRP library today.
+I think I have GC working cleanly, no test failures and the root event gets completely unsubscribed from after enough performGC&rsquo;s.
+Also, I still need to add:
+
+ Weak reference for the Behavior invalidators (currently that&rsquo;s a plain value so it might keep an event alive that&rsquo;s dead?)
+ Weak reference for lazily sampled behavior values, although they are currently forced on each frame so it would only affect GC within a frame.
+
+Everything seems to work so far, except that running the test cases many times from GHCi lead to an exception due to an uninitialized reference, that points to some subtle fault in my GC code I think.
+Maybe I need to add some touch&rsquo;s like in Reflex&rsquo; code.">
 
 
 		
@@ -91,7 +96,7 @@ My plan now is to delete the last of the optimizations I can find (which might o
         Journal entry for 
 	
         
-	<time datetime="2023-11-04 00:00:00 &#43;0000 UTC">November 4, 2023</time>
+	<time datetime="2024-03-18 00:00:00 &#43;0000 UTC">March 18, 2024</time>
         
 	<span class="no-print">
 	  <span>
@@ -99,20 +104,22 @@ My plan now is to delete the last of the optimizations I can find (which might o
     </hgroup>
     <hr class="sep" />
   </header>
-  <p>Long time no write! I&rsquo;ve been continuing to explore Reflex&rsquo; implementation.
-I&rsquo;ve got it quite short now and I think I understand all parts, except why the extra-laziness of the <code>buildIncremental=/=buildDynamic</code> functions are needed.
-Hopefully I can figure that out by working through a failing test.</p>
-<p>My plan now is to delete the last of the optimizations I can find (which might only be the use of &ldquo;height&rdquo; to save on graph traversal), and then write about how to go from zero to Reflex Spider.</p>
+  <p>I&rsquo;m working on my FRP library today.
+I think I have GC working cleanly, no test failures and the root event gets completely unsubscribed from after enough <code>performGC</code>&rsquo;s.</p>
+<p>Also, I still need to add:</p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> Weak reference for the Behavior invalidators (currently that&rsquo;s a plain value so it might keep an event alive that&rsquo;s dead?)</li>
+<li><input disabled="" type="checkbox"> Weak reference for lazily sampled behavior values, although they are currently forced on each frame so it would only affect GC within a frame.</li>
+</ul>
+<p>Everything seems to work so far, except that running the test cases many times from GHCi lead to an exception due to an uninitialized reference, that points to some subtle fault in my GC code I think.
+Maybe I need to add some <code>touch</code>&rsquo;s like in Reflex&rsquo; code.</p>
 
 </article>
 <nav class="no-print post-nav">
   
-  <a class="prev-post" href="https://aidy.dev/journal/2023-08-21/">
-    <img class="icon-text" src="/img/prev.svg"/>2023-08-21</a>
+  <a class="prev-post" href="https://aidy.dev/journal/2024-03-04/">
+    <img class="icon-text" src="/img/prev.svg"/>2024-03-04</a>
   
-  
-  <a class="next-post" href="https://aidy.dev/journal/2023-11-18/">2023-11-18<img class="icon-text" src="/img/next.svg"/>
-  </a>
   
 </nav>
 

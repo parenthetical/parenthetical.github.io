@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.136.5">
+		<title>2024-02-27 - Adriaan Leijnse</title>
+
+		<meta name="description" content="I&rsquo;ve been working on my distributed FRP/denotative distributed programming paper off-and-on, which been refocusing it to contain a comparison of message passing style and denotative distributed programming.
+I&rsquo;m not sure if that&rsquo;s a good path so I think I should collaborate with a professor to see if it&rsquo;s a good idea.
+Another problem is that I don&rsquo;t have a working implementation right now.
+I think I a pure implementation which is parameterized over the communication graph would work without any problems with recursive dependencies.
+For the effectful implementation I could write a simulator instead of an actual distributed one, so that I can do things like &ldquo;send&rdquo; closures.
+This might make the implementation much simpler?">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <nav id="navbar"
+           style="
+                  margin-bottom: 3rem;
+                  padding-top: 1rem;
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: flex-end;
+                  column-gap: 1.7rem;
+                  "             >
+        <a href="/"
+           >
+          <h1 style="
+                     margin: 0.2rem 0;
+                     padding: 0;
+                     font-size: 1.6rem;
+                     font-family: roman;
+                     color: #777;
+                     ">
+            Adriaan Leijnse
+          </h1>
+        </a>
+        <ul>
+          <li>
+            <a href="/blog/"
+               
+               >
+              Blog
+            </a>
+          </li><li>
+            <a href="/foc-ideas/"
+               
+               >
+              Future of Coding
+            </a>
+          </li><li>
+            <a href="/journal/"
+               
+               class="active"
+               
+               >
+              Journal
+            </a>
+          </li><li>
+            <a href="/papers/"
+               
+               >
+              Papers
+            </a>
+          </li></ul>
+      </nav>
+    </header>
+    <main class="container">
+
+<article>
+  <header>
+    <hgroup id="brand">
+      <h1>
+        Journal entry for 
+	
+        
+	<time datetime="2024-02-27 00:00:00 &#43;0000 UTC">February 27, 2024</time>
+        
+	<span class="no-print">
+	  <span>
+      </h1>
+    </hgroup>
+    <hr class="sep" />
+  </header>
+  <p>I&rsquo;ve been working on my distributed FRP/denotative distributed programming paper off-and-on, which been refocusing it to contain a comparison of message passing style and denotative distributed programming.
+I&rsquo;m not sure if that&rsquo;s a good path so I think I should collaborate with a professor to see if it&rsquo;s a good idea.</p>
+<p>Another problem is that I don&rsquo;t have a working implementation right now.
+I think I a pure implementation which is parameterized over the communication graph would work without any problems with recursive dependencies.
+For the effectful implementation I could write a simulator instead of an actual distributed one, so that I can do things like &ldquo;send&rdquo; closures.
+This might make the implementation much simpler?</p>
+<p>The other option is one I tried before where you have to have a restricted sample which only works on serializable values.
+This latter option would be nice because I could then actually run apps I wrote for myself.</p>
+<h2 id="programming-local-first-workshop-2023">Programming Local-First Workshop 2023</h2>
+<p>Some talks that look interesting:
+<a href="https://www.youtube.com/watch?v=qtKvezE72jM">- [PLF23] MVC, MVCC and Causal Trees - YouTube</a></p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=uP7AKExkMGU">[PLF23] Extending Automerge: Undo, Redo, and Move - YouTube</a></li>
+<li><a href="https://www.youtube.com/watch?v=oWELltenH4k">[PLF23] Proposal: Versioned Collaborative Documents - YouTube</a></li>
+<li><a href="https://www.youtube.com/watch?v=TfWoEBArfOQ">{PLF23} How to Enforce and Verify Invariants in Weakly Consistent Databases -&hellip;</a></li>
+<li><a href="https://www.youtube.com/watch?v=M9afeuNJIA8">{PLF23} Can local-first really scale at the edge? - YouTube</a></li>
+<li><a href="https://www.youtube.com/watch?v=L4Ikc0TMPuM">{PLF23} Collaborative offline-first applications in Education - YouTube</a></li>
+<li><a href="https://www.youtube.com/watch?v=AE8fl1hGbEs">{PLF23} Local-First in Practice: Learnings of building a high-performance, lo&hellip; music app</a></li>
+<li><a href="https://www.youtube.com/watch?v=1ngD6uBV_WI">{PLF23} Local-first: experiments &amp; lessons learned building TypeCell - YouTube</a></li>
+</ul>
+
+</article>
+<nav class="no-print post-nav">
+  
+  <a class="prev-post" href="https://aidy.dev/journal/2024-02-08/">
+    <img class="icon-text" src="/img/prev.svg"/>2024-02-08</a>
+  
+  
+  <a class="next-post" href="https://aidy.dev/journal/2024-03-04/">2024-03-04<img class="icon-text" src="/img/next.svg"/>
+  </a>
+  
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+

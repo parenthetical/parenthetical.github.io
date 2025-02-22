@@ -3,7 +3,7 @@
   	<head>
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="generator" content="Hugo 0.120.3">
+		<meta name="generator" content="Hugo 0.136.5">
 		<title>Journal - Adriaan Leijnse</title>
 
 		<meta name="description" content="">
@@ -88,6 +88,104 @@
     <header>
       <h1>
         
+	<a href="/journal/2024-03-18/">
+          <span><time datetime="2024-03-18 00:00:00 &#43;0000 UTC">March 18, 2024</time></span>
+	</a>
+      </h1>
+    </header>
+    <p>I&rsquo;m working on my FRP library today.
+I think I have GC working cleanly, no test failures and the root event gets completely unsubscribed from after enough <code>performGC</code>&rsquo;s.</p>
+<p>Also, I still need to add:</p>
+<ul>
+<li><input checked="" disabled="" type="checkbox"> Weak reference for the Behavior invalidators (currently that&rsquo;s a plain value so it might keep an event alive that&rsquo;s dead?)</li>
+<li><input disabled="" type="checkbox"> Weak reference for lazily sampled behavior values, although they are currently forced on each frame so it would only affect GC within a frame.</li>
+</ul>
+<p>Everything seems to work so far, except that running the test cases many times from GHCi lead to an exception due to an uninitialized reference, that points to some subtle fault in my GC code I think.
+Maybe I need to add some <code>touch</code>&rsquo;s like in Reflex&rsquo; code.</p>
+
+  </article>
+  
+  <article>
+    <header>
+      <h1>
+        
+	<a href="/journal/2024-03-04/">
+          <span><time datetime="2024-03-04 00:00:00 &#43;0000 UTC">March 4, 2024</time></span>
+	</a>
+      </h1>
+    </header>
+    <p>Trying out <a href="https://hackage.haskell.org/package/rec-def">Joachim Breitner&rsquo;s rec-def</a>.</p>
+
+  </article>
+  
+  <article>
+    <header>
+      <h1>
+        
+	<a href="/journal/2024-02-27/">
+          <span><time datetime="2024-02-27 00:00:00 &#43;0000 UTC">February 27, 2024</time></span>
+	</a>
+      </h1>
+    </header>
+    <p>I&rsquo;ve been working on my distributed FRP/denotative distributed programming paper off-and-on, which been refocusing it to contain a comparison of message passing style and denotative distributed programming.
+I&rsquo;m not sure if that&rsquo;s a good path so I think I should collaborate with a professor to see if it&rsquo;s a good idea.</p>
+<p>Another problem is that I don&rsquo;t have a working implementation right now.
+I think I a pure implementation which is parameterized over the communication graph would work without any problems with recursive dependencies.
+For the effectful implementation I could write a simulator instead of an actual distributed one, so that I can do things like &ldquo;send&rdquo; closures.
+This might make the implementation much simpler?</p>
+<p>The other option is one I tried before where you have to have a restricted sample which only works on serializable values.
+This latter option would be nice because I could then actually run apps I wrote for myself.</p>
+<h2 id="programming-local-first-workshop-2023">Programming Local-First Workshop 2023</h2>
+<p>Some talks that look interesting:
+<a href="https://www.youtube.com/watch?v=qtKvezE72jM">- [PLF23] MVC, MVCC and Causal Trees - YouTube</a></p>
+<ul>
+<li><a href="https://www.youtube.com/watch?v=uP7AKExkMGU">[PLF23] Extending Automerge: Undo, Redo, and Move - YouTube</a></li>
+<li><a href="https://www.youtube.com/watch?v=oWELltenH4k">[PLF23] Proposal: Versioned Collaborative Documents - YouTube</a></li>
+<li><a href="https://www.youtube.com/watch?v=TfWoEBArfOQ">{PLF23} How to Enforce and Verify Invariants in Weakly Consistent Databases -&hellip;</a></li>
+<li><a href="https://www.youtube.com/watch?v=M9afeuNJIA8">{PLF23} Can local-first really scale at the edge? - YouTube</a></li>
+<li><a href="https://www.youtube.com/watch?v=L4Ikc0TMPuM">{PLF23} Collaborative offline-first applications in Education - YouTube</a></li>
+<li><a href="https://www.youtube.com/watch?v=AE8fl1hGbEs">{PLF23} Local-First in Practice: Learnings of building a high-performance, lo&hellip; music app</a></li>
+<li><a href="https://www.youtube.com/watch?v=1ngD6uBV_WI">{PLF23} Local-first: experiments &amp; lessons learned building TypeCell - YouTube</a></li>
+</ul>
+
+  </article>
+  
+  <article>
+    <header>
+      <h1>
+        
+	<a href="/journal/2024-02-08/">
+          <span><time datetime="2024-02-08 00:00:00 &#43;0000 UTC">February 8, 2024</time></span>
+	</a>
+      </h1>
+    </header>
+    <h2 id="reading-unison-s-our-approach">Reading Unison&rsquo;s &ldquo;Our Approach&rdquo;</h2>
+<p><a href="https://www.unison.cloud/our-approach/">https://www.unison.cloud/our-approach/</a></p>
+<p>Starting off, I vibe with their</p>
+<dl>
+<dt>Actual programming</dt>
+<dd>Logical. Compositional. Typed. Amazing.</dd>
+<dt>Building for the cloud</dt>
+<dd>A garbage fire of unguessable nonsense.</dd>
+</dl>
+<p>meme very much!
+Whenever I have to exit my programming language and use a completely parallel tool I feel a lot of anxiety.
+It&rsquo;s better with Nix but Nix doesn&rsquo;t manage your state or do other things your regular programming language does.</p>
+<p>The rest of the post details their &ldquo;dream in 3 parts&rdquo;:</p>
+<ul>
+<li>deployment from within your programming language (amazing)</li>
+<li>typed distributed programming, sold as &ldquo;calling services should be easy&rdquo;</li>
+<li>using storage should be as easy as using in-memory data</li>
+</ul>
+<p>The last section &ldquo;Why is it so complicated, anyway?&rdquo; (answer: you program a little box/process but going outside it is pain) is also lovely.
+I&rsquo;m looking forward to trying Unison out ASAP!</p>
+
+  </article>
+  
+  <article>
+    <header>
+      <h1>
+        
 	<a href="/journal/2024-02-07/">
           <span><time datetime="2024-02-07 00:00:00 &#43;0000 UTC">February 7, 2024</time></span>
 	</a>
@@ -106,6 +204,12 @@ The latter is something I think sorely needed for composition of components whic
 </ul>
 <p>This little chat motivated me to continue working on my distributed FRP paper, and to try out Unison.
 Their page at <a href="https://www.unison.cloud/our-approach/">https://www.unison.cloud/our-approach/</a> also looks like an interesting read.</p>
+<p>The rest of the post details their &ldquo;dream in 3 parts&rdquo;:</p>
+<ul>
+<li>deployment from within your programming language (amazing)</li>
+<li>typed distributed programming, sold as &ldquo;calling services should be easy&rdquo;</li>
+<li>using storage should be as easy as using in-memory data</li>
+</ul>
 
   </article>
   
@@ -1063,7 +1167,6 @@ Now you only have <code>sample</code> for behaviors, but not the equivalent for 
 				
 <a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
 <a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
-<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
 
 			</div>
 		</footer>

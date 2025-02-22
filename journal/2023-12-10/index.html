@@ -3,12 +3,20 @@
   	<head>
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="generator" content="Hugo 0.120.3">
+		<meta name="generator" content="Hugo 0.136.5">
 		<title>2023-12-10 - Adriaan Leijnse</title>
 
-		<meta name="description" content="I now have an implementation in three ways and I&rsquo;m not sure which is best. All this was because fixIO is not lazy enough to do:
-fixIO $ \unsubscribe -&gt; do subscribe e $ \propagate -&gt; do ... unsubscribe When originally implementing subscribe as:
-subscribe :: Event a -&gt; (Maybe a -&gt; IO ()) -&gt; (Unsubscribe, Maybe (Maybe a)) This fixIO problem didn&rsquo;t exist because processing the initial value happened after the subscribe had run.">
+		<meta name="description" content="I now have an implementation in three ways and I&rsquo;m not sure which is best.
+All this was because fixIO is not lazy enough to do:
+fixIO $ \unsubscribe -&gt; do
+  subscribe e $ \propagate -&gt; do
+    ...
+    unsubscribe
+When originally implementing subscribe as:
+subscribe :: Event a -&gt; (Maybe a -&gt; IO ()) -&gt; (Unsubscribe, Maybe (Maybe a))
+This fixIO problem didn&rsquo;t exist because processing the initial value happened after the subscribe had run.
+Now I was trying to implement the FRP interface without having to return this Maybe (Maybe a) (occurrence known at subscribe time or not and what&rsquo;s its value).
+Maybe with my new insights I&rsquo;ll give the original version a shot again and see if I can make a shorter implementation using it.">
 
 
 		
@@ -174,7 +182,6 @@ The advantage of this one is that I didn&rsquo;t have to use a delaying queue fo
 				
 <a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
 <a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
-<a href="https://aidy.dev/index.xml" target="_blank"><img class="icon-zocial" src="/img/feed.svg" alt="Feed"></a>
 
 			</div>
 		</footer>
