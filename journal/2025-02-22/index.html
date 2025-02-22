@@ -118,10 +118,16 @@ The algorithm is easily written as a function:</p>
 </span></span><span class="line"><span class="cl">       <span class="kr">then</span> <span class="n">n</span> <span class="o">/</span> <span class="mi">2</span>
 </span></span><span class="line"><span class="cl">       <span class="kr">else</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span>
 </span></span></code></pre></div><p>The conjecture is that this algorithm will always terminate with <code>n = 1</code> for any <code>n &gt; 1</code>.</p>
-<p>Suppose that you&rsquo;re naive and think you can solve the conjecture, or you&rsquo;re just exploring the problem a little bit.
+<p>Suppose that you&rsquo;re naive and think you can solve the conjecture, or you&rsquo;re just exploring the problem space a little bit.
 You could rewrite this definition each time you want to explore something about the algorithm, e.g. looking at the sequence of <code>n</code> values it goes through, or collecting all the primes, etc.</p>
-<p>To get the sequence you could add a <code>tell [n]</code> effect at the top level of the definition.
-A good implementation would ensure hygiene for identifiers so that you can get at shadowed variables etc.</p>
+<p>If you want to get the sequence of values, you&rsquo;d have to rewrite it as follows:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">collatzSeq</span> <span class="n">n</span> <span class="ow">=</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">then</span> <span class="p">[</span><span class="n">n</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">else</span> <span class="n">n</span> <span class="kt">:</span> <span class="p">(</span><span class="n">collatzSeq</span> <span class="p">(</span><span class="kr">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span> <span class="kr">then</span> <span class="o">...</span><span class="p">))</span>
+</span></span></code></pre></div><p>But what if instead of doing that you could just say &ldquo;<code>collatzSeq</code> is <code>collatz</code> but at at the top level <code>if</code> add a <code>tell [n]</code> effect&rdquo;?</p>
+<h2 id="random-notes">Random notes</h2>
+<p>A good implementation would ensure hygiene for identifiers so that you can get at shadowed variables etc.</p>
 <p>The more order-independent your effect is the better as well, because then you don&rsquo;t have to worry so much about evaluation order.
 If you want to do this in layers/compositionally then all effects need to compose in any order as well.</p>
 <p>Also, this is once again an example of where our text-based programming model is so much worse than programming in an interactive GUI environment would be.
