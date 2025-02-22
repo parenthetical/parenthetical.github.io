@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.136.5">
+		<title>2025-02-22 - Adriaan Leijnse</title>
+
+		<meta name="description" content="While out hiking in Madeira I had an idea to solve a problem with my
+&ldquo;straightforward purely functional Paxos&rdquo; implementation.
+The idea could be summarized as &ldquo;inserting effects into clean/pleasing program definitions without changing the definition&rdquo;.
+The issue with my Paxos explorations is that Paxos is a sequence of voting rounds, but if you have a voting algorithm you cannot use those directly in your Paxos implementation.
+Instead, you have to rewrite your voting rounds to exfiltrate some state at each of the voters.
+The vote influences the state at the voters (e.g. highest round seen), and also at the vote requester (e.g. any previous accepted value &#43; round number).">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <nav id="navbar"
+           style="
+                  margin-bottom: 3rem;
+                  padding-top: 1rem;
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: flex-end;
+                  column-gap: 1.7rem;
+                  "             >
+        <a href="/"
+           >
+          <h1 style="
+                     margin: 0.2rem 0;
+                     padding: 0;
+                     font-size: 1.6rem;
+                     font-family: roman;
+                     color: #777;
+                     ">
+            Adriaan Leijnse
+          </h1>
+        </a>
+        <ul>
+          <li>
+            <a href="/blog/"
+               
+               >
+              Blog
+            </a>
+          </li><li>
+            <a href="/foc-ideas/"
+               
+               >
+              Future of Coding
+            </a>
+          </li><li>
+            <a href="/journal/"
+               
+               class="active"
+               
+               >
+              Journal
+            </a>
+          </li><li>
+            <a href="/papers/"
+               
+               >
+              Papers
+            </a>
+          </li></ul>
+      </nav>
+    </header>
+    <main class="container">
+
+<article>
+  <header>
+    <hgroup id="brand">
+      <h1>
+        Journal entry for 
+	
+        
+	<time datetime="2025-02-22 00:00:00 &#43;0000 UTC">February 22, 2025</time>
+        
+	<span class="no-print">
+	  <span>
+      </h1>
+    </hgroup>
+    <hr class="sep" />
+  </header>
+  <p>While out hiking in Madeira I had an idea to solve a problem with my
+&ldquo;straightforward purely functional Paxos&rdquo; implementation.
+The idea could be summarized as &ldquo;inserting effects into clean/pleasing program definitions without changing the definition&rdquo;.</p>
+<p>The issue with my Paxos explorations is that Paxos is a sequence of voting rounds, but if you have a voting algorithm you cannot use those directly in your Paxos implementation.
+Instead, you have to rewrite your voting rounds to exfiltrate some state at each of the voters.
+The vote influences the state at the voters (e.g. highest round seen), and also at the vote requester (e.g. any previous accepted value + round number).</p>
+<p>What if you could just keep that original definition of your voting algorithm, but insert some <code>tell</code>&rsquo;s at the appropriate places to get the information you need?</p>
+<h2 id="collatz-conjecture-example">Collatz conjecture example</h2>
+<p>I thought a simpler example could feature the <a href="https://en.wikipedia.org/wiki/Collatz_conjecture">Collatz Conjecture</a>.
+The algorithm is easily written as a function:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">collatz</span> <span class="n">n</span> <span class="ow">=</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">then</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">else</span> <span class="kr">if</span> <span class="p">(</span><span class="n">even</span><span class="o">?</span> <span class="n">n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">       <span class="kr">then</span> <span class="n">n</span> <span class="o">/</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">       <span class="kr">else</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span></code></pre></div><p>The conjecture is that this algorithm will always terminate with <code>n = 1</code> for any <code>n &gt; 1</code>.</p>
+<p>Suppose that you&rsquo;re naive and think you can solve the conjecture, or you&rsquo;re just exploring the problem a little bit.
+You could rewrite this definition each time you want to explore something about the algorithm, e.g. looking at the sequence of <code>n</code> values it goes through, or collecting all the primes, etc.</p>
+<p>To get the sequence you could add a <code>tell [n]</code> effect at the top level of the definition.
+A good implementation would ensure hygiene for identifiers so that you can get at shadowed variables etc.</p>
+<p>The more order-independent your effect is the better as well, because then you don&rsquo;t have to worry so much about evaluation order.
+If you want to do this in layers/compositionally then all effects need to compose in any order as well.</p>
+<p>Also, this is once again an example of where our text-based programming model is so much worse than programming in an interactive GUI environment would be.
+In that case you could simply point at the expession you want to attach an effect to, and you wouldn&rsquo;t need to find a scheme to identify parts of a program definition textually.</p>
+<h2 id="more-examples">More examples?</h2>
+<p>The problem with Paxos is that I&rsquo;d have to explain Distributed FRP; that would be a lot.</p>
+<p>The best examples would be algorithms which are built up from simpler components, which are individually useful, but where you normally have to re-write the component to exfiltrate some information.
+Or maybe where people usually complicate the definition of the component because they know it&rsquo;s going to be used by something else.</p>
+<p>Maybe some graph algorithms have similar structure?</p>
+<h2 id="implementation">Implementation</h2>
+<p>I found Tomas Petricek&rsquo;s paper on <a href="https://arxiv.org/pdf/1202.2921">Evaluation strategies for monadic computations</a>.
+I think this describes a way to turn arbitrary lambda terms into ones that are evaluated in a monadic context.
+This I suspect would work well for the problem above.</p>
+<h2 id="related-work">Related work</h2>
+<p>This idea made me think of Aspect-Oriented Programming which you could also
+interpret as wanting a clean model of some program and doing the dirty business
+by defining aspects which attaching to methods of the model.</p>
+<p>This is of course limited to methods, while the idea above is much more general.</p>
+
+</article>
+<nav class="no-print post-nav">
+  
+  <a class="prev-post" href="https://aidy.dev/journal/2024-12-01/">
+    <img class="icon-text" src="/img/prev.svg"/>2024-12-01</a>
+  
+  
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+

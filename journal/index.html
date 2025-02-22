@@ -88,6 +88,152 @@
     <header>
       <h1>
         
+	<a href="/journal/2025-02-22/">
+          <span><time datetime="2025-02-22 00:00:00 &#43;0000 UTC">February 22, 2025</time></span>
+	</a>
+      </h1>
+    </header>
+    <p>While out hiking in Madeira I had an idea to solve a problem with my
+&ldquo;straightforward purely functional Paxos&rdquo; implementation.
+The idea could be summarized as &ldquo;inserting effects into clean/pleasing program definitions without changing the definition&rdquo;.</p>
+<p>The issue with my Paxos explorations is that Paxos is a sequence of voting rounds, but if you have a voting algorithm you cannot use those directly in your Paxos implementation.
+Instead, you have to rewrite your voting rounds to exfiltrate some state at each of the voters.
+The vote influences the state at the voters (e.g. highest round seen), and also at the vote requester (e.g. any previous accepted value + round number).</p>
+<p>What if you could just keep that original definition of your voting algorithm, but insert some <code>tell</code>&rsquo;s at the appropriate places to get the information you need?</p>
+<h2 id="collatz-conjecture-example">Collatz conjecture example</h2>
+<p>I thought a simpler example could feature the <a href="https://en.wikipedia.org/wiki/Collatz_conjecture">Collatz Conjecture</a>.
+The algorithm is easily written as a function:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">collatz</span> <span class="n">n</span> <span class="ow">=</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">then</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">else</span> <span class="kr">if</span> <span class="p">(</span><span class="n">even</span><span class="o">?</span> <span class="n">n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">       <span class="kr">then</span> <span class="n">n</span> <span class="o">/</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">       <span class="kr">else</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span></code></pre></div><p>The conjecture is that this algorithm will always terminate with <code>n = 1</code> for any <code>n &gt; 1</code>.</p>
+<p>Suppose that you&rsquo;re naive and think you can solve the conjecture, or you&rsquo;re just exploring the problem a little bit.
+You could rewrite this definition each time you want to explore something about the algorithm, e.g. looking at the sequence of <code>n</code> values it goes through, or collecting all the primes, etc.</p>
+<p>To get the sequence you could add a <code>tell [n]</code> effect at the top level of the definition.
+A good implementation would ensure hygiene for identifiers so that you can get at shadowed variables etc.</p>
+<p>The more order-independent your effect is the better as well, because then you don&rsquo;t have to worry so much about evaluation order.
+If you want to do this in layers/compositionally then all effects need to compose in any order as well.</p>
+<p>Also, this is once again an example of where our text-based programming model is so much worse than programming in an interactive GUI environment would be.
+In that case you could simply point at the expession you want to attach an effect to, and you wouldn&rsquo;t need to find a scheme to identify parts of a program definition textually.</p>
+<h2 id="more-examples">More examples?</h2>
+<p>The problem with Paxos is that I&rsquo;d have to explain Distributed FRP; that would be a lot.</p>
+<p>The best examples would be algorithms which are built up from simpler components, which are individually useful, but where you normally have to re-write the component to exfiltrate some information.
+Or maybe where people usually complicate the definition of the component because they know it&rsquo;s going to be used by something else.</p>
+<p>Maybe some graph algorithms have similar structure?</p>
+<h2 id="implementation">Implementation</h2>
+<p>I found Tomas Petricek&rsquo;s paper on <a href="https://arxiv.org/pdf/1202.2921">Evaluation strategies for monadic computations</a>.
+I think this describes a way to turn arbitrary lambda terms into ones that are evaluated in a monadic context.
+This I suspect would work well for the problem above.</p>
+<h2 id="related-work">Related work</h2>
+<p>This idea made me think of Aspect-Oriented Programming which you could also
+interpret as wanting a clean model of some program and doing the dirty business
+by defining aspects which attaching to methods of the model.</p>
+<p>This is of course limited to methods, while the idea above is much more general.</p>
+
+  </article>
+  
+  <article>
+    <header>
+      <h1>
+        
+	<a href="/journal/2024-12-01/">
+          <span><time datetime="2024-12-01 00:00:00 &#43;0000 UTC">December 1, 2024</time></span>
+	</a>
+      </h1>
+    </header>
+    <p>Some notes while working on GHC:</p>
+<p>Wouldn&rsquo;t it be great if we could statically ensure that AST structure stays the same on certain passes?
+I&rsquo;m not sure there are actual use cases right now but it&rsquo;s an interesting question.</p>
+<p>You&rsquo;d need something that can traverse the AST, know about the context like the constructor being handled, but then have a guarantee that only some extention point will be modified, like type information being added.</p>
+<p>On the other hand many passes want to return something else or translate to a different AST, like the renamer going from &ldquo;parse result&rdquo; AST to &ldquo;renamed&rdquo; AST.</p>
+
+  </article>
+  
+  <article>
+    <header>
+      <h1>
+        
+	<a href="/journal/2024-03-27/">
+          <span><time datetime="2024-03-27 00:00:00 &#43;0000 UTC">March 27, 2024</time></span>
+	</a>
+      </h1>
+    </header>
+    <p>I&rsquo;m experimenting with going more from scratch on my FRP GUI experiments, I think it&rsquo;ll force me to think more about identity/causality.
+I&rsquo;m thinking going with jsaddle, so I&rsquo;ll have to see if I can get the library running.</p>
+
+  </article>
+  
+  <article>
+    <header>
+      <h1>
+        
+	<a href="/journal/2024-03-20/">
+          <span><time datetime="2024-03-20 00:00:00 &#43;0000 UTC">March 20, 2024</time></span>
+	</a>
+      </h1>
+    </header>
+    <p>I&rsquo;m thinking about whether an implementation of distributed FRP with mapMoment would work correctly in my Reflex-style FRP implementation, since</p>
+
+  </article>
+  
+  <article>
+    <header>
+      <h1>
+        
+	<a href="/journal/2024-03-19/">
+          <span><time datetime="2024-03-19 00:00:00 &#43;0000 UTC">March 19, 2024</time></span>
+	</a>
+      </h1>
+    </header>
+    <p>I&rsquo;ll debug my weak references later.
+Now I&rsquo;m feeling like exploring an idea I&rsquo;ve had which I&rsquo;m not sure I&rsquo;ve written about before.</p>
+<h2 id="timeline-transformer-eventwriter">&ldquo;Timeline transformer&rdquo; EventWriter</h2>
+<p>It&rsquo;s a more effect-y version of Reflex&rsquo; EventWriter, with types looking something like:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">runEventWriter</span> <span class="ow">::</span>
+</span></span><span class="line"><span class="cl">  <span class="n">forall</span> <span class="n">s</span>
+</span></span><span class="line"><span class="cl">  <span class="o">.</span> <span class="kt">Semigroup</span> <span class="n">w</span>
+</span></span><span class="line"><span class="cl">  <span class="ow">=&gt;</span><span class="p">((</span><span class="n">forall</span> <span class="n">x</span> <span class="n">a</span><span class="o">.</span> <span class="kt">Lowerable</span> <span class="kt">ET</span> <span class="n">x</span> <span class="ow">=&gt;</span> <span class="n">x</span> <span class="p">(</span><span class="kt">ET</span> <span class="n">w</span> <span class="n">s</span> <span class="n">t</span><span class="p">)</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="n">t</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="ow">-&gt;</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">ET</span> <span class="n">w</span> <span class="n">s</span> <span class="n">t</span><span class="p">)</span> <span class="n">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="ow">-&gt;</span> <span class="kt">Now</span> <span class="n">t</span> <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="kt">Event</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">tellE</span> <span class="ow">::</span> <span class="kt">Semigroup</span> <span class="n">w</span> <span class="ow">=&gt;</span> <span class="kt">Event</span> <span class="p">(</span><span class="kt">ET</span> <span class="n">w</span> <span class="n">s</span> <span class="n">t</span><span class="p">)</span> <span class="n">w</span> <span class="ow">-&gt;</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">ET</span> <span class="n">w</span> <span class="n">s</span> <span class="n">t</span><span class="p">)</span> <span class="nb">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">liftETE</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="n">t</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="p">(</span><span class="kt">ET</span> <span class="n">w</span> <span class="n">s</span> <span class="n">t</span><span class="p">)</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl"><span class="nf">liftETB</span> <span class="ow">::</span> <span class="kt">Behavior</span> <span class="n">t</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Behavior</span> <span class="p">(</span><span class="kt">ET</span> <span class="n">w</span> <span class="n">s</span> <span class="n">t</span><span class="p">)</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">class</span> <span class="kt">Lowerable</span> <span class="n">f</span> <span class="n">x</span> <span class="kr">where</span>
+</span></span><span class="line"><span class="cl">  <span class="n">lower</span> <span class="ow">::</span> <span class="kt">Frp</span> <span class="n">t</span> <span class="ow">=&gt;</span> <span class="n">x</span> <span class="p">(</span><span class="n">f</span> <span class="n">t</span><span class="p">)</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="n">t</span> <span class="n">a</span>
+</span></span></code></pre></div><p>This uses the <code>StT</code> phantom type (?) technique to make sure the effect doesn&rsquo;t leak.</p>
+<p>It has the advantage that you can keep doing normal FRP programming without having to use functions like those from Reflex&rsquo; Adjustable class which pollute everything with a wrapper type:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="kr">class</span> <span class="p">(</span><span class="kt">Reflex</span> <span class="n">t</span><span class="p">,</span> <span class="kt">Monad</span> <span class="n">m</span><span class="p">)</span> <span class="ow">=&gt;</span> <span class="kt">Adjustable</span> <span class="n">t</span> <span class="n">m</span> <span class="o">|</span> <span class="n">m</span> <span class="ow">-&gt;</span> <span class="n">t</span> <span class="kr">where</span>
+</span></span><span class="line"><span class="cl">  <span class="n">runWithReplace</span>
+</span></span><span class="line"><span class="cl">    <span class="ow">::</span> <span class="n">m</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl">    <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">t</span> <span class="p">(</span><span class="n">m</span> <span class="n">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="ow">-&gt;</span> <span class="n">m</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="kt">Event</span> <span class="n">t</span> <span class="n">b</span><span class="p">)</span>
+</span></span></code></pre></div><p>If I manage to implement this correctly then I think it also has a very efficient imperative implementation.</p>
+<p>On the other hand I&rsquo;m not 100% sure on what a pure implementation looks like exactly.
+But, I think figuring that out would lead to some great insights, and possibly a path from pure implementation to imperative implementation via simple reasoning.
+The same would apply to my distributed FRP work.</p>
+<p>I think the hard part is coming up with identifiers for every event that is added; an event could be &ldquo;added&rdquo; many times in a pure implementation but this should have no effect on the output event.
+If I can uniquely identify each event then that&rsquo;s no problem.</p>
+<p>On second thought: this seems like a fool&rsquo;s errand, because I could only &ldquo;tell&rdquo; from Nows which are used in the end result.
+The only reason</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">sampleNow</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="p">(</span><span class="kt">Now</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">a</span>
+</span></span></code></pre></div><p>works out is because it&rsquo;s semantically a reader monad.</p>
+<p>I think this means that you cannot implement it without having access to the program definition in your semantics.</p>
+<p>The meaning of the clean EventWriter would then be something like &ldquo;the merge of all events being the subject of a tell in the source, starting from the &ldquo;execution&rdquo; of <code>runEventWriter</code>&rdquo;.
+That means you&rsquo;d need to define what &ldquo;execution&rdquo; means here.</p>
+<p>I think I&rsquo;ll just write a &ldquo;reader timeline transformer&rdquo; first.</p>
+
+  </article>
+  
+  <article>
+    <header>
+      <h1>
+        
 	<a href="/journal/2024-03-18/">
           <span><time datetime="2024-03-18 00:00:00 &#43;0000 UTC">March 18, 2024</time></span>
 	</a>
@@ -102,6 +248,23 @@ I think I have GC working cleanly, no test failures and the root event gets comp
 </ul>
 <p>Everything seems to work so far, except that running the test cases many times from GHCi lead to an exception due to an uninitialized reference, that points to some subtle fault in my GC code I think.
 Maybe I need to add some <code>touch</code>&rsquo;s like in Reflex&rsquo; code.</p>
+
+  </article>
+  
+  <article>
+    <header>
+      <h1>
+        
+	<a href="/journal/2024-03-08/">
+          <span><time datetime="2024-03-08 00:00:00 &#43;0000 UTC">March 8, 2024</time></span>
+	</a>
+      </h1>
+    </header>
+    <p>My work hasn&rsquo;t been very focused lately. I&rsquo;m having fun with friends and climbing though, it&rsquo;s been re-energizing me.
+My parents are visiting me in Lisbon so I&rsquo;ll be spending a few days with them and trying to fit in work during off hours.</p>
+<p>I&rsquo;m currently reading <a href="https://www.hillelwayne.com/post/graph-types/">The Hunt for the Missing Data Type</a> from Hillel Wayne.
+The confusion of graph libraries is definitely something I&rsquo;ve run into.
+I wonder if it would be possible for a programming environment to provide a highly generic interface which can be specialized using annotations to a specific implementation that&rsquo;s going to be performant for the use case.</p>
 
   </article>
   
@@ -204,12 +367,6 @@ The latter is something I think sorely needed for composition of components whic
 </ul>
 <p>This little chat motivated me to continue working on my distributed FRP paper, and to try out Unison.
 Their page at <a href="https://www.unison.cloud/our-approach/">https://www.unison.cloud/our-approach/</a> also looks like an interesting read.</p>
-<p>The rest of the post details their &ldquo;dream in 3 parts&rdquo;:</p>
-<ul>
-<li>deployment from within your programming language (amazing)</li>
-<li>typed distributed programming, sold as &ldquo;calling services should be easy&rdquo;</li>
-<li>using storage should be as easy as using in-memory data</li>
-</ul>
 
   </article>
   

@@ -4,9 +4,12 @@
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="generator" content="Hugo 0.136.5">
-		<title>2024-03-04 - Adriaan Leijnse</title>
+		<title>2024-12-01 - Adriaan Leijnse</title>
 
-		<meta name="description" content="Trying out Joachim Breitner&rsquo;s rec-def.">
+		<meta name="description" content="Some notes while working on GHC:
+Wouldn&rsquo;t it be great if we could statically ensure that AST structure stays the same on certain passes?
+I&rsquo;m not sure there are actual use cases right now but it&rsquo;s an interesting question.
+You&rsquo;d need something that can traverse the AST, know about the context like the constructor being handled, but then have a guarantee that only some extention point will be modified, like type information being added.">
 
 
 		
@@ -88,7 +91,7 @@
         Journal entry for 
 	
         
-	<time datetime="2024-03-04 00:00:00 &#43;0000 UTC">March 4, 2024</time>
+	<time datetime="2024-12-01 00:00:00 &#43;0000 UTC">December 1, 2024</time>
         
 	<span class="no-print">
 	  <span>
@@ -96,16 +99,20 @@
     </hgroup>
     <hr class="sep" />
   </header>
-  <p>Trying out <a href="https://hackage.haskell.org/package/rec-def">Joachim Breitner&rsquo;s rec-def</a>.</p>
+  <p>Some notes while working on GHC:</p>
+<p>Wouldn&rsquo;t it be great if we could statically ensure that AST structure stays the same on certain passes?
+I&rsquo;m not sure there are actual use cases right now but it&rsquo;s an interesting question.</p>
+<p>You&rsquo;d need something that can traverse the AST, know about the context like the constructor being handled, but then have a guarantee that only some extention point will be modified, like type information being added.</p>
+<p>On the other hand many passes want to return something else or translate to a different AST, like the renamer going from &ldquo;parse result&rdquo; AST to &ldquo;renamed&rdquo; AST.</p>
 
 </article>
 <nav class="no-print post-nav">
   
-  <a class="prev-post" href="https://aidy.dev/journal/2024-02-27/">
-    <img class="icon-text" src="/img/prev.svg"/>2024-02-27</a>
+  <a class="prev-post" href="https://aidy.dev/journal/2024-03-27/">
+    <img class="icon-text" src="/img/prev.svg"/>2024-03-27</a>
   
   
-  <a class="next-post" href="https://aidy.dev/journal/2024-03-08/">2024-03-08<img class="icon-text" src="/img/next.svg"/>
+  <a class="next-post" href="https://aidy.dev/journal/2025-02-22/">2025-02-22<img class="icon-text" src="/img/next.svg"/>
   </a>
   
 </nav>

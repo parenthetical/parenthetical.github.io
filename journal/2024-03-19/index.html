@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.136.5">
+		<title>2024-03-19 - Adriaan Leijnse</title>
+
+		<meta name="description" content="I&rsquo;ll debug my weak references later.
+Now I&rsquo;m feeling like exploring an idea I&rsquo;ve had which I&rsquo;m not sure I&rsquo;ve written about before.
+&ldquo;Timeline transformer&rdquo; EventWriter
+It&rsquo;s a more effect-y version of Reflex&rsquo; EventWriter, with types looking something like:
+runEventWriter ::
+  forall s
+  . Semigroup w
+  =&gt;((forall x a. Lowerable ET x =&gt; x (ET w s t) a -&gt; x t a)
+    -&gt; Now (ET w s t) b)
+  -&gt; Now t (b, Event
+
+tellE :: Semigroup w =&gt; Event (ET w s t) w -&gt; Now (ET w s t) ()
+
+liftETE :: Event t a -&gt; Event (ET w s t) a
+liftETB :: Behavior t a -&gt; Behavior (ET w s t) a
+
+class Lowerable f x where
+  lower :: Frp t =&gt; x (f t) a -&gt; x t a
+This uses the StT phantom type (?) technique to make sure the effect doesn&rsquo;t leak.
+It has the advantage that you can keep doing normal FRP programming without having to use functions like those from Reflex&rsquo; Adjustable class which pollute everything with a wrapper type:">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <nav id="navbar"
+           style="
+                  margin-bottom: 3rem;
+                  padding-top: 1rem;
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: flex-end;
+                  column-gap: 1.7rem;
+                  "             >
+        <a href="/"
+           >
+          <h1 style="
+                     margin: 0.2rem 0;
+                     padding: 0;
+                     font-size: 1.6rem;
+                     font-family: roman;
+                     color: #777;
+                     ">
+            Adriaan Leijnse
+          </h1>
+        </a>
+        <ul>
+          <li>
+            <a href="/blog/"
+               
+               >
+              Blog
+            </a>
+          </li><li>
+            <a href="/foc-ideas/"
+               
+               >
+              Future of Coding
+            </a>
+          </li><li>
+            <a href="/journal/"
+               
+               class="active"
+               
+               >
+              Journal
+            </a>
+          </li><li>
+            <a href="/papers/"
+               
+               >
+              Papers
+            </a>
+          </li></ul>
+      </nav>
+    </header>
+    <main class="container">
+
+<article>
+  <header>
+    <hgroup id="brand">
+      <h1>
+        Journal entry for 
+	
+        
+	<time datetime="2024-03-19 00:00:00 &#43;0000 UTC">March 19, 2024</time>
+        
+	<span class="no-print">
+	  <span>
+      </h1>
+    </hgroup>
+    <hr class="sep" />
+  </header>
+  <p>I&rsquo;ll debug my weak references later.
+Now I&rsquo;m feeling like exploring an idea I&rsquo;ve had which I&rsquo;m not sure I&rsquo;ve written about before.</p>
+<h2 id="timeline-transformer-eventwriter">&ldquo;Timeline transformer&rdquo; EventWriter</h2>
+<p>It&rsquo;s a more effect-y version of Reflex&rsquo; EventWriter, with types looking something like:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">runEventWriter</span> <span class="ow">::</span>
+</span></span><span class="line"><span class="cl">  <span class="n">forall</span> <span class="n">s</span>
+</span></span><span class="line"><span class="cl">  <span class="o">.</span> <span class="kt">Semigroup</span> <span class="n">w</span>
+</span></span><span class="line"><span class="cl">  <span class="ow">=&gt;</span><span class="p">((</span><span class="n">forall</span> <span class="n">x</span> <span class="n">a</span><span class="o">.</span> <span class="kt">Lowerable</span> <span class="kt">ET</span> <span class="n">x</span> <span class="ow">=&gt;</span> <span class="n">x</span> <span class="p">(</span><span class="kt">ET</span> <span class="n">w</span> <span class="n">s</span> <span class="n">t</span><span class="p">)</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="n">t</span> <span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="ow">-&gt;</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">ET</span> <span class="n">w</span> <span class="n">s</span> <span class="n">t</span><span class="p">)</span> <span class="n">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="ow">-&gt;</span> <span class="kt">Now</span> <span class="n">t</span> <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="kt">Event</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">tellE</span> <span class="ow">::</span> <span class="kt">Semigroup</span> <span class="n">w</span> <span class="ow">=&gt;</span> <span class="kt">Event</span> <span class="p">(</span><span class="kt">ET</span> <span class="n">w</span> <span class="n">s</span> <span class="n">t</span><span class="p">)</span> <span class="n">w</span> <span class="ow">-&gt;</span> <span class="kt">Now</span> <span class="p">(</span><span class="kt">ET</span> <span class="n">w</span> <span class="n">s</span> <span class="n">t</span><span class="p">)</span> <span class="nb">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">liftETE</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="n">t</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="p">(</span><span class="kt">ET</span> <span class="n">w</span> <span class="n">s</span> <span class="n">t</span><span class="p">)</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl"><span class="nf">liftETB</span> <span class="ow">::</span> <span class="kt">Behavior</span> <span class="n">t</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="kt">Behavior</span> <span class="p">(</span><span class="kt">ET</span> <span class="n">w</span> <span class="n">s</span> <span class="n">t</span><span class="p">)</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">class</span> <span class="kt">Lowerable</span> <span class="n">f</span> <span class="n">x</span> <span class="kr">where</span>
+</span></span><span class="line"><span class="cl">  <span class="n">lower</span> <span class="ow">::</span> <span class="kt">Frp</span> <span class="n">t</span> <span class="ow">=&gt;</span> <span class="n">x</span> <span class="p">(</span><span class="n">f</span> <span class="n">t</span><span class="p">)</span> <span class="n">a</span> <span class="ow">-&gt;</span> <span class="n">x</span> <span class="n">t</span> <span class="n">a</span>
+</span></span></code></pre></div><p>This uses the <code>StT</code> phantom type (?) technique to make sure the effect doesn&rsquo;t leak.</p>
+<p>It has the advantage that you can keep doing normal FRP programming without having to use functions like those from Reflex&rsquo; Adjustable class which pollute everything with a wrapper type:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="kr">class</span> <span class="p">(</span><span class="kt">Reflex</span> <span class="n">t</span><span class="p">,</span> <span class="kt">Monad</span> <span class="n">m</span><span class="p">)</span> <span class="ow">=&gt;</span> <span class="kt">Adjustable</span> <span class="n">t</span> <span class="n">m</span> <span class="o">|</span> <span class="n">m</span> <span class="ow">-&gt;</span> <span class="n">t</span> <span class="kr">where</span>
+</span></span><span class="line"><span class="cl">  <span class="n">runWithReplace</span>
+</span></span><span class="line"><span class="cl">    <span class="ow">::</span> <span class="n">m</span> <span class="n">a</span>
+</span></span><span class="line"><span class="cl">    <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">t</span> <span class="p">(</span><span class="n">m</span> <span class="n">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="ow">-&gt;</span> <span class="n">m</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="kt">Event</span> <span class="n">t</span> <span class="n">b</span><span class="p">)</span>
+</span></span></code></pre></div><p>If I manage to implement this correctly then I think it also has a very efficient imperative implementation.</p>
+<p>On the other hand I&rsquo;m not 100% sure on what a pure implementation looks like exactly.
+But, I think figuring that out would lead to some great insights, and possibly a path from pure implementation to imperative implementation via simple reasoning.
+The same would apply to my distributed FRP work.</p>
+<p>I think the hard part is coming up with identifiers for every event that is added; an event could be &ldquo;added&rdquo; many times in a pure implementation but this should have no effect on the output event.
+If I can uniquely identify each event then that&rsquo;s no problem.</p>
+<p>On second thought: this seems like a fool&rsquo;s errand, because I could only &ldquo;tell&rdquo; from Nows which are used in the end result.
+The only reason</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="nf">sampleNow</span> <span class="ow">::</span> <span class="kt">Event</span> <span class="p">(</span><span class="kt">Now</span> <span class="n">a</span><span class="p">)</span> <span class="ow">-&gt;</span> <span class="kt">Event</span> <span class="n">a</span>
+</span></span></code></pre></div><p>works out is because it&rsquo;s semantically a reader monad.</p>
+<p>I think this means that you cannot implement it without having access to the program definition in your semantics.</p>
+<p>The meaning of the clean EventWriter would then be something like &ldquo;the merge of all events being the subject of a tell in the source, starting from the &ldquo;execution&rdquo; of <code>runEventWriter</code>&rdquo;.
+That means you&rsquo;d need to define what &ldquo;execution&rdquo; means here.</p>
+<p>I think I&rsquo;ll just write a &ldquo;reader timeline transformer&rdquo; first.</p>
+
+</article>
+<nav class="no-print post-nav">
+  
+  <a class="prev-post" href="https://aidy.dev/journal/2024-03-18/">
+    <img class="icon-text" src="/img/prev.svg"/>2024-03-18</a>
+  
+  
+  <a class="next-post" href="https://aidy.dev/journal/2024-03-20/">2024-03-20<img class="icon-text" src="/img/next.svg"/>
+  </a>
+  
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+
