@@ -4,15 +4,11 @@
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="generator" content="Hugo 0.147.3">
-		<title>2024-02-05 - Adriaan Leijnse</title>
+		<title>2025-03-23 - Adriaan Leijnse</title>
 
-		<meta name="description" content="Bugs in my &ldquo;Imperative FRP&rdquo; TodoMVC: when an item is deleted it should stop contributing to the &ldquo;completed count&rdquo;.
-This wouldn&rsquo;t have been a problem with Reflex&rsquo; Adjustable behavior?
-This just goes to show that not doing these apps in a declarative style or at least with a list data type is really hard.
-Typically the list data type method doesn&rsquo;t have incremental bookkeeping of total/completed TODO items though.
-I&rsquo;m in the process of cleaning up my TodoMVC version.
-It&rsquo;s currently around a 110 lines of domain specific code.
-https://github.com/widok/todomvc/blob/master/src/main/scala/org/widok/todomvc/Application.scala is about a 100 lines of domain specific code, so hopefully I can get under that.">
+		<meta name="description" content="I&rsquo;ve been thinking about why GHC&rsquo;s front-end code is so big and complicated/fragile feeling.
+I think it might be because of the huge Expr data structure that is meant to represent the full surface syntax, and is used throughout the parser, renamer, and type checker phases.
+Maybe this makes it so that various concerns are all intermingled, even though there are these separate &ldquo;phases&rdquo; that traditional compiler designers like to use.">
 
 
 		
@@ -94,7 +90,7 @@ https://github.com/widok/todomvc/blob/master/src/main/scala/org/widok/todomvc/Ap
         Journal entry for 
 	
         
-	<time datetime="2024-02-05 00:00:00 &#43;0000 UTC">February 5, 2024</time>
+	<time datetime="2025-03-23 00:00:00 &#43;0000 UTC">March 23, 2025</time>
         
 	<span class="no-print">
 	  <span>
@@ -102,24 +98,26 @@ https://github.com/widok/todomvc/blob/master/src/main/scala/org/widok/todomvc/Ap
     </hgroup>
     <hr class="sep" />
   </header>
-  <p>Bugs in my &ldquo;Imperative FRP&rdquo; TodoMVC: when an item is deleted it should stop contributing to the &ldquo;completed count&rdquo;.
-This wouldn&rsquo;t have been a problem with Reflex&rsquo; Adjustable behavior?
-This just goes to show that not doing these apps in a declarative style or at least with a list data type is really hard.
-Typically the list data type method doesn&rsquo;t have incremental bookkeeping of total/completed TODO items though.</p>
-<p>I&rsquo;m in the process of cleaning up my TodoMVC version.
-It&rsquo;s currently around a 110 lines of domain specific code.
-<a href="https://github.com/widok/todomvc/blob/master/src/main/scala/org/widok/todomvc/Application.scala">https://github.com/widok/todomvc/blob/master/src/main/scala/org/widok/todomvc/Application.scala</a> is about a 100 lines of domain specific code, so hopefully I can get under that.</p>
-<p>I am missing the persistence (&ldquo;LocalStorage&rdquo;) part of TodoMVC, but doing that in a very higher-order FRP style is something I need to explore still.
-The Widok version doesn&rsquo;t seem to handle that either AFAICT.</p>
+  <p>I&rsquo;ve been thinking about why GHC&rsquo;s front-end code is so big and complicated/fragile feeling.
+I think it might be because of the huge <code>Expr</code> data structure that is meant to represent the full surface syntax, and is used throughout the parser, renamer, and type checker phases.
+Maybe this makes it so that various concerns are all intermingled, even though there are these separate &ldquo;phases&rdquo; that traditional compiler designers like to use.</p>
+<p>A Scheme implementation doesn&rsquo;t feel like that.
+Instead they are written as a tiny but fully featured base language with a nice hygienic macro system, and macros are used to implement all the extra features.</p>
+<p>I think the hard part about this is to achieve good error reporting.
+I wonder how Typed Racket does it.</p>
+<p>In any case, GHC differs significantly from this, because <code>Core</code> is a very simple AST, without any source information.
+Everything to do with nice surface syntax <em>has</em> to happen somewhere else, because there doesn&rsquo;t seem to be a way to connect <code>Core</code> to the original program.</p>
+<p>Also, while GHC technically has macros it really isn&rsquo;t possible to make new syntax that feels native.
+Macro calls have to be in special delimiters.</p>
 
 </article>
 <nav class="no-print post-nav">
   
-  <a class="prev-post" href="https://aidy.dev/journal/2024-02-02/">
-    <img class="icon-text" src="/img/prev.svg"/>2024-02-02</a>
+  <a class="prev-post" href="https://aidy.dev/journal/2025-03-08/">
+    <img class="icon-text" src="/img/prev.svg"/>2025-03-08</a>
   
   
-  <a class="next-post" href="https://aidy.dev/journal/2024-02-07/">2024-02-07<img class="icon-text" src="/img/next.svg"/>
+  <a class="next-post" href="https://aidy.dev/journal/2025-03-28/">2025-03-28<img class="icon-text" src="/img/next.svg"/>
   </a>
   
 </nav>

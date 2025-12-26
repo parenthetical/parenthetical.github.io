@@ -3,7 +3,7 @@
   	<head>
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="generator" content="Hugo 0.136.5">
+		<meta name="generator" content="Hugo 0.147.3">
 		<title>Thoughts on comfortable GUI development - Adriaan Leijnse</title>
 
 		<meta name="description" content="Debugging
@@ -100,7 +100,7 @@ From the entry as well:
 	<h5>
 	  
           
-	    <time datetime="2023-04-11 12:35:00 &#43;0100 WEST">Apr 11, 2023</time>
+	    <time datetime="2023-04-11 12:35:00 &#43;0100 &#43;0100">Apr 11, 2023</time>
           
 		<span class="no-print">
 			<span>
@@ -119,8 +119,7 @@ From the entry as well:
 </ul>
 <p>From the entry as well:</p>
 <blockquote>
-<p>[…] you should be able to enter a special mode while developing which allows you to click on a button and be taken to its editable definition. Editing that definition should either change that button (like the DOM editor in your browser) or all buttons (but that might render the current state impossible to reach?). Other things which would be cool is to know the causality of the button’s existence. E.g. which other buttons were pressed in the past to get to where we are?</p>
-</blockquote>
+<p>[…] you should be able to enter a special mode while developing which allows you to click on a button and be taken to its editable definition. Editing that definition should either change that button (like the DOM editor in your browser) or all buttons (but that might render the current state impossible to reach?). Other things which would be cool is to know the causality of the button’s existence. E.g. which other buttons were pressed in the past to get to where we are?</p></blockquote>
 <p>It would be nice to achieve these features without hard coding them into the programming system.
 This requires meta-programming features.
 They also should have no performance impact if they&rsquo;re not actually used, for example in a released program which doesn&rsquo;t have to be inspectable.</p>
@@ -132,8 +131,7 @@ Therefore a programming system should have some way of defining programs that ar
 <p>From journal entry <a href="/journal/2023-03-10/">UI designs/programs should be testable</a>.</p>
 <blockquote>
 <p>Could you record interactions with a UI and replay them in various contexts (resized windows etc.) so that they still work? This needs predictable identifiers for the UI components. What does a programming language which natively supports these predictable IDs look like?</p>
-<p>In common OO programming object identity is not predictable, because the system is not pure and not replayable.</p>
-</blockquote>
+<p>In common OO programming object identity is not predictable, because the system is not pure and not replayable.</p></blockquote>
 <p>I think using a good denotation for causality will naturally lead to one for identity.
 Then you could use these identities to record interactions, independently of how GUI elements are actually rendered.
 The downside is that you can&rsquo;t really test whether something is correctly layouted/visible, but I imagine many tests aren&rsquo;t actually about that and more about general workflow.</p>

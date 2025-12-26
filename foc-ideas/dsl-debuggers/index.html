@@ -3,13 +3,12 @@
   	<head>
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="generator" content="Hugo 0.136.5">
+		<meta name="generator" content="Hugo 0.147.3">
 		<title>A DSL should have its own debugger - Adriaan Leijnse</title>
 
 		<meta name="description" content="From research journal entry 2023-02-24:
 
 For example, an FRP debugger should tell you “what is true at time t” (values of behaviors, any event occurrences). If say you wrote an infinite recursion in the non-FRP code, you should be able to drop down to a friendly execution model for that code.
-
 I&rsquo;m currently not sure what exactly is needed to make this happen.
 If you make an embedded DSL I suppose you can also implement a little debugger for it, but the real trick would be for your debugger to be aware of the debugger for the language below you.
 This is even more important if programs in the DSL can use abritrary code.">
@@ -96,7 +95,7 @@ This is even more important if programs in the DSL can use abritrary code.">
 	<h5>
 	  
           
-	    <time datetime="2023-04-11 19:06:00 &#43;0100 WEST">Apr 11, 2023</time>
+	    <time datetime="2023-04-11 19:06:00 &#43;0100 &#43;0100">Apr 11, 2023</time>
           
 		<span class="no-print">
 			<span>
@@ -107,8 +106,7 @@ This is even more important if programs in the DSL can use abritrary code.">
 </header>
 	<p>From research journal entry <a href="/journal/2023-02-24/">2023-02-24</a>:</p>
 <blockquote>
-<p>For example, an FRP debugger should tell you “what is true at time t” (values of behaviors, any event occurrences). If say you wrote an infinite recursion in the non-FRP code, you should be able to drop down to a friendly execution model for that code.</p>
-</blockquote>
+<p>For example, an FRP debugger should tell you “what is true at time t” (values of behaviors, any event occurrences). If say you wrote an infinite recursion in the non-FRP code, you should be able to drop down to a friendly execution model for that code.</p></blockquote>
 <p>I&rsquo;m currently not sure what exactly is needed to make this happen.</p>
 <p>If you make an embedded DSL I suppose you can also implement a little debugger for it, but the real trick would be for your debugger to be aware of the debugger for the language below you.
 This is even more important if programs in the DSL can use abritrary code.</p>

@@ -3,7 +3,7 @@
   	<head>
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<meta name="generator" content="Hugo 0.136.5">
+		<meta name="generator" content="Hugo 0.147.3">
 		<title>Journal - Adriaan Leijnse</title>
 
 		<meta name="description" content="">
@@ -83,6 +83,199 @@
 
 <article class="journal">
 
+  
+  <article>
+    <header>
+      <h1>
+        
+	<a href="/journal/2025-04-01/">
+          <span><time datetime="2025-04-01 00:00:00 &#43;0000 UTC">April 1, 2025</time></span>
+	</a>
+      </h1>
+    </header>
+    <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="cm">{-# LANGUAGE DeriveGeneric #-}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nn">Data.Ord</span> <span class="p">(</span><span class="nf">comparing</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nn">Data.Maybe</span> <span class="p">(</span><span class="nf">fromMaybe</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nn">Control.Monad</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | Proposal Number (higher means newer)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">type</span> <span class="kt">ProposalId</span> <span class="ow">=</span> <span class="kt">Int</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | The value being proposed</span>
+</span></span><span class="line"><span class="cl"><span class="kr">type</span> <span class="kt">Value</span> <span class="ow">=</span> <span class="kt">String</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | A Proposer issues proposals</span>
+</span></span><span class="line"><span class="cl"><span class="kr">data</span> <span class="kt">ProposerState</span> <span class="ow">=</span> <span class="kt">ProposerState</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span> <span class="n">proposerId</span>   <span class="ow">::</span> <span class="kt">ProposalId</span>
+</span></span><span class="line"><span class="cl">  <span class="p">,</span> <span class="n">proposedVal</span>  <span class="ow">::</span> <span class="kt">Maybe</span> <span class="kt">Value</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="kr">deriving</span> <span class="p">(</span><span class="kt">Show</span><span class="p">,</span> <span class="kt">Generic</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | An Acceptor records proposals and votes</span>
+</span></span><span class="line"><span class="cl"><span class="kr">data</span> <span class="kt">AcceptorState</span> <span class="ow">=</span> <span class="kt">AcceptorState</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span> <span class="n">highestPromised</span> <span class="ow">::</span> <span class="kt">Maybe</span> <span class="kt">ProposalId</span>
+</span></span><span class="line"><span class="cl">  <span class="p">,</span> <span class="n">acceptedProposal</span> <span class="ow">::</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">ProposalId</span><span class="p">,</span> <span class="kt">Value</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="kr">deriving</span> <span class="p">(</span><span class="kt">Show</span><span class="p">,</span> <span class="kt">Generic</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | A Learner collects accepted values</span>
+</span></span><span class="line"><span class="cl"><span class="kr">newtype</span> <span class="kt">LearnerState</span> <span class="ow">=</span> <span class="kt">LearnerState</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="kt">Value</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">deriving</span> <span class="p">(</span><span class="kt">Show</span><span class="p">,</span> <span class="kt">Generic</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | Messages exchanged in Paxos</span>
+</span></span><span class="line"><span class="cl"><span class="kr">data</span> <span class="kt">Message</span>
+</span></span><span class="line"><span class="cl">  <span class="ow">=</span> <span class="kt">Prepare</span> <span class="kt">ProposalId</span>
+</span></span><span class="line"><span class="cl">  <span class="o">|</span> <span class="kt">Promise</span> <span class="kt">ProposalId</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="p">(</span><span class="kt">ProposalId</span><span class="p">,</span> <span class="kt">Value</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">  <span class="o">|</span> <span class="kt">Accept</span> <span class="kt">ProposalId</span> <span class="kt">Value</span>
+</span></span><span class="line"><span class="cl">  <span class="o">|</span> <span class="kt">Accepted</span> <span class="kt">ProposalId</span> <span class="kt">Value</span>
+</span></span><span class="line"><span class="cl">  <span class="o">|</span> <span class="kt">Decide</span> <span class="kt">Value</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">deriving</span> <span class="p">(</span><span class="kt">Show</span><span class="p">,</span> <span class="kt">Generic</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | Step function for a proposer: receives messages, updates state, and returns outgoing messages.</span>
+</span></span><span class="line"><span class="cl"><span class="nf">proposerStep</span> <span class="ow">::</span> <span class="kt">ProposerState</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="kt">Message</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="kt">ProposerState</span><span class="p">,</span> <span class="p">[</span><span class="kt">Message</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="nf">proposerStep</span> <span class="n">state</span> <span class="n">msgs</span> <span class="ow">=</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">let</span> <span class="n">pid</span> <span class="ow">=</span> <span class="n">proposerId</span> <span class="n">state</span>
+</span></span><span class="line"><span class="cl">      <span class="n">promisedResponses</span> <span class="ow">=</span> <span class="p">[(</span><span class="n">pid&#39;</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span> <span class="o">|</span> <span class="kt">Promise</span> <span class="n">pid&#39;</span> <span class="n">val</span> <span class="ow">&lt;-</span> <span class="n">msgs</span><span class="p">,</span> <span class="n">pid&#39;</span> <span class="o">==</span> <span class="n">pid</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="n">decidedValue</span> <span class="ow">=</span> <span class="kr">case</span> <span class="n">promisedResponses</span> <span class="kr">of</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">[]</span> <span class="ow">-&gt;</span> <span class="n">proposedVal</span> <span class="n">state</span>  <span class="c1">-- No responses, keep original value</span>
+</span></span><span class="line"><span class="cl">        <span class="n">xs</span> <span class="ow">-&gt;</span> <span class="kt">Just</span> <span class="o">$</span> <span class="n">fromMaybe</span> <span class="p">(</span><span class="n">fromMaybe</span> <span class="s">&#34;default&#34;</span> <span class="p">(</span><span class="n">proposedVal</span> <span class="n">state</span><span class="p">))</span> <span class="p">(</span><span class="n">lookupMax</span> <span class="n">xs</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">acceptMsgs</span> <span class="ow">=</span> <span class="kr">case</span> <span class="n">decidedValue</span> <span class="kr">of</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">Just</span> <span class="n">v</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="kt">Accept</span> <span class="n">pid</span> <span class="n">v</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">Nothing</span> <span class="ow">-&gt;</span> <span class="kt">[]</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">in</span> <span class="p">(</span><span class="n">state</span> <span class="p">{</span> <span class="n">proposedVal</span> <span class="ow">=</span> <span class="n">decidedValue</span> <span class="p">},</span> <span class="n">acceptMsgs</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | Helper: Get highest proposal</span>
+</span></span><span class="line"><span class="cl"><span class="nf">lookupMax</span> <span class="ow">::</span> <span class="p">[(</span><span class="kt">ProposalId</span><span class="p">,</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">ProposalId</span><span class="p">,</span> <span class="kt">Value</span><span class="p">))]</span> <span class="ow">-&gt;</span> <span class="kt">Maybe</span> <span class="kt">Value</span>
+</span></span><span class="line"><span class="cl"><span class="nf">lookupMax</span> <span class="n">xs</span> <span class="ow">=</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">let</span> <span class="n">y</span> <span class="ow">=</span> <span class="p">[(</span><span class="n">pid</span><span class="p">,</span> <span class="n">pval</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="kt">Just</span> <span class="n">pval</span><span class="p">)</span> <span class="ow">&lt;-</span> <span class="n">xs</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">in</span> <span class="kr">if</span> <span class="n">null</span> <span class="n">y</span> <span class="kr">then</span> <span class="kt">Nothing</span> <span class="kr">else</span> <span class="kt">Just</span> <span class="o">$</span> <span class="n">snd</span> <span class="o">$</span> <span class="n">snd</span> <span class="o">$</span> <span class="n">maximumBy</span> <span class="p">(</span><span class="n">comparing</span> <span class="n">fst</span><span class="p">)</span> <span class="n">y</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | Step function for an acceptor</span>
+</span></span><span class="line"><span class="cl"><span class="nf">acceptorStep</span> <span class="ow">::</span> <span class="kt">AcceptorState</span> <span class="ow">-&gt;</span> <span class="kt">Message</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="kt">AcceptorState</span><span class="p">,</span> <span class="p">[</span><span class="kt">Message</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="nf">acceptorStep</span> <span class="n">state</span> <span class="n">msg</span> <span class="ow">=</span> <span class="kr">case</span> <span class="n">msg</span> <span class="kr">of</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">Prepare</span> <span class="n">pid</span> <span class="ow">-&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">let</span> <span class="n">state&#39;</span> <span class="ow">=</span> <span class="kr">if</span> <span class="kt">Just</span> <span class="n">pid</span> <span class="o">&gt;</span> <span class="n">highestPromised</span> <span class="n">state</span>
+</span></span><span class="line"><span class="cl">                  <span class="kr">then</span> <span class="n">state</span> <span class="p">{</span> <span class="n">highestPromised</span> <span class="ow">=</span> <span class="kt">Just</span> <span class="n">pid</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                  <span class="kr">else</span> <span class="n">state</span>
+</span></span><span class="line"><span class="cl">        <span class="n">response</span> <span class="ow">=</span> <span class="kt">Promise</span> <span class="n">pid</span> <span class="p">(</span><span class="n">acceptedProposal</span> <span class="n">state</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">in</span> <span class="p">(</span><span class="n">state&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">response</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kt">Accept</span> <span class="n">pid</span> <span class="n">val</span> <span class="ow">-&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">let</span> <span class="n">state&#39;</span> <span class="ow">=</span> <span class="kr">if</span> <span class="kt">Just</span> <span class="n">pid</span> <span class="o">&gt;=</span> <span class="n">highestPromised</span> <span class="n">state</span>
+</span></span><span class="line"><span class="cl">                  <span class="kr">then</span> <span class="n">state</span> <span class="p">{</span> <span class="n">acceptedProposal</span> <span class="ow">=</span> <span class="kt">Just</span> <span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                  <span class="kr">else</span> <span class="n">state</span>
+</span></span><span class="line"><span class="cl">        <span class="n">response</span> <span class="ow">=</span> <span class="kt">Accepted</span> <span class="n">pid</span> <span class="n">val</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">in</span> <span class="p">(</span><span class="n">state&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">response</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kr">_</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="kt">[]</span><span class="p">)</span>  <span class="c1">-- Ignore unknown messages</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | Step function for a learner</span>
+</span></span><span class="line"><span class="cl"><span class="nf">learnerStep</span> <span class="ow">::</span> <span class="kt">LearnerState</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="kt">Message</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="kt">LearnerState</span><span class="p">,</span> <span class="p">[</span><span class="kt">Message</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="nf">learnerStep</span> <span class="p">(</span><span class="kt">LearnerState</span> <span class="n">current</span><span class="p">)</span> <span class="n">msgs</span> <span class="ow">=</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">let</span> <span class="n">acceptedValues</span> <span class="ow">=</span> <span class="p">[(</span><span class="n">pid</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="o">|</span> <span class="kt">Accepted</span> <span class="n">pid</span> <span class="n">v</span> <span class="ow">&lt;-</span> <span class="n">msgs</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="n">decidedValue</span> <span class="ow">=</span> <span class="kr">case</span> <span class="n">acceptedValues</span> <span class="kr">of</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">[]</span> <span class="ow">-&gt;</span> <span class="n">current</span>
+</span></span><span class="line"><span class="cl">        <span class="n">xs</span> <span class="ow">-&gt;</span> <span class="kt">Just</span> <span class="o">$</span> <span class="n">snd</span> <span class="o">$</span> <span class="n">maximumBy</span> <span class="p">(</span><span class="n">comparing</span> <span class="n">fst</span><span class="p">)</span> <span class="n">xs</span>
+</span></span><span class="line"><span class="cl">      <span class="n">decideMsgs</span> <span class="ow">=</span> <span class="kr">case</span> <span class="n">decidedValue</span> <span class="kr">of</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">Just</span> <span class="n">v</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="kt">Decide</span> <span class="n">v</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">Nothing</span> <span class="ow">-&gt;</span> <span class="kt">[]</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">in</span> <span class="p">(</span><span class="kt">LearnerState</span> <span class="n">decidedValue</span><span class="p">,</span> <span class="n">decideMsgs</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">runPaxos</span> <span class="ow">::</span> <span class="kt">Value</span> <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="nb">()</span>
+</span></span><span class="line"><span class="cl"><span class="nf">runPaxos</span> <span class="n">val</span> <span class="ow">=</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">let</span> <span class="n">proposer</span> <span class="ow">=</span> <span class="kt">ProposerState</span> <span class="mi">1</span> <span class="p">(</span><span class="kt">Just</span> <span class="n">val</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">acceptors</span> <span class="ow">=</span> <span class="n">replicate</span> <span class="mi">3</span> <span class="p">(</span><span class="kt">AcceptorState</span> <span class="kt">Nothing</span> <span class="kt">Nothing</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">learner</span> <span class="ow">=</span> <span class="kt">LearnerState</span> <span class="kt">Nothing</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="c1">-- Phase 1: Proposer sends Prepare</span>
+</span></span><span class="line"><span class="cl">      <span class="p">(</span><span class="n">pState1</span><span class="p">,</span> <span class="n">prepMsgs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">proposerStep</span> <span class="n">proposer</span> <span class="kt">[]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">(</span><span class="n">aStates1</span><span class="p">,</span> <span class="n">promiseMsgs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">unzip</span> <span class="o">$</span> <span class="n">map</span> <span class="p">(</span><span class="nf">\</span><span class="n">s</span> <span class="ow">-&gt;</span> <span class="n">acceptorStep</span> <span class="n">s</span> <span class="p">(</span><span class="n">head</span> <span class="n">prepMsgs</span><span class="p">))</span> <span class="n">acceptors</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="c1">-- Phase 2: Proposer receives Promises and sends Accept</span>
+</span></span><span class="line"><span class="cl">      <span class="p">(</span><span class="n">pState2</span><span class="p">,</span> <span class="n">acceptMsgs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">proposerStep</span> <span class="n">pState1</span> <span class="p">(</span><span class="n">concat</span> <span class="n">promiseMsgs</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">(</span><span class="n">aStates2</span><span class="p">,</span> <span class="n">acceptedMsgs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">unzip</span> <span class="o">$</span> <span class="n">map</span> <span class="p">(</span><span class="nf">\</span><span class="n">s</span> <span class="ow">-&gt;</span> <span class="n">acceptorStep</span> <span class="n">s</span> <span class="p">(</span><span class="n">head</span> <span class="n">acceptMsgs</span><span class="p">))</span> <span class="n">aStates1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="c1">-- Phase 3: Learner collects and decides</span>
+</span></span><span class="line"><span class="cl">      <span class="p">(</span><span class="n">lState</span><span class="p">,</span> <span class="n">decideMsgs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">learnerStep</span> <span class="n">learner</span> <span class="p">(</span><span class="n">concat</span> <span class="n">acceptedMsgs</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">print</span> <span class="o">$</span> <span class="s">&#34;Proposer State: &#34;</span> <span class="o">&lt;&gt;</span> <span class="n">show</span> <span class="n">pState2</span>
+</span></span><span class="line"><span class="cl">  <span class="n">print</span> <span class="o">$</span> <span class="s">&#34;Acceptor States: &#34;</span> <span class="o">&lt;&gt;</span> <span class="n">show</span> <span class="n">aStates2</span>
+</span></span><span class="line"><span class="cl">  <span class="n">print</span> <span class="o">$</span> <span class="s">&#34;Learner State: &#34;</span> <span class="o">&lt;&gt;</span> <span class="n">show</span> <span class="n">lState</span>
+</span></span><span class="line"><span class="cl">  <span class="n">print</span> <span class="o">$</span> <span class="s">&#34;Final decision: &#34;</span> <span class="o">&lt;&gt;</span> <span class="n">show</span> <span class="n">decideMsgs</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">main</span> <span class="ow">::</span> <span class="kt">IO</span> <span class="nb">()</span>
+</span></span><span class="line"><span class="cl"><span class="nf">main</span> <span class="ow">=</span> <span class="n">runPaxos</span> <span class="s">&#34;42&#34;</span>
+</span></span></code></pre></div>
+  </article>
+  
+  <article>
+    <header>
+      <h1>
+        
+	<a href="/journal/2025-03-28/">
+          <span><time datetime="2025-03-28 00:00:00 &#43;0000 UTC">March 28, 2025</time></span>
+	</a>
+      </h1>
+    </header>
+    <p>The Haskell Implementor&rsquo;s Workshop says they&rsquo;re open to &ldquo;crazy half-baked ideas&rdquo;, so maybe I can work out some.</p>
+<p>When working on GHC I found the way everything is based off the big TTG AST data structure to be quite complicated. I suspect that an approach with macros, like Typed Racket, would lead to much cleaner code.
+The code would also be easier to extend.
+I don&rsquo;t know enough about the GHC frontend code or how Typed Racket is implemented yet to convincingly say whether this is doable though.</p>
+<p>Another idea I have is what if GHC had support for multiple languages like Racket?
+The runtime is great, I don&rsquo;t know any other lazy language except Racket&rsquo;s lazy version.
+I doubt that is anywhere near as efficient as Haskell though, and Haskell has lots of libraries.</p>
+<p>Allowing users to experiment with multiple languages on the same runtime could
+help projects like Dependent Haskell, where you&rsquo;d be free to create the perfect
+syntax for a dependently typed language rather than tacking on potentially awkward syntax.</p>
+<p>I think right now for any experiment you have to essentially fork GHC, and compile the whole thing etc.
+In Racket you just make a module and it&rsquo;s ready to use.</p>
+
+  </article>
+  
+  <article>
+    <header>
+      <h1>
+        
+	<a href="/journal/2025-03-23/">
+          <span><time datetime="2025-03-23 00:00:00 &#43;0000 UTC">March 23, 2025</time></span>
+	</a>
+      </h1>
+    </header>
+    <p>I&rsquo;ve been thinking about why GHC&rsquo;s front-end code is so big and complicated/fragile feeling.
+I think it might be because of the huge <code>Expr</code> data structure that is meant to represent the full surface syntax, and is used throughout the parser, renamer, and type checker phases.
+Maybe this makes it so that various concerns are all intermingled, even though there are these separate &ldquo;phases&rdquo; that traditional compiler designers like to use.</p>
+<p>A Scheme implementation doesn&rsquo;t feel like that.
+Instead they are written as a tiny but fully featured base language with a nice hygienic macro system, and macros are used to implement all the extra features.</p>
+<p>I think the hard part about this is to achieve good error reporting.
+I wonder how Typed Racket does it.</p>
+<p>In any case, GHC differs significantly from this, because <code>Core</code> is a very simple AST, without any source information.
+Everything to do with nice surface syntax <em>has</em> to happen somewhere else, because there doesn&rsquo;t seem to be a way to connect <code>Core</code> to the original program.</p>
+<p>Also, while GHC technically has macros it really isn&rsquo;t possible to make new syntax that feels native.
+Macro calls have to be in special delimiters.</p>
+
+  </article>
+  
+  <article>
+    <header>
+      <h1>
+        
+	<a href="/journal/2025-03-08/">
+          <span><time datetime="2025-03-08 00:00:00 &#43;0000 UTC">March 8, 2025</time></span>
+	</a>
+      </h1>
+    </header>
+    <p>More on the &ldquo;rewriting definitions&rdquo; idea. I checked out Template Haskell support
+for this but unfortunately getting the definition of a function is not currently
+supported. Implementing this idea would in Haskell require me to implement my own AST
+for a simpler language.</p>
+<p>Otherwise I could implement it as a GHC extension.</p>
+<p>It seems to be important to understand the different methods of rewriting
+expressions into monadic form because they result in
+call-by-value/call-by-name/call-by-need strategies for effect evaluation. This
+all seems too low-level for the things I worry about, so maybe I require more
+constraints on my monads? Commutativity? I&rsquo;ll have to read the papers to
+discover more.</p>
+
+  </article>
   
   <article>
     <header>
@@ -910,8 +1103,7 @@ I imagine doing thorough refactorings when you&rsquo;re on a PhD thesis time bud
 <li>Ubiquitous language: use consistent and precise terminology in code and documentation, and make it apparent at type-level.</li>
 <li>Domain isolation with layered architecture: use layering to avoid spaghetti or lasagna code.</li>
 <li>Supple design: make code &ldquo;a pleasure to work with, inviting to change&rdquo;.</li>
-</ul>
-</blockquote>
+</ul></blockquote>
 <p>These all sound like great principles, and having this as a check-list that cannot be circumvented for any newly checked in code would be a major help.
 I&rsquo;ve tried to use the GHC API while playing around with writing HLS plugins and the documentation and names used were extremely confusing.
 It might be impossible to start something from scratch without looking at existing examples and without external help.
@@ -1059,8 +1251,7 @@ I took some notes below.</p>
 <p>[&hellip;] keeping a mental model of the tree, and
 one’s place in that tree when undoing and redoing, is too
 taxing. After all, life is a sequence, not a tree. But then, life
-doesn’t even have an undo.</p>
-</blockquote>
+doesn’t even have an undo.</p></blockquote>
 <p>This quote makes it clear that making this tree user friendly is high priority if you want to build a system in which exploration is cost-free. Achieving this will make collaboration cost-free as well. Git has a hard time with this because of it&rsquo;s lowest common denominator text support.</p>
 <p>Reading this makes me remember my interest in non-linear undo work.
 I&rsquo;ve seen some older papers on this but I don&rsquo;t know how much it&rsquo;s supported in actual applications these days.

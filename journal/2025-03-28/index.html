@@ -4,15 +4,12 @@
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="generator" content="Hugo 0.147.3">
-		<title>2024-02-05 - Adriaan Leijnse</title>
+		<title>2025-03-28 - Adriaan Leijnse</title>
 
-		<meta name="description" content="Bugs in my &ldquo;Imperative FRP&rdquo; TodoMVC: when an item is deleted it should stop contributing to the &ldquo;completed count&rdquo;.
-This wouldn&rsquo;t have been a problem with Reflex&rsquo; Adjustable behavior?
-This just goes to show that not doing these apps in a declarative style or at least with a list data type is really hard.
-Typically the list data type method doesn&rsquo;t have incremental bookkeeping of total/completed TODO items though.
-I&rsquo;m in the process of cleaning up my TodoMVC version.
-It&rsquo;s currently around a 110 lines of domain specific code.
-https://github.com/widok/todomvc/blob/master/src/main/scala/org/widok/todomvc/Application.scala is about a 100 lines of domain specific code, so hopefully I can get under that.">
+		<meta name="description" content="The Haskell Implementor&rsquo;s Workshop says they&rsquo;re open to &ldquo;crazy half-baked ideas&rdquo;, so maybe I can work out some.
+When working on GHC I found the way everything is based off the big TTG AST data structure to be quite complicated. I suspect that an approach with macros, like Typed Racket, would lead to much cleaner code.
+The code would also be easier to extend.
+I don&rsquo;t know enough about the GHC frontend code or how Typed Racket is implemented yet to convincingly say whether this is doable though.">
 
 
 		
@@ -94,7 +91,7 @@ https://github.com/widok/todomvc/blob/master/src/main/scala/org/widok/todomvc/Ap
         Journal entry for 
 	
         
-	<time datetime="2024-02-05 00:00:00 &#43;0000 UTC">February 5, 2024</time>
+	<time datetime="2025-03-28 00:00:00 &#43;0000 UTC">March 28, 2025</time>
         
 	<span class="no-print">
 	  <span>
@@ -102,24 +99,27 @@ https://github.com/widok/todomvc/blob/master/src/main/scala/org/widok/todomvc/Ap
     </hgroup>
     <hr class="sep" />
   </header>
-  <p>Bugs in my &ldquo;Imperative FRP&rdquo; TodoMVC: when an item is deleted it should stop contributing to the &ldquo;completed count&rdquo;.
-This wouldn&rsquo;t have been a problem with Reflex&rsquo; Adjustable behavior?
-This just goes to show that not doing these apps in a declarative style or at least with a list data type is really hard.
-Typically the list data type method doesn&rsquo;t have incremental bookkeeping of total/completed TODO items though.</p>
-<p>I&rsquo;m in the process of cleaning up my TodoMVC version.
-It&rsquo;s currently around a 110 lines of domain specific code.
-<a href="https://github.com/widok/todomvc/blob/master/src/main/scala/org/widok/todomvc/Application.scala">https://github.com/widok/todomvc/blob/master/src/main/scala/org/widok/todomvc/Application.scala</a> is about a 100 lines of domain specific code, so hopefully I can get under that.</p>
-<p>I am missing the persistence (&ldquo;LocalStorage&rdquo;) part of TodoMVC, but doing that in a very higher-order FRP style is something I need to explore still.
-The Widok version doesn&rsquo;t seem to handle that either AFAICT.</p>
+  <p>The Haskell Implementor&rsquo;s Workshop says they&rsquo;re open to &ldquo;crazy half-baked ideas&rdquo;, so maybe I can work out some.</p>
+<p>When working on GHC I found the way everything is based off the big TTG AST data structure to be quite complicated. I suspect that an approach with macros, like Typed Racket, would lead to much cleaner code.
+The code would also be easier to extend.
+I don&rsquo;t know enough about the GHC frontend code or how Typed Racket is implemented yet to convincingly say whether this is doable though.</p>
+<p>Another idea I have is what if GHC had support for multiple languages like Racket?
+The runtime is great, I don&rsquo;t know any other lazy language except Racket&rsquo;s lazy version.
+I doubt that is anywhere near as efficient as Haskell though, and Haskell has lots of libraries.</p>
+<p>Allowing users to experiment with multiple languages on the same runtime could
+help projects like Dependent Haskell, where you&rsquo;d be free to create the perfect
+syntax for a dependently typed language rather than tacking on potentially awkward syntax.</p>
+<p>I think right now for any experiment you have to essentially fork GHC, and compile the whole thing etc.
+In Racket you just make a module and it&rsquo;s ready to use.</p>
 
 </article>
 <nav class="no-print post-nav">
   
-  <a class="prev-post" href="https://aidy.dev/journal/2024-02-02/">
-    <img class="icon-text" src="/img/prev.svg"/>2024-02-02</a>
+  <a class="prev-post" href="https://aidy.dev/journal/2025-03-23/">
+    <img class="icon-text" src="/img/prev.svg"/>2025-03-23</a>
   
   
-  <a class="next-post" href="https://aidy.dev/journal/2024-02-07/">2024-02-07<img class="icon-text" src="/img/next.svg"/>
+  <a class="next-post" href="https://aidy.dev/journal/2025-04-01/">2025-04-01<img class="icon-text" src="/img/next.svg"/>
   </a>
   
 </nav>

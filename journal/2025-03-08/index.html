@@ -4,9 +4,19 @@
 		<meta charset="utf-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta name="generator" content="Hugo 0.147.3">
-		<title>Ideas for the future of coding - Adriaan Leijnse</title>
+		<title>2025-03-08 - Adriaan Leijnse</title>
 
-		<meta name="description" content="">
+		<meta name="description" content="More on the &ldquo;rewriting definitions&rdquo; idea. I checked out Template Haskell support
+for this but unfortunately getting the definition of a function is not currently
+supported. Implementing this idea would in Haskell require me to implement my own AST
+for a simpler language.
+Otherwise I could implement it as a GHC extension.
+It seems to be important to understand the different methods of rewriting
+expressions into monadic form because they result in
+call-by-value/call-by-name/call-by-need strategies for effect evaluation. This
+all seems too low-level for the things I worry about, so maybe I require more
+constraints on my monads? Commutativity? I&rsquo;ll have to read the papers to
+discover more.">
 
 
 		
@@ -59,13 +69,13 @@
           </li><li>
             <a href="/foc-ideas/"
                
-               class="active"
-               
                >
               Future of Coding
             </a>
           </li><li>
             <a href="/journal/"
+               
+               class="active"
                
                >
               Journal
@@ -84,64 +94,46 @@
 <article>
   <header>
     <hgroup id="brand">
-	<h1>Ideas for the future of coding</h1>
+      <h1>
+        Journal entry for 
 	
-</hgroup>
-<hr class="sep" />
-
-    <p>I collect research and thoughts for work-in-progress ideas here:</p>
-
+        
+	<time datetime="2025-03-08 00:00:00 &#43;0000 UTC">March 8, 2025</time>
+        
+	<span class="no-print">
+	  <span>
+      </h1>
+    </hgroup>
+    <hr class="sep" />
   </header>
-  <ul class="">
-    
-    <li>
-      <div><a href="/foc-ideas/dsl-debuggers/">A DSL should have its own debugger</a></div>
-      
-      <div>"Give me a tower of debuggers!"</div>
-      
-
-      
-      
-      <div class="lastmod">Last modified: <time datetime="2023-04-11 19:06:00 &#43;0100 &#43;0100">April 11, 2023</time></div>
-    </li>
-    
-    <li>
-      <div><a href="/foc-ideas/gui-creation/">Thoughts on comfortable GUI development</a></div>
-      
-      <div>"A.k.a. make Visual Basic happen again"</div>
-      
-
-      
-      
-      <div class="lastmod">Last modified: <time datetime="2023-04-11 12:35:00 &#43;0100 &#43;0100">April 11, 2023</time></div>
-    </li>
-    
-    <li>
-      <div><a href="/foc-ideas/first-class-timelines/">FRP with first-class timelines</a></div>
-      
-      <div>"Playing with time could never go wrong."</div>
-      
-
-      
-      
-      <div class="lastmod">Last modified: <time datetime="2023-04-11 00:00:00 &#43;0100 &#43;0100">April 11, 2023</time></div>
-    </li>
-    
-    <li>
-      <div><a href="/foc-ideas/state-and-program-definition/">Re-unifying program state and definition</a></div>
-      
-      <div>"Can we get what&#39;s good from Smalltalk images back?"</div>
-      
-
-      
-      
-      <div class="lastmod">Last modified: <time datetime="2023-04-11 12:18:00 &#43;0100 &#43;0100">April 11, 2023</time></div>
-    </li>
-    
-  </ul>
-  
+  <p>More on the &ldquo;rewriting definitions&rdquo; idea. I checked out Template Haskell support
+for this but unfortunately getting the definition of a function is not currently
+supported. Implementing this idea would in Haskell require me to implement my own AST
+for a simpler language.</p>
+<p>Otherwise I could implement it as a GHC extension.</p>
+<p>It seems to be important to understand the different methods of rewriting
+expressions into monadic form because they result in
+call-by-value/call-by-name/call-by-need strategies for effect evaluation. This
+all seems too low-level for the things I worry about, so maybe I require more
+constraints on my monads? Commutativity? I&rsquo;ll have to read the papers to
+discover more.</p>
 
 </article>
+<nav class="no-print post-nav">
+  
+  <a class="prev-post" href="https://aidy.dev/journal/2025-02-22/">
+    <img class="icon-text" src="/img/prev.svg"/>2025-02-22</a>
+  
+  
+  <a class="next-post" href="https://aidy.dev/journal/2025-03-23/">2025-03-23<img class="icon-text" src="/img/next.svg"/>
+  </a>
+  
+</nav>
+
+
+
+
+
 		        <hr class="bottom-sep" />
 		</main>
 		<footer class="container no-print">

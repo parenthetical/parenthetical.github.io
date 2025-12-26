@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+  	<head>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="generator" content="Hugo 0.147.3">
+		<title>2025-04-01 - Adriaan Leijnse</title>
+
+		<meta name="description" content="{-# LANGUAGE DeriveGeneric #-}
+
+import Data.Ord (comparing)
+import Data.Maybe (fromMaybe)
+import Control.Monad
+
+-- | Proposal Number (higher means newer)
+type ProposalId = Int
+
+-- | The value being proposed
+type Value = String
+
+-- | A Proposer issues proposals
+data ProposerState = ProposerState
+  { proposerId   :: ProposalId
+  , proposedVal  :: Maybe Value
+  } deriving (Show, Generic)
+
+-- | An Acceptor records proposals and votes
+data AcceptorState = AcceptorState
+  { highestPromised :: Maybe ProposalId
+  , acceptedProposal :: Maybe (ProposalId, Value)
+  } deriving (Show, Generic)
+
+-- | A Learner collects accepted values
+newtype LearnerState = LearnerState (Maybe Value)
+  deriving (Show, Generic)
+
+-- | Messages exchanged in Paxos
+data Message
+  = Prepare ProposalId
+  | Promise ProposalId (Maybe (ProposalId, Value))
+  | Accept ProposalId Value
+  | Accepted ProposalId Value
+  | Decide Value
+  deriving (Show, Generic)
+
+-- | Step function for a proposer: receives messages, updates state, and returns outgoing messages.
+proposerStep :: ProposerState -&gt; [Message] -&gt; (ProposerState, [Message])
+proposerStep state msgs =
+  let pid = proposerId state
+      promisedResponses = [(pid&#39;, val) | Promise pid&#39; val &lt;- msgs, pid&#39; == pid]
+      decidedValue = case promisedResponses of
+        [] -&gt; proposedVal state  -- No responses, keep original value
+        xs -&gt; Just $ fromMaybe (fromMaybe &#34;default&#34; (proposedVal state)) (lookupMax xs)
+      acceptMsgs = case decidedValue of
+        Just v -&gt; [Accept pid v]
+        Nothing -&gt; []
+  in (state { proposedVal = decidedValue }, acceptMsgs)
+
+-- | Helper: Get highest proposal
+lookupMax :: [(ProposalId, Maybe (ProposalId, Value))] -&gt; Maybe Value
+lookupMax xs =
+  let y = [(pid, pval) | (pid, Just pval) &lt;- xs]
+  in if null y then Nothing else Just $ snd $ snd $ maximumBy (comparing fst) y
+
+-- | Step function for an acceptor
+acceptorStep :: AcceptorState -&gt; Message -&gt; (AcceptorState, [Message])
+acceptorStep state msg = case msg of
+  Prepare pid -&gt;
+    let state&#39; = if Just pid &gt; highestPromised state
+                  then state { highestPromised = Just pid }
+                  else state
+        response = Promise pid (acceptedProposal state)
+    in (state&#39;, [response])
+
+  Accept pid val -&gt;
+    let state&#39; = if Just pid &gt;= highestPromised state
+                  then state { acceptedProposal = Just (pid, val) }
+                  else state
+        response = Accepted pid val
+    in (state&#39;, [response])
+
+  _ -&gt; (state, [])  -- Ignore unknown messages
+
+-- | Step function for a learner
+learnerStep :: LearnerState -&gt; [Message] -&gt; (LearnerState, [Message])
+learnerStep (LearnerState current) msgs =
+  let acceptedValues = [(pid, v) | Accepted pid v &lt;- msgs]
+      decidedValue = case acceptedValues of
+        [] -&gt; current
+        xs -&gt; Just $ snd $ maximumBy (comparing fst) xs
+      decideMsgs = case decidedValue of
+        Just v -&gt; [Decide v]
+        Nothing -&gt; []
+  in (LearnerState decidedValue, decideMsgs)
+
+runPaxos :: Value -&gt; IO ()
+runPaxos val = do
+  let proposer = ProposerState 1 (Just val)
+      acceptors = replicate 3 (AcceptorState Nothing Nothing)
+      learner = LearnerState Nothing
+
+      -- Phase 1: Proposer sends Prepare
+      (pState1, prepMsgs) = proposerStep proposer []
+      (aStates1, promiseMsgs) = unzip $ map (\s -&gt; acceptorStep s (head prepMsgs)) acceptors
+
+      -- Phase 2: Proposer receives Promises and sends Accept
+      (pState2, acceptMsgs) = proposerStep pState1 (concat promiseMsgs)
+      (aStates2, acceptedMsgs) = unzip $ map (\s -&gt; acceptorStep s (head acceptMsgs)) aStates1
+
+      -- Phase 3: Learner collects and decides
+      (lState, decideMsgs) = learnerStep learner (concat acceptedMsgs)
+
+  print $ &#34;Proposer State: &#34; &lt;&gt; show pState2
+  print $ &#34;Acceptor States: &#34; &lt;&gt; show aStates2
+  print $ &#34;Learner State: &#34; &lt;&gt; show lState
+  print $ &#34;Final decision: &#34; &lt;&gt; show decideMsgs
+
+main :: IO ()
+main = runPaxos &#34;42&#34;
+">
+
+
+		
+	
+		
+
+
+
+
+<link rel="stylesheet" href="/css/ui.css">
+
+	
+		
+
+		<link  rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Mono|Lato|Raleway">
+
+		
+	</head>
+
+  <body>
+    <header class="container no-print">
+      <nav id="navbar"
+           style="
+                  margin-bottom: 3rem;
+                  padding-top: 1rem;
+                  display: flex;
+                  flex-wrap: wrap;
+                  align-items: flex-end;
+                  column-gap: 1.7rem;
+                  "             >
+        <a href="/"
+           >
+          <h1 style="
+                     margin: 0.2rem 0;
+                     padding: 0;
+                     font-size: 1.6rem;
+                     font-family: roman;
+                     color: #777;
+                     ">
+            Adriaan Leijnse
+          </h1>
+        </a>
+        <ul>
+          <li>
+            <a href="/blog/"
+               
+               >
+              Blog
+            </a>
+          </li><li>
+            <a href="/foc-ideas/"
+               
+               >
+              Future of Coding
+            </a>
+          </li><li>
+            <a href="/journal/"
+               
+               class="active"
+               
+               >
+              Journal
+            </a>
+          </li><li>
+            <a href="/papers/"
+               
+               >
+              Papers
+            </a>
+          </li></ul>
+      </nav>
+    </header>
+    <main class="container">
+
+<article>
+  <header>
+    <hgroup id="brand">
+      <h1>
+        Journal entry for 
+	
+        
+	<time datetime="2025-04-01 00:00:00 &#43;0000 UTC">April 1, 2025</time>
+        
+	<span class="no-print">
+	  <span>
+      </h1>
+    </hgroup>
+    <hr class="sep" />
+  </header>
+  <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-haskell" data-lang="haskell"><span class="line"><span class="cl"><span class="cm">{-# LANGUAGE DeriveGeneric #-}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nn">Data.Ord</span> <span class="p">(</span><span class="nf">comparing</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nn">Data.Maybe</span> <span class="p">(</span><span class="nf">fromMaybe</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">import</span> <span class="nn">Control.Monad</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | Proposal Number (higher means newer)</span>
+</span></span><span class="line"><span class="cl"><span class="kr">type</span> <span class="kt">ProposalId</span> <span class="ow">=</span> <span class="kt">Int</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | The value being proposed</span>
+</span></span><span class="line"><span class="cl"><span class="kr">type</span> <span class="kt">Value</span> <span class="ow">=</span> <span class="kt">String</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | A Proposer issues proposals</span>
+</span></span><span class="line"><span class="cl"><span class="kr">data</span> <span class="kt">ProposerState</span> <span class="ow">=</span> <span class="kt">ProposerState</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span> <span class="n">proposerId</span>   <span class="ow">::</span> <span class="kt">ProposalId</span>
+</span></span><span class="line"><span class="cl">  <span class="p">,</span> <span class="n">proposedVal</span>  <span class="ow">::</span> <span class="kt">Maybe</span> <span class="kt">Value</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="kr">deriving</span> <span class="p">(</span><span class="kt">Show</span><span class="p">,</span> <span class="kt">Generic</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | An Acceptor records proposals and votes</span>
+</span></span><span class="line"><span class="cl"><span class="kr">data</span> <span class="kt">AcceptorState</span> <span class="ow">=</span> <span class="kt">AcceptorState</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span> <span class="n">highestPromised</span> <span class="ow">::</span> <span class="kt">Maybe</span> <span class="kt">ProposalId</span>
+</span></span><span class="line"><span class="cl">  <span class="p">,</span> <span class="n">acceptedProposal</span> <span class="ow">::</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">ProposalId</span><span class="p">,</span> <span class="kt">Value</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span> <span class="kr">deriving</span> <span class="p">(</span><span class="kt">Show</span><span class="p">,</span> <span class="kt">Generic</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | A Learner collects accepted values</span>
+</span></span><span class="line"><span class="cl"><span class="kr">newtype</span> <span class="kt">LearnerState</span> <span class="ow">=</span> <span class="kt">LearnerState</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="kt">Value</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">deriving</span> <span class="p">(</span><span class="kt">Show</span><span class="p">,</span> <span class="kt">Generic</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | Messages exchanged in Paxos</span>
+</span></span><span class="line"><span class="cl"><span class="kr">data</span> <span class="kt">Message</span>
+</span></span><span class="line"><span class="cl">  <span class="ow">=</span> <span class="kt">Prepare</span> <span class="kt">ProposalId</span>
+</span></span><span class="line"><span class="cl">  <span class="o">|</span> <span class="kt">Promise</span> <span class="kt">ProposalId</span> <span class="p">(</span><span class="kt">Maybe</span> <span class="p">(</span><span class="kt">ProposalId</span><span class="p">,</span> <span class="kt">Value</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">  <span class="o">|</span> <span class="kt">Accept</span> <span class="kt">ProposalId</span> <span class="kt">Value</span>
+</span></span><span class="line"><span class="cl">  <span class="o">|</span> <span class="kt">Accepted</span> <span class="kt">ProposalId</span> <span class="kt">Value</span>
+</span></span><span class="line"><span class="cl">  <span class="o">|</span> <span class="kt">Decide</span> <span class="kt">Value</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">deriving</span> <span class="p">(</span><span class="kt">Show</span><span class="p">,</span> <span class="kt">Generic</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | Step function for a proposer: receives messages, updates state, and returns outgoing messages.</span>
+</span></span><span class="line"><span class="cl"><span class="nf">proposerStep</span> <span class="ow">::</span> <span class="kt">ProposerState</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="kt">Message</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="kt">ProposerState</span><span class="p">,</span> <span class="p">[</span><span class="kt">Message</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="nf">proposerStep</span> <span class="n">state</span> <span class="n">msgs</span> <span class="ow">=</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">let</span> <span class="n">pid</span> <span class="ow">=</span> <span class="n">proposerId</span> <span class="n">state</span>
+</span></span><span class="line"><span class="cl">      <span class="n">promisedResponses</span> <span class="ow">=</span> <span class="p">[(</span><span class="n">pid&#39;</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span> <span class="o">|</span> <span class="kt">Promise</span> <span class="n">pid&#39;</span> <span class="n">val</span> <span class="ow">&lt;-</span> <span class="n">msgs</span><span class="p">,</span> <span class="n">pid&#39;</span> <span class="o">==</span> <span class="n">pid</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="n">decidedValue</span> <span class="ow">=</span> <span class="kr">case</span> <span class="n">promisedResponses</span> <span class="kr">of</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">[]</span> <span class="ow">-&gt;</span> <span class="n">proposedVal</span> <span class="n">state</span>  <span class="c1">-- No responses, keep original value</span>
+</span></span><span class="line"><span class="cl">        <span class="n">xs</span> <span class="ow">-&gt;</span> <span class="kt">Just</span> <span class="o">$</span> <span class="n">fromMaybe</span> <span class="p">(</span><span class="n">fromMaybe</span> <span class="s">&#34;default&#34;</span> <span class="p">(</span><span class="n">proposedVal</span> <span class="n">state</span><span class="p">))</span> <span class="p">(</span><span class="n">lookupMax</span> <span class="n">xs</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">acceptMsgs</span> <span class="ow">=</span> <span class="kr">case</span> <span class="n">decidedValue</span> <span class="kr">of</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">Just</span> <span class="n">v</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="kt">Accept</span> <span class="n">pid</span> <span class="n">v</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">Nothing</span> <span class="ow">-&gt;</span> <span class="kt">[]</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">in</span> <span class="p">(</span><span class="n">state</span> <span class="p">{</span> <span class="n">proposedVal</span> <span class="ow">=</span> <span class="n">decidedValue</span> <span class="p">},</span> <span class="n">acceptMsgs</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | Helper: Get highest proposal</span>
+</span></span><span class="line"><span class="cl"><span class="nf">lookupMax</span> <span class="ow">::</span> <span class="p">[(</span><span class="kt">ProposalId</span><span class="p">,</span> <span class="kt">Maybe</span> <span class="p">(</span><span class="kt">ProposalId</span><span class="p">,</span> <span class="kt">Value</span><span class="p">))]</span> <span class="ow">-&gt;</span> <span class="kt">Maybe</span> <span class="kt">Value</span>
+</span></span><span class="line"><span class="cl"><span class="nf">lookupMax</span> <span class="n">xs</span> <span class="ow">=</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">let</span> <span class="n">y</span> <span class="ow">=</span> <span class="p">[(</span><span class="n">pid</span><span class="p">,</span> <span class="n">pval</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="kt">Just</span> <span class="n">pval</span><span class="p">)</span> <span class="ow">&lt;-</span> <span class="n">xs</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">in</span> <span class="kr">if</span> <span class="n">null</span> <span class="n">y</span> <span class="kr">then</span> <span class="kt">Nothing</span> <span class="kr">else</span> <span class="kt">Just</span> <span class="o">$</span> <span class="n">snd</span> <span class="o">$</span> <span class="n">snd</span> <span class="o">$</span> <span class="n">maximumBy</span> <span class="p">(</span><span class="n">comparing</span> <span class="n">fst</span><span class="p">)</span> <span class="n">y</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | Step function for an acceptor</span>
+</span></span><span class="line"><span class="cl"><span class="nf">acceptorStep</span> <span class="ow">::</span> <span class="kt">AcceptorState</span> <span class="ow">-&gt;</span> <span class="kt">Message</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="kt">AcceptorState</span><span class="p">,</span> <span class="p">[</span><span class="kt">Message</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="nf">acceptorStep</span> <span class="n">state</span> <span class="n">msg</span> <span class="ow">=</span> <span class="kr">case</span> <span class="n">msg</span> <span class="kr">of</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">Prepare</span> <span class="n">pid</span> <span class="ow">-&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">let</span> <span class="n">state&#39;</span> <span class="ow">=</span> <span class="kr">if</span> <span class="kt">Just</span> <span class="n">pid</span> <span class="o">&gt;</span> <span class="n">highestPromised</span> <span class="n">state</span>
+</span></span><span class="line"><span class="cl">                  <span class="kr">then</span> <span class="n">state</span> <span class="p">{</span> <span class="n">highestPromised</span> <span class="ow">=</span> <span class="kt">Just</span> <span class="n">pid</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                  <span class="kr">else</span> <span class="n">state</span>
+</span></span><span class="line"><span class="cl">        <span class="n">response</span> <span class="ow">=</span> <span class="kt">Promise</span> <span class="n">pid</span> <span class="p">(</span><span class="n">acceptedProposal</span> <span class="n">state</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">in</span> <span class="p">(</span><span class="n">state&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">response</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kt">Accept</span> <span class="n">pid</span> <span class="n">val</span> <span class="ow">-&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">let</span> <span class="n">state&#39;</span> <span class="ow">=</span> <span class="kr">if</span> <span class="kt">Just</span> <span class="n">pid</span> <span class="o">&gt;=</span> <span class="n">highestPromised</span> <span class="n">state</span>
+</span></span><span class="line"><span class="cl">                  <span class="kr">then</span> <span class="n">state</span> <span class="p">{</span> <span class="n">acceptedProposal</span> <span class="ow">=</span> <span class="kt">Just</span> <span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">                  <span class="kr">else</span> <span class="n">state</span>
+</span></span><span class="line"><span class="cl">        <span class="n">response</span> <span class="ow">=</span> <span class="kt">Accepted</span> <span class="n">pid</span> <span class="n">val</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">in</span> <span class="p">(</span><span class="n">state&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">response</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kr">_</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="kt">[]</span><span class="p">)</span>  <span class="c1">-- Ignore unknown messages</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">-- | Step function for a learner</span>
+</span></span><span class="line"><span class="cl"><span class="nf">learnerStep</span> <span class="ow">::</span> <span class="kt">LearnerState</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="kt">Message</span><span class="p">]</span> <span class="ow">-&gt;</span> <span class="p">(</span><span class="kt">LearnerState</span><span class="p">,</span> <span class="p">[</span><span class="kt">Message</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="nf">learnerStep</span> <span class="p">(</span><span class="kt">LearnerState</span> <span class="n">current</span><span class="p">)</span> <span class="n">msgs</span> <span class="ow">=</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">let</span> <span class="n">acceptedValues</span> <span class="ow">=</span> <span class="p">[(</span><span class="n">pid</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="o">|</span> <span class="kt">Accepted</span> <span class="n">pid</span> <span class="n">v</span> <span class="ow">&lt;-</span> <span class="n">msgs</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="n">decidedValue</span> <span class="ow">=</span> <span class="kr">case</span> <span class="n">acceptedValues</span> <span class="kr">of</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">[]</span> <span class="ow">-&gt;</span> <span class="n">current</span>
+</span></span><span class="line"><span class="cl">        <span class="n">xs</span> <span class="ow">-&gt;</span> <span class="kt">Just</span> <span class="o">$</span> <span class="n">snd</span> <span class="o">$</span> <span class="n">maximumBy</span> <span class="p">(</span><span class="n">comparing</span> <span class="n">fst</span><span class="p">)</span> <span class="n">xs</span>
+</span></span><span class="line"><span class="cl">      <span class="n">decideMsgs</span> <span class="ow">=</span> <span class="kr">case</span> <span class="n">decidedValue</span> <span class="kr">of</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">Just</span> <span class="n">v</span> <span class="ow">-&gt;</span> <span class="p">[</span><span class="kt">Decide</span> <span class="n">v</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">Nothing</span> <span class="ow">-&gt;</span> <span class="kt">[]</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">in</span> <span class="p">(</span><span class="kt">LearnerState</span> <span class="n">decidedValue</span><span class="p">,</span> <span class="n">decideMsgs</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">runPaxos</span> <span class="ow">::</span> <span class="kt">Value</span> <span class="ow">-&gt;</span> <span class="kt">IO</span> <span class="nb">()</span>
+</span></span><span class="line"><span class="cl"><span class="nf">runPaxos</span> <span class="n">val</span> <span class="ow">=</span> <span class="kr">do</span>
+</span></span><span class="line"><span class="cl">  <span class="kr">let</span> <span class="n">proposer</span> <span class="ow">=</span> <span class="kt">ProposerState</span> <span class="mi">1</span> <span class="p">(</span><span class="kt">Just</span> <span class="n">val</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">acceptors</span> <span class="ow">=</span> <span class="n">replicate</span> <span class="mi">3</span> <span class="p">(</span><span class="kt">AcceptorState</span> <span class="kt">Nothing</span> <span class="kt">Nothing</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">learner</span> <span class="ow">=</span> <span class="kt">LearnerState</span> <span class="kt">Nothing</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="c1">-- Phase 1: Proposer sends Prepare</span>
+</span></span><span class="line"><span class="cl">      <span class="p">(</span><span class="n">pState1</span><span class="p">,</span> <span class="n">prepMsgs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">proposerStep</span> <span class="n">proposer</span> <span class="kt">[]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">(</span><span class="n">aStates1</span><span class="p">,</span> <span class="n">promiseMsgs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">unzip</span> <span class="o">$</span> <span class="n">map</span> <span class="p">(</span><span class="nf">\</span><span class="n">s</span> <span class="ow">-&gt;</span> <span class="n">acceptorStep</span> <span class="n">s</span> <span class="p">(</span><span class="n">head</span> <span class="n">prepMsgs</span><span class="p">))</span> <span class="n">acceptors</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="c1">-- Phase 2: Proposer receives Promises and sends Accept</span>
+</span></span><span class="line"><span class="cl">      <span class="p">(</span><span class="n">pState2</span><span class="p">,</span> <span class="n">acceptMsgs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">proposerStep</span> <span class="n">pState1</span> <span class="p">(</span><span class="n">concat</span> <span class="n">promiseMsgs</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">(</span><span class="n">aStates2</span><span class="p">,</span> <span class="n">acceptedMsgs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">unzip</span> <span class="o">$</span> <span class="n">map</span> <span class="p">(</span><span class="nf">\</span><span class="n">s</span> <span class="ow">-&gt;</span> <span class="n">acceptorStep</span> <span class="n">s</span> <span class="p">(</span><span class="n">head</span> <span class="n">acceptMsgs</span><span class="p">))</span> <span class="n">aStates1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="c1">-- Phase 3: Learner collects and decides</span>
+</span></span><span class="line"><span class="cl">      <span class="p">(</span><span class="n">lState</span><span class="p">,</span> <span class="n">decideMsgs</span><span class="p">)</span> <span class="ow">=</span> <span class="n">learnerStep</span> <span class="n">learner</span> <span class="p">(</span><span class="n">concat</span> <span class="n">acceptedMsgs</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">print</span> <span class="o">$</span> <span class="s">&#34;Proposer State: &#34;</span> <span class="o">&lt;&gt;</span> <span class="n">show</span> <span class="n">pState2</span>
+</span></span><span class="line"><span class="cl">  <span class="n">print</span> <span class="o">$</span> <span class="s">&#34;Acceptor States: &#34;</span> <span class="o">&lt;&gt;</span> <span class="n">show</span> <span class="n">aStates2</span>
+</span></span><span class="line"><span class="cl">  <span class="n">print</span> <span class="o">$</span> <span class="s">&#34;Learner State: &#34;</span> <span class="o">&lt;&gt;</span> <span class="n">show</span> <span class="n">lState</span>
+</span></span><span class="line"><span class="cl">  <span class="n">print</span> <span class="o">$</span> <span class="s">&#34;Final decision: &#34;</span> <span class="o">&lt;&gt;</span> <span class="n">show</span> <span class="n">decideMsgs</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">main</span> <span class="ow">::</span> <span class="kt">IO</span> <span class="nb">()</span>
+</span></span><span class="line"><span class="cl"><span class="nf">main</span> <span class="ow">=</span> <span class="n">runPaxos</span> <span class="s">&#34;42&#34;</span>
+</span></span></code></pre></div>
+</article>
+<nav class="no-print post-nav">
+  
+  <a class="prev-post" href="https://aidy.dev/journal/2025-03-28/">
+    <img class="icon-text" src="/img/prev.svg"/>2025-03-28</a>
+  
+  
+</nav>
+
+
+
+
+
+		        <hr class="bottom-sep" />
+		</main>
+		<footer class="container no-print">
+			<div class="u-footer">
+				
+<a href="https://github.com/parenthetical"><img class="icon-zocial" src="/img/github.svg" alt="Github"/></a>
+<a href="https://twitter.com/aidylns"><img class="icon-zocial" src="/img/twitter.svg" alt="Twitter"/></a>
+
+			</div>
+		</footer>
+		
+   </body>
+<script type="text/javascript"
+  src="/tex-mml-chtml.js">
+</script>
+</html>
+
